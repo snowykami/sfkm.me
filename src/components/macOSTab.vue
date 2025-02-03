@@ -19,23 +19,40 @@
 import { ref } from 'vue';
 import { getText } from '../utils/i18n';
 
+const lastWidth = ref(0);
+const lastHeight = ref(0);
+
 const isVisible = ref(true);
 
 function closeWindow() {
-    window.close();
+    const homeElement = document.getElementById('home-window');
+    if (homeElement) {
+        homeElement.style.display = 'none';
+    }
 }
 
 function toggleVisibility() {
     isVisible.value = !isVisible.value;
-    const rightElement = document.getElementById('right');
-    if (rightElement) {
-        rightElement.style.display = isVisible.value ? 'block' : 'none';
+    const homeElement = document.getElementById('home');
+    if (homeElement) {
+        homeElement.style.display = isVisible.value ? 'block' : 'none';
     }
 }
 
 function maximizeWindow() {
     const homeElement = document.getElementById('home-window');
-    if (homeElement) {
+    // 储存上一次的宽高
+    if (lastWidth.value === 0) {
+        lastWidth.value = homeElement?.clientWidth || 0;
+        lastHeight.value = homeElement?.clientHeight || 0;
+    }
+    // 若当前窗口已经是最大化状态，则恢复
+    if (homeElement?.clientWidth === window.innerWidth && homeElement?.clientHeight === window.innerHeight) {
+        homeElement.style.width = `${lastWidth.value}px`;
+        homeElement.style.height = `${lastHeight.value}px`;
+        return;
+    } else {
+        if (!homeElement) return;
         homeElement.style.width = '100vw';
         homeElement.style.height = '100vh';
     }
