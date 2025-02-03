@@ -4,11 +4,4 @@ import Home from './components/Home.vue'
 
 <template>
 <Home/>
-
 </template>
-
-<style scoped>
-
-
-
-</style>

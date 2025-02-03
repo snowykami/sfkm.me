@@ -4,6 +4,11 @@
         <div class="resize-handle top-right" @mousedown="startResize('top-right', $event)"></div>
         <macOSTab />
         <div id="home" class="container ui">
+            <!-- 新增 home 四边的缩放手柄 -->
+            <div class="resize-handle top" @mousedown="startResizeHome('top', $event)"></div>
+            <div class="resize-handle right" @mousedown="startResizeHome('right', $event)"></div>
+            <div class="resize-handle bottom" @mousedown="startResizeHome('bottom', $event)"></div>
+            <div class="resize-handle left" @mousedown="startResizeHome('left', $event)"></div>
             <div class="resize-handle bottom-left" @mousedown="startResize('bottom-left', $event)"></div>
             <div class="resize-handle bottom-right" @mousedown="startResize('bottom-right', $event)"></div>
             <Left />
@@ -73,6 +78,58 @@ function stopResize() {
     document.removeEventListener('mousemove', resize);
     document.removeEventListener('mouseup', stopResize);
 }
+
+// ----- 新增：home 缩放逻辑 -----
+const resizingHome = ref(false);
+const resizeHomeDirection = ref('');
+const startXHome = ref(0);
+const startYHome = ref(0);
+const startWidthHome = ref(0);
+const startHeightHome = ref(0);
+
+function startResizeHome(direction: string, event: MouseEvent) {
+    resizingHome.value = true;
+    resizeHomeDirection.value = direction;
+    startXHome.value = event.clientX;
+    startYHome.value = event.clientY;
+    const home = document.getElementById('home');
+    if (home) {
+        startWidthHome.value = home.offsetWidth;
+        startHeightHome.value = home.offsetHeight;
+    }
+    document.addEventListener('mousemove', resizeHome);
+    document.addEventListener('mouseup', stopResizeHome);
+}
+
+function resizeHome(event: MouseEvent) {
+    if (!resizingHome.value) return;
+    const home = document.getElementById('home');
+    if (!home) return;
+
+    const dx = event.clientX - startXHome.value;
+    const dy = event.clientY - startYHome.value;
+
+    if (resizeHomeDirection.value === 'right') {
+        home.style.width = `${startWidthHome.value + dx}px`;
+    }
+    if (resizeHomeDirection.value === 'bottom') {
+        home.style.height = `${startHeightHome.value + dy}px`;
+    }
+    if (resizeHomeDirection.value === 'left') {
+        home.style.width = `${startWidthHome.value - dx}px`;
+        home.style.left = `${home.offsetLeft + dx}px`;
+    }
+    if (resizeHomeDirection.value === 'top') {
+        home.style.height = `${startHeightHome.value - dy}px`;
+        home.style.top = `${home.offsetTop + dy}px`;
+    }
+}
+
+function stopResizeHome() {
+    resizingHome.value = false;
+    document.removeEventListener('mousemove', resizeHome);
+    document.removeEventListener('mouseup', stopResizeHome);
+}
 </script>
 
 <style scoped>
@@ -85,6 +142,33 @@ function stopResize() {
     position: relative;
 }
 
+/* 扩展：新增 home 四边缩放手柄样式 */
+.resize-handle.top {
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: ns-resize;
+}
+.resize-handle.bottom {
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: ns-resize;
+}
+.resize-handle.left {
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: ew-resize;
+}
+.resize-handle.right {
+    right: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: ew-resize;
+}
+
+/* 原有手柄样式 */
 .resize-handle {
     position: absolute;
     width: 10px;
@@ -131,6 +215,25 @@ function stopResize() {
     #home {
         border-top-left-radius: 0;
         border-top-right-radius: 0;
+        
+    }
+}
+
+/* 移动端样式 */
+@media (max-width: 768px) {
+    #home {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #left {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    #right {
+        width: 100%;
+        max-width: 100%;
     }
 }
 </style>
