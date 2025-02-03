@@ -1,20 +1,23 @@
 <template>
     <div class="container" id="left">
-        <img class="avatar" src="https://q.qlogo.cn/g?b=qq&nk=2751454815&s=640" alt="Vue logo" />
+        <img class="avatar react-ui rotate" src="https://q.qlogo.cn/g?b=qq&nk=2751454815&s=640" alt="Vue logo" />
 
-        <div class="container ui" id="info">
+        <div class="container ui react-ui size" id="info">
             <div class="info-row">
                 <img class="info-icon" src="../assets/location.svg" alt="Location" />
                 <div class="info-value">Chongqing, China</div>
             </div>
             <div class="info-row">
                 <img class="info-icon" src="../assets/team.svg" alt="Team" />
-                <div class="info-value">LiteyukiStudio & RedrockTeam</div>
+                <div class="info-value">
+                    <a href="https://liteyuki.icu">Liteyuki</a>
+                     & 
+                     <a href="https://redrock.team">Redrock</a>
+                    </div>
             </div>
         </div>
-
-        <div class="container ui" id="tags">
-            <tag v-for="tag in tags" :key="tag">{{ tag }}</tag>
+        <div class="container ui react-ui size" id="tags">
+            <div class="tag react-ui color" v-for="tag in tags" :key="tag">{{ tag }}</div>
         </div>
         <!-- <div class="container ui" id="timeline">
 
@@ -35,7 +38,12 @@ const tags = [
     align-items: center;
     gap: 1rem;
     color: white;
+
+    .container{
+        width: 100%;
+    }
 }
+
 
 .avatar {
     width: 200px;
@@ -54,7 +62,7 @@ const tags = [
 }
 
 .info-icon{
-    max-height: 80%;
+    max-height: 70%;
 }
 
 .info-value {
@@ -69,10 +77,17 @@ const tags = [
     font-size: small;
 }
 
-tag {
+.tag {
     color: white;
     background-color: rgba(0, 0, 0, 0.1);
     border-radius: 5rem;
     padding: 0.5rem 0.75rem;
+}
+
+/* 手机下不显示info和tags */
+@media (max-width: 768px) {
+    #info, #tags {
+        display: none;
+    }
 }
 </style>

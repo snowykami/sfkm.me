@@ -1,5 +1,8 @@
+@import url('https://fonts.font.im/css?family=Josefin+Sans:300,300i,400,400i');
+@import url('https://fonts.font.im/css?family=Playball');
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Josefin Sans', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -7,7 +10,7 @@
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -21,22 +24,33 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  color: white;
+  border-bottom: 1px dashed;
 }
 a:hover {
-  color: #535bf2;
+  color: #3e7eff;
 }
 
+* {
+  transition: all 0.3s;
+}
+
+
 body {
+  padding: 1rem;
+
   margin: 0;
+
   display: flex;
+
   place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+
+  min-height: 90vh;
   background-size: cover;
   background-position: center;
-  background-image: url('https://nd.liteyuki.icu/api/v3/file/get/18870/furina.png?sign=bqEBGXv8pU7VJSdpTLsy1rIV757VW9fvfE2CP1jlins%3D%3A0');
+  overflow-x: hidden;
+  background-color: #242424;
+  /* background-image: url('https://nd.liteyuki.icu/api/v3/file/get/18870/furina.png?sign=bqEBGXv8pU7VJSdpTLsy1rIV757VW9fvfE2CP1jlins%3D%3A0'); */
 }
 
 h1 {
@@ -68,9 +82,7 @@ button:focus-visible {
 }
 
 #app {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
@@ -90,7 +102,8 @@ button:focus-visible {
 /* custom */
 
 .container {
-  margin-bottom: 0.5rem;
+  width: auto;
+  margin-bottom: 1rem;
   padding: 1rem;
 }
 
@@ -107,11 +120,26 @@ button:focus-visible {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.ui-2{
+.ui-2 {
   border-radius: var(--container-border-radius-2);
   background-color: var(--container-background-color);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   /* shadow */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+
+.react-ui.size:hover {
+  transform: scale(1.05); /* 鼠标悬停时放大 */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
+}
+
+.react-ui.rotate:hover {
+  transform: rotate(360deg); /* 鼠标悬停时旋转 */
+}
+
+.react-ui.color:hover {
+  background-color: #646cff; /* 鼠标悬停时改变背景色 */
+  color: #ffffff; /* 鼠标悬停时改变文字颜色 */
 }

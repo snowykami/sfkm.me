@@ -1,19 +1,46 @@
+<script setup lang="ts">
+import githubIcon from '../assets/contacts/github.svg';
+import Readme from './Readme.vue';
+const contacts = [
+    {
+        icon: githubIcon,
+        link: ''
+    },
+    {
+        icon: githubIcon,
+        link: ''
+    },
+    {
+        icon: githubIcon,
+        link: ''
+    }
+]
+</script>
+
 <template>
     <div class="container" id="right">
-        <div class="container" id="readme">
-            你好呀
-        </div>
+        <Readme />
         <div class="container" id="contacts">
-            <a class="contact">
-                <img class="contact-icon" src="../assets/contacts/github.svg" alt="GitHub" />
-            </a>
+            <div class="contact react-ui size" v-for="contact in contacts" :key="contact.link">
+                <img class="contact-icon" :src="contact.icon" alt="contact" />
+            </div>
         </div>
     </div>
 </template>
 
 <style lang="css">
+#right {
+    width: 100%;
+}
+
 #readme {
     color: white;
+}
+
+#contacts {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
 }
 
 .contact {
@@ -24,11 +51,10 @@
     height: 3rem;
     border-radius: 50%;
     background-color: var(--container-background-color);
-    margin: 1rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .contact-icon {
-    width: 1rem;
+    width: 2rem;
 }
 </style>
