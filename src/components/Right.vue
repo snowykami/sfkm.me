@@ -56,15 +56,15 @@ const contacts = [
 <template>
     <div class="container" id="right">
         <Readme />
-        <h2>{{ getText('sites') }}</h2>
-        <div class="container" id="sites">
-            <Site v-for="site in sites" :key="site.url" :name="site.name.value" :description="site.description.value"
-                :url="site.url" />
-        </div>
         <h2>{{ getText('contacts') }}</h2>
         <div class="container" id="contacts">
             <Contact v-for="contact in contacts" :key="contact.link" :icon="contact.icon" :link="contact.link"
                 :scale="contact.scale || 1.0" />
+        </div>
+        <h2>{{ getText('sites') }}</h2>
+        <div class="container" id="sites">
+            <Site v-for="site in sites" :key="site.url" :name="site.name.value" :description="site.description.value"
+                :url="site.url" />
         </div>
     </div>
 </template>
