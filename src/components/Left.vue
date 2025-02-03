@@ -36,9 +36,9 @@ const tags = [
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
     gap: 1rem;
     color: white;
-
     .container{
         width: 100%;
     }

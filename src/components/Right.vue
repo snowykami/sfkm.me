@@ -7,7 +7,27 @@ import ncmIcon from '../assets/contacts/ncm.svg'
 
 import Contact from './Contact.vue';
 import Readme from './Readme.vue';
+import Site from './Site.vue';
 import { getText } from '../utils/i18n';
+
+const sites = [
+    {
+        name: getText('liteyukilab.name'),
+        description: getText('liteyukilab.description'),
+        url: 'https://lab.liteyuki.icu'
+    },
+    {
+        name: getText('liteyukilab.name'),
+        description: getText('liteyukilab.description'),
+        url: 'https://lab.liteyuki.icu'
+    },
+    {
+        name: getText('liteyukilab.name'),
+        description: getText('liteyukilab.description'),
+        url: 'https://lab.liteyuki.icu'
+    },
+]
+
 const contacts = [
     {
         icon: githubIcon,
@@ -36,9 +56,15 @@ const contacts = [
 <template>
     <div class="container" id="right">
         <Readme />
-        <h2>{{ getText('contact') }}</h2>
+        <h2>{{ getText('sites') }}</h2>
+        <div class="container" id="sites">
+            <Site v-for="site in sites" :key="site.url" :name="site.name.value" :description="site.description.value"
+                :url="site.url" />
+        </div>
+        <h2>{{ getText('contacts') }}</h2>
         <div class="container" id="contacts">
-            <Contact v-for="contact in contacts" :key="contact.link" :icon="contact.icon" :link="contact.link" :scale="contact.scale||1.0" />
+            <Contact v-for="contact in contacts" :key="contact.link" :icon="contact.icon" :link="contact.link"
+                :scale="contact.scale || 1.0" />
         </div>
     </div>
 </template>
@@ -52,12 +78,17 @@ const contacts = [
     color: white;
 }
 
+#sites {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
 #contacts {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 1.5rem;
 }
-
-
 </style>

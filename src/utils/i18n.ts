@@ -2,6 +2,7 @@ import { ref, computed, type ComputedRef } from "vue";
 
 const langData: Record<string, Record<string, string>> = {
     "zh-CN": {
+        "title": "Snowykami的索引站",
         "h1": "<h2>你好呀，这里是<span id='nickname'>Snowykami</span></h2>",
         "h2": "<h2>欢迎来到我的索引站</h2>",
 
@@ -10,9 +11,14 @@ const langData: Record<string, Record<string, string>> = {
         "p3": "来自中国重庆",
         "p4": "Minecraft，原神及更多...",
 
-        "contact": "联络方式"
+        "sites": "个人站点",
+        "contacts": "联络方式",
+
+        "liteyukilab.name": "轻雪社区",
+        "liteyukilab.description": "轻雪社区，去中心化社交网络"
     },
     "en": {
+        "title": "Snowykami's Index Site",
         "h1": "<h2>Hi, I'm <span id='nickname'>Snowykami</span></h2>",
         "h2": "<h2>Welcome to my index site</h2>",
 
@@ -21,7 +27,12 @@ const langData: Record<string, Record<string, string>> = {
         "p3": "From Chongqing, China",
         "p4": "Minecraft, Genshin Impact and more...",
 
-        "contact": "Contacts"
+        "sites": "Sites",
+        "contacts": "Contacts",
+
+        "liteyukilab.name": "Liteyuki Lab",
+        "liteyukilab.description": "Liteyuki Lab, a decentralized social network"
+
     }
 }
 
@@ -30,10 +41,10 @@ const languages: Record<string, string> = {
     "en": "English"
 }
 
-const lang = ref("zh-CN");
+const lang = ref(localStorage.getItem('lang')||'zh-CN');
 
 export function getText(key: string): ComputedRef<string> {
-    return computed(() => langData[lang.value][key]);
+    return computed(() => langData[lang.value][key] || key);
 }
 
 export function getLangs(): Record<string, string> {
