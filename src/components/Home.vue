@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import Left from './Left.vue';
 import Right from './Right.vue';
+import LanguageSwitcher from './LanguageSwitcher.vue';
 </script>
 
 <template>
-    <div id="home">
+    <div id="home" class="container ui">
         <Left />
         <Right />
     </div>
+    <LanguageSwitcher />
 </template>
 
 <style lang="css">
@@ -15,18 +17,16 @@ import Right from './Right.vue';
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: auto;
 }
 
 @media (min-width: 769px) {
     #left {
-        width: 30%;
-        margin-right: 10px;
+        width: 20vw;
     }
 
     #right {
-        width: 70%;
-        margin-left: 10px;
+        width: 60vw;
     }
 }
 
@@ -36,9 +36,10 @@ import Right from './Right.vue';
     #home {
         flex-direction: column;
     }
-b 
-    #left, #right {
-        width: 100%;
+
+    #left,
+    #right {
+        width: 75vw;
         margin: 0;
     }
 }
