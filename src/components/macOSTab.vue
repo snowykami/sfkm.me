@@ -39,7 +39,7 @@ function toggleVisibility() {
     isVisible.value = !isVisible.value;
     const homeElement = document.getElementById('home');
     if (homeElement) {
-        homeElement.style.display = isVisible.value ? 'block' : 'none';
+        homeElement.style.display = isVisible.value ? 'flex' : 'none';
     }
 }
 
@@ -75,6 +75,7 @@ function startDrag(event: MouseEvent) {
     const offsetY = event.clientY - rect.top;
 
     let isDragging = true;
+    document.body.style.userSelect = 'none'; // 禁用文本选择
 
     function onMouseMove(e: MouseEvent) {
         if (!isDragging) return;
@@ -90,6 +91,7 @@ function startDrag(event: MouseEvent) {
         isDragging = false;
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
+        document.body.style.userSelect = ''; // 恢复文本选择
     }
 
     document.addEventListener('mousemove', onMouseMove);
