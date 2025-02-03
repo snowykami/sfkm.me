@@ -33,18 +33,15 @@ a:hover {
 
 * {
   transition: all 0.3s;
+  color: white;
 }
 
 
 body {
   padding: 1rem;
-
   margin: 0;
-
   display: flex;
-
   place-items: center;
-
   min-height: 90vh;
   background-size: cover;
   background-position: center;

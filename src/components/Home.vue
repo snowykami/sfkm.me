@@ -23,10 +23,12 @@ import LanguageSwitcher from './LanguageSwitcher.vue';
 @media (min-width: 769px) {
     #left {
         width: 20vw;
+        max-width: 200px;
     }
 
     #right {
         width: 60vw;
+        max-width: 600px;
     }
 }
 

@@ -8,7 +8,9 @@ const langData: Record<string, Record<string, string>> = {
         "p1": "后端开发者",
         "p2": "在轻雪工作室和红岩网校工作",
         "p3": "来自中国重庆",
-        "p4": "Minecraft，原神及更多..."
+        "p4": "Minecraft，原神及更多...",
+
+        "contact": "联络方式"
     },
     "en": {
         "h1": "<h2>Hi, I'm <span id='nickname'>Snowykami</span></h2>",
@@ -17,7 +19,9 @@ const langData: Record<string, Record<string, string>> = {
         "p1": "Backend Developer",
         "p2": "Work at Liteyuki and Redrock",
         "p3": "From Chongqing, China",
-        "p4": "Minecraft, Genshin Impact and more..."
+        "p4": "Minecraft, Genshin Impact and more...",
+
+        "contact": "Contacts"
     }
 }
 

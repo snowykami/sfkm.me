@@ -1,18 +1,34 @@
 <script setup lang="ts">
 import githubIcon from '../assets/contacts/github.svg';
+import liteyukiLabIcon from '../assets/contacts/liteyuki-lab.svg';
+import liteyukiGiteaIcon from '../assets/contacts/liteyuki-gitea.svg';
+import bilibiliIcon from '../assets/contacts/bilibili.svg'
+import ncmIcon from '../assets/contacts/ncm.svg'
+
+import Contact from './Contact.vue';
 import Readme from './Readme.vue';
+import { getText } from '../utils/i18n';
 const contacts = [
     {
         icon: githubIcon,
-        link: ''
+        link: 'https://github.com/snowykami'
     },
     {
-        icon: githubIcon,
-        link: ''
+        icon: liteyukiLabIcon,
+        scale: 1.15,
+        link: 'https://lab.liteyuki.icu/@snowykami'
     },
     {
-        icon: githubIcon,
-        link: ''
+        icon: liteyukiGiteaIcon,
+        link: 'https://git.liteyuki.icu/snowykami'
+    },
+    {
+        icon: bilibiliIcon,
+        link: 'https://space.bilibili.com/233938750'
+    },
+    {
+        icon: ncmIcon,
+        link: "https://music.163.com/#/artist?id=46413018"
     }
 ]
 </script>
@@ -20,10 +36,9 @@ const contacts = [
 <template>
     <div class="container" id="right">
         <Readme />
+        <h2>{{ getText('contact') }}</h2>
         <div class="container" id="contacts">
-            <div class="contact react-ui size" v-for="contact in contacts" :key="contact.link">
-                <img class="contact-icon" :src="contact.icon" alt="contact" />
-            </div>
+            <Contact v-for="contact in contacts" :key="contact.link" :icon="contact.icon" :link="contact.link" :scale="contact.scale||1.0" />
         </div>
     </div>
 </template>
@@ -40,21 +55,9 @@ const contacts = [
 #contacts {
     display: flex;
     justify-content: center;
-    gap: 1rem;
-}
-
-.contact {
-    display: flex;
     align-items: center;
-    justify-content: center;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
-    background-color: var(--container-background-color);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    gap: 1.5rem;
 }
 
-.contact-icon {
-    width: 2rem;
-}
+
 </style>
