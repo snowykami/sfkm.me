@@ -42,10 +42,11 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-height: 90vh;
+  min-height: 100vh;
   background-size: cover;
   background-position: center;
   background-color: #242424;
+  background-repeat: repeat-y;
   background-image: url('https://nd.liteyuki.icu/api/v3/file/get/18870/furina.png?sign=bqEBGXv8pU7VJSdpTLsy1rIV757VW9fvfE2CP1jlins%3D%3A0');
 }
 
@@ -100,7 +101,7 @@ button:focus-visible {
 .container {
   width: auto;
   margin-bottom: 1rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
 }
 
 .container-2 {

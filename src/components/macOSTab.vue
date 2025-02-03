@@ -5,10 +5,10 @@
                 <span class="icon">✕</span>
             </div>
             <div class="dot yellow" @click="toggleVisibility">
-                <span class="icon">━</span>
+                <span class="icon">=</span>
             </div>
             <div class="dot green" @click="maximizeWindow">
-                <span class="icon">⤢</span>
+                <span class="icon">⇕</span>
             </div>
         </div>
         <div class="title">{{getText('title')}}</div>
@@ -22,6 +22,10 @@ import { getText } from '../utils/i18n';
 const lastWidth = ref(0);
 const lastHeight = ref(0);
 
+const lastX = ref(0);
+const lastY = ref(0);
+
+const isMaximized = ref(false);
 const isVisible = ref(true);
 
 function closeWindow() {
@@ -40,22 +44,26 @@ function toggleVisibility() {
 }
 
 function maximizeWindow() {
+    
+    // 储存放大前的宽高
     const homeElement = document.getElementById('home-window');
-    // 储存上一次的宽高
-    if (lastWidth.value === 0) {
-        lastWidth.value = homeElement?.clientWidth || 0;
-        lastHeight.value = homeElement?.clientHeight || 0;
-    }
-    // 若当前窗口已经是最大化状态，则恢复
-    if (homeElement?.clientWidth === window.innerWidth && homeElement?.clientHeight === window.innerHeight) {
+    if(!homeElement) return;
+    if (isMaximized.value) {
         homeElement.style.width = `${lastWidth.value}px`;
         homeElement.style.height = `${lastHeight.value}px`;
-        return;
+        homeElement.style.left = `${lastX.value}px`;
+        homeElement.style.top = `${lastY.value}px`;
     } else {
-        if (!homeElement) return;
-        homeElement.style.width = '100vw';
-        homeElement.style.height = '100vh';
+        lastWidth.value = homeElement?.clientWidth || 0;
+        lastHeight.value = homeElement?.clientHeight || 0;
+        lastX.value = homeElement?.getBoundingClientRect().left || 0;
+        lastY.value = homeElement?.getBoundingClientRect().top || 0;
+        homeElement.style.width = '100%';
+        homeElement.style.height = '100%';
+        homeElement.style.left = '0';
+        homeElement.style.top = '0';
     }
+    isMaximized.value = !isMaximized.value;
 }
 
 function startDrag(event: MouseEvent) {
@@ -129,7 +137,7 @@ function startDrag(event: MouseEvent) {
     visibility: hidden;
     position: absolute;
     font-size: 10px;
-    color: white;
+    color: rgb(0, 0, 0);
     transition: opacity 0.2s, visibility 0.2s;
 }
 
@@ -137,6 +145,7 @@ function startDrag(event: MouseEvent) {
     opacity: 1;
     visibility: visible;
 }
+
 
 .red {
     background-color: #ff5f56;
@@ -157,5 +166,12 @@ function startDrag(event: MouseEvent) {
     font-size: 14px;
     font-weight: bold;
     color: #333;
+}
+
+/* 移动端不显示此组件 */
+@media (max-width: 768px) {
+    .macos-tab {
+        display: none;
+    }
 }
 </style>

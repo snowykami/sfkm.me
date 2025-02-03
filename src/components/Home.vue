@@ -26,9 +26,7 @@ import macOSTab from './macOSTab.vue';
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    height: auto;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+    height: 100%;
 }
 
 @media (min-width: 769px) {
@@ -40,6 +38,11 @@ import macOSTab from './macOSTab.vue';
     #right {
         width: 60vw;
         max-width: 600px;
+    }
+
+    #home {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
     }
 }
 
@@ -58,7 +61,7 @@ import macOSTab from './macOSTab.vue';
 }
 
 footer {
-  color: white;
-  text-align: center;
+    color: white;
+    text-align: center;
 }
 </style>
