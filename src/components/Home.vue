@@ -226,14 +226,8 @@ function stopResizeHome() {
         align-items: center;
     }
 
-    #left {
-        width: 100%;
-        max-width: 100%;
-    }
-
-    #right {
-        width: 100%;
-        max-width: 100%;
+    #left, #right {
+        width: 80vw;
     }
 }
 </style>
