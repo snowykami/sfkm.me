@@ -31,6 +31,7 @@ function switchLanguage() {
 .language-switcher {
     margin: 1em 0;
     text-align: center;
+    
 }
 
 label {
@@ -42,5 +43,6 @@ select {
     padding: 0.2em 0.5em;
     font-size: 0.8em;
     border-radius: 5em;
+    color: black;
 }
 </style>

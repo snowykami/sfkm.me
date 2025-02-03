@@ -1,11 +1,13 @@
 <template>
     <div class="container" id="readme">
-        <div class="react-ui size" id="first-sentence" ref="firstSentence"><h2>Loading...</h2></div>
+        <div class="react-ui size" id="first-sentence" ref="firstSentence">
+            <h2>Loading...</h2>
+        </div>
         <p class="react-ui size">💻 {{ getText('p1') }}</p>
         <p class="react-ui size">🏢 {{ getText('p2') }}</p>
         <p class="react-ui size">🏠 {{ getText('p3') }}</p>
-        <p class="react-ui size">🎮 Minecraft / Genshin Impact</p>
-        <p></p>
+        <p class="react-ui size">🎮 {{ getText('p4') }}</p>
+        <p class="react-ui size"></p>
     </div>
 </template>
 
@@ -52,7 +54,8 @@ onMounted(() => {
     /* 默认靠左 */
     text-align: left;
     width: 100%;
-    box-sizing: border-box; /* 包括内边距和边框在内的宽度计算 */
+    box-sizing: border-box;
+    /* 包括内边距和边框在内的宽度计算 */
 }
 
 #nickname {
