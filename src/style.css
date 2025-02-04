@@ -20,6 +20,8 @@
   --container-border-radius: 1rem;
   --container-border-radius-2: 2rem;
   --container-background-color: rgba(0, 0, 0, 0.2);
+
+  --theme-color: #3d98ff;
 }
 
 a {
@@ -28,7 +30,7 @@ a {
   border-bottom: 1px dashed;
 }
 a:hover {
-  color: #3e7eff;
+  color: var(--theme-color);
 }
 
 * {
@@ -137,6 +139,6 @@ button:focus-visible {
 }
 
 .react-ui.color:hover {
-  background-color: #646cff; /* 鼠标悬停时改变背景色 */
+  background-color: var(--theme-color); /* 鼠标悬停时改变背景色 */
   color: #ffffff; /* 鼠标悬停时改变文字颜色 */
 }
