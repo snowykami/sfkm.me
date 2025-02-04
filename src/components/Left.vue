@@ -11,13 +11,13 @@
                 <img class="info-icon" src="../assets/team.svg" alt="Team" />
                 <div class="info-value">
                     <a href="https://liteyuki.icu">Liteyuki</a>
-                     & 
-                     <a href="https://redrock.team">Redrock</a>
-                    </div>
+                    &
+                    <a href="https://redrock.team">Redrock</a>
+                </div>
             </div>
         </div>
         <div class="container ui react-ui size" id="tags">
-            <div class="tag react-ui color" v-for="tag in tags" :key="tag">{{ tag }}</div>
+            <div class="tag react-ui color" v-for="tag in tags" :key="tag">{{ getText('tag.' + tag) }}</div>
         </div>
         <!-- <div class="container ui" id="timeline">
 
@@ -26,8 +26,18 @@
 </template>
 
 <script setup lang="ts">
+import { getText } from '../utils/i18n';
+
 const tags = [
-    '后端', '轻雪', '红岩', 'MC', '音乐', 'Linux', '原神', 'CRT'
+    "cloudnative",
+    "devops",
+    "minecraft",
+    "genshin",
+    "railway",
+    "liteyuki",
+    "backend",
+    "frontend",
+    "homelab"
 ]
 </script>
 
@@ -39,7 +49,8 @@ const tags = [
     justify-content: flex-start;
     gap: 1rem;
     color: white;
-    .container{
+
+    .container {
         width: 100%;
     }
 }
@@ -61,13 +72,13 @@ const tags = [
     justify-content: space-between;
 }
 
-.info-icon{
-    max-height: 70%;
+.info-icon {
+    max-height: 60%;
 }
 
 .info-value {
     color: white;
-    font-size: small;
+    font-size: 0.9rem;
 }
 
 #tags {
@@ -86,7 +97,9 @@ const tags = [
 
 /* 手机下不显示info和tags */
 @media (max-width: 768px) {
-    #info, #tags {
+
+    #info,
+    #tags {
         display: none;
     }
 }

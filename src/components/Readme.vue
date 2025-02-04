@@ -7,7 +7,7 @@
         <p class="react-ui size">🏢 {{ getText('p2') }}</p>
         <p class="react-ui size">🏠 {{ getText('p3') }}</p>
         <p class="react-ui size">🎮 {{ getText('p4') }}</p>
-        <p class="react-ui size"></p>
+        <p class="react-ui size">💻 {{ getText('p5') }}</p>
     </div>
 </template>
 

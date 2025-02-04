@@ -4,6 +4,7 @@ import liteyukiLabIcon from '../assets/contacts/liteyuki-lab.svg';
 import liteyukiGiteaIcon from '../assets/contacts/liteyuki-gitea.svg';
 import bilibiliIcon from '../assets/contacts/bilibili.svg'
 import ncmIcon from '../assets/contacts/ncm.svg'
+import xIcon from '../assets/contacts/x.svg';
 
 import Contact from './Contact.vue';
 import Readme from './Readme.vue';
@@ -17,14 +18,14 @@ const sites = [
         url: 'https://lab.liteyuki.icu'
     },
     {
-        name: getText('liteyukilab.name'),
-        description: getText('liteyukilab.description'),
-        url: 'https://lab.liteyuki.icu'
+        name: getText('blog.name'),
+        description: getText('blog.description'),
+        url: 'https://blog.sfkm.me'
     },
     {
-        name: getText('liteyukilab.name'),
-        description: getText('liteyukilab.description'),
-        url: 'https://lab.liteyuki.icu'
+        name: getText('cdn.name'),
+        description: getText('cdn.description'),
+        url: 'https://cdn.liteyuki.icu'
     },
 ]
 
@@ -49,6 +50,10 @@ const contacts = [
     {
         icon: ncmIcon,
         link: "https://music.163.com/#/artist?id=46413018"
+    },
+    {
+        icon: xIcon,
+        link: "https://x.com/snowykami1145"
     }
 ]
 </script>
