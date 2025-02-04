@@ -12,17 +12,22 @@ const langData: Record<string, Record<string, string>> = {
         "p4": "Minecraft，原神及更多...",
         "p5": "使用Go，Python，TypeScript/JavaScript，C/C++等语言",
 
-        "sites": "个人站点",
+        "sites": "相关站点",
         "contacts": "联络方式",
 
+        // site names
         "liteyukilab.name": "轻雪社区",
         "liteyukilab.description": "轻雪社区，去中心化社交网络",
-
         "blog.name": "我的博客",
         "blog.description": "Snowykami的个人博客",
-
         "cdn.name": "内容分发网络",
         "cdn.description": "网站内容分发网络",
+        "thisrepo.name": "此网页源码",
+        "thisrepo.description": "这个网页的源代码",
+        "liteyuki-main.name": "轻雪主站",
+        "liteyuki-main.description": "轻雪工作室主站",
+        "netdisk.name": "轻雪网盘",
+        "netdisk.description": "网盘",
 
         "tag.cloudnative": "云原生",
         "tag.devops": "DevOps",
@@ -48,14 +53,19 @@ const langData: Record<string, Record<string, string>> = {
         "sites": "Sites",
         "contacts": "Contacts",
 
+        // site names
         "liteyukilab.name": "Liteyuki Lab",
         "liteyukilab.description": "Liteyuki Lab, a decentralized social network",
-        
         "blog.name": "My Blog",
         "blog.description": "Snowykami's blog",
-
         "cdn.name": "Content Delivery Network",
         "cdn.description": "Website content delivery network",
+        "thisrepo.name": "This Repo",
+        "thisrepo.description": "The source code of this page",
+        "liteyuki-main.name": "Liteyuki Site",
+        "liteyuki-main.description": "Liteyuki Main",
+        "netdisk.name": "Netdisk",
+        "netdisk.description": "Netdisk",
 
         "tag.cloudnative": "Cloud Native",
         "tag.devops": "DevOps",
