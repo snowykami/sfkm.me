@@ -8,7 +8,7 @@ defineProps<{
 
 <template>
     <a :href="link" target="_blank" rel="noopener noreferrer">
-        <img class="contact-icon react-ui size" :src="icon" :height="30 * scale"  alt="icon" />
+        <img class="contact-icon react-ui size rotate" :src="icon" :height="30 * scale"  alt="icon" />
     </a>
 </template>
 
