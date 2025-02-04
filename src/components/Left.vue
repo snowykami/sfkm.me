@@ -2,12 +2,12 @@
     <div class="container" id="left">
         <img class="avatar react-ui rotate" src="https://q.qlogo.cn/g?b=qq&nk=2751454815&s=640" alt="Vue logo" />
 
-        <div class="container ui react-ui size" id="info">
-            <div class="info-row">
+        <div class="container ui" id="info">
+            <div class="info-row react-ui size">
                 <img class="info-icon" src="../assets/location.svg" alt="Location" />
                 <div class="info-value">Chongqing, China</div>
             </div>
-            <div class="info-row">
+            <div class="info-row react-ui size">
                 <img class="info-icon" src="../assets/team.svg" alt="Team" />
                 <div class="info-value">
                     <a href="https://liteyuki.icu">Liteyuki</a>
@@ -15,13 +15,26 @@
                     <a href="https://redrock.team">Redrock</a>
                 </div>
             </div>
+            <div class="info-row react-ui size">
+                <img class="info-icon" src="../assets/timezone.svg" alt="Age" />
+                <div class="info-value">{{ formattedTime }} <span style="font-size: 0.8rem;">Asia/Chongqing</span></div>
+            </div>
+            <div class="info-row react-ui size">
+                <img class="info-icon" src="../assets/university.svg" alt="Age" />
+                <div class="info-value">CQUPT</div>
+            </div>
+            <div class="info-row react-ui size">
+                <img class="info-icon" src="../assets/email.svg" alt="Age" />
+                <div class="info-value"><a href="mailto:a@sfkm.me">a@sfkm.me</a></div>
+            </div>
+            <div class="info-row react-ui size">
+                <img class="info-icon" src="../assets/email.svg" alt="Age" />
+                <div class="info-value"><a href="mailto:snowykami@outlook.com">snowykami@outlook.com</a></div>
+            </div>
         </div>
         <div class="container ui react-ui size" id="tags">
             <div class="tag react-ui color" v-for="tag in tags" :key="tag">{{ getText('tag.' + tag) }}</div>
         </div>
-        <!-- <div class="container ui" id="timeline">
-
-        </div> -->
     </div>
 </template>
 
@@ -39,6 +52,19 @@ const tags = [
     "frontend",
     "homelab"
 ]
+
+function formatTime(date: Date, timezone: string): string {
+    return new Intl.DateTimeFormat('default', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+        timeZone: timezone
+    }).format(date);
+}
+
+// 使用示例
+const now = new Date();
+const formattedTime = formatTime(now, 'Asia/Chongqing');
 </script>
 
 <style lang="css">

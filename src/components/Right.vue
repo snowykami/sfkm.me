@@ -27,6 +27,21 @@ const sites = [
         description: getText('cdn.description'),
         url: 'https://cdn.liteyuki.icu'
     },
+    {
+        name: getText('thisrepo.name'),
+        description: getText('thisrepo.description'),
+        url: 'https://github.com/snowykami/sfkm.me'
+    },
+    {
+        name: getText('liteyuki-main.name'),
+        description: getText('liteyuki-main.description'),
+        url: 'https://liteyuki.icu'
+    },
+    {
+        name: getText('netdisk.name'),
+        description: getText('netdisk.description'),
+        url: 'https://nd.liteyuki.icu'
+    },
 ]
 
 const contacts = [

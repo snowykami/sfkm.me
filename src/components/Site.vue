@@ -12,7 +12,7 @@ defineProps({
     <a target="_blank" class="site container ui react-ui size" :href="url">
         <div class="container" id="site">
             <div class="site-name">{{ name }}</div>
-            <div class="site-url">{{ url }}</div>
+            <div class="site-url">{{ url?.replace("https://", "") }}</div>
         </div>
     </a>
 </template>
@@ -36,6 +36,10 @@ a {
 .site-url {
     font-size: 0.8em;
     color: #b0b0b0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
 }
 
 .site:hover {

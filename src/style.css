@@ -27,7 +27,6 @@
 a {
   font-weight: 500;
   color: white;
-  border-bottom: 1px dashed;
 }
 a:hover {
   color: var(--theme-color);
