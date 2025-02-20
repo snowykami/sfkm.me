@@ -26,8 +26,8 @@ const langData: Record<string, Record<string, string>> = {
         "thisrepo.description": "这个网页的源代码",
         "liteyuki-main.name": "轻雪主站",
         "liteyuki-main.description": "轻雪工作室主站",
-        "netdisk.name": "轻雪网盘",
-        "netdisk.description": "网盘",
+        "netdisk.name": "资源共享中心",
+        "netdisk.description": "AList 游客资源共享",
 
         "tag.cloudnative": "云原生",
         "tag.devops": "DevOps",
@@ -64,8 +64,8 @@ const langData: Record<string, Record<string, string>> = {
         "thisrepo.description": "The source code of this page",
         "liteyuki-main.name": "Liteyuki Site",
         "liteyuki-main.description": "Liteyuki Main",
-        "netdisk.name": "Netdisk",
-        "netdisk.description": "Netdisk",
+        "netdisk.name": "Resource Sharing Center",
+        "netdisk.description": "AList Guest Resource Sharing",
 
         "tag.cloudnative": "Cloud Native",
         "tag.devops": "DevOps",
