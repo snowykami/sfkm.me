@@ -40,7 +40,7 @@ const sites = [
     {
         name: getText('netdisk.name'),
         description: getText('netdisk.description'),
-        url: 'https://nd.liteyuki.icu'
+        url: 'https://als.liteyuki.icu'
     },
 ]
 
