@@ -14,7 +14,7 @@ env:
   MELI_SITE: 5962f229-1e15-46cd-9b18-1f04035efb61
 
 jobs:
-  deploy-gh-pages:
+  deploy-pages:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -43,7 +43,7 @@ jobs:
 
       - name: "发布"
         run: |
-          npx -p "@getmeli/cli" meli upload docs/.vitepress/dist \
+          npx -p "@getmeli/cli" meli upload ./dist \
             --url "https://meli.liteyuki.icu" \
             --site "$MELI_SITE" \
             --token "$MELI_TOKEN" \
