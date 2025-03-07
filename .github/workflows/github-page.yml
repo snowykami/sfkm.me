@@ -8,6 +8,10 @@ on:
 
 permissions:
   contents: write
+  statuses: write
+
+env:
+  MELI_SITE: 5962f229-1e15-46cd-9b18-1f04035efb61
 
 jobs:
   deploy-gh-pages:
@@ -36,8 +40,14 @@ jobs:
           pnpm run build
           > dist/.nojekyll
 
-      - name: deploy page
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: dist
+
+      - name: "发布"
+        run: |
+          npx -p "@getmeli/cli" meli upload docs/.vitepress/dist \
+            --url "https://meli.liteyuki.icu" \
+            --site "$MELI_SITE" \
+            --token "$MELI_TOKEN" \
+            --release "$GITHUB_SHA"
+        env:
+          MELI_TOKEN: ${{ secrets.MELI_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
