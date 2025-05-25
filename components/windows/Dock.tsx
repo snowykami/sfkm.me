@@ -1,4 +1,4 @@
-import { User, Code, MessageCircle, PanelsTopLeft } from "lucide-react"
+import { User, Award, MessageCircle, PanelsTopLeft } from "lucide-react"
 
 interface WindowItem {
   id: string
@@ -28,13 +28,13 @@ export default function Dock({
 }: DockProps) {
   return (
     <div
-      className={`absolute ${isMobile ? "bottom-4" : "bottom-8"} left-1/2 transform -translate-x-1/2 bg-slate-800/60 backdrop-blur-md rounded-2xl px-8 py-4 border border-slate-600/50 z-50`}
+      className={`absolute ${isMobile ? "bottom-3" : "bottom-6"} left-1/2 transform -translate-x-1/2 bg-slate-800/60 backdrop-blur-md rounded-2xl px-6 py-3 border border-slate-600/50 z-50`}
     >
       <div className="flex items-center space-x-3">
         {windows.map((window, index) => (
           <div
             key={window.id}
-            className={`w-16 h-16 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 relative ${isMobile
+            className={`w-14 h-14 rounded-xl flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 relative ${isMobile
               ? index === mobileCurrentIndex
                 ? "bg-slate-600/50 border border-slate-500/50"
                 : "bg-slate-700/30 hover:bg-slate-600/40"
@@ -56,10 +56,10 @@ export default function Dock({
               }
             }}
           >
-            {window.id === "profile" && <User className="w-7 h-7 text-slate-300" />}
-            {window.id === "projects" && <PanelsTopLeft className="w-7 h-7 text-slate-300" />}
-            {window.id === "skills" && <Code className="w-7 h-7 text-slate-300" />}
-            {window.id === "contact" && <MessageCircle className="w-7 h-7 text-slate-300" />}
+            {window.id === "profile" && <User className="w-6 h-6 text-slate-300" />}
+            {window.id === "projects" && <PanelsTopLeft className="w-6 h-6 text-slate-300" />}
+            {window.id === "skills" && <Award className="w-6 h-6 text-slate-300" />}
+            {window.id === "contact" && <MessageCircle className="w-6 h-6 text-slate-300" />}
 
             {/* 最小化指示器 */}
             {!isMobile && window.isMinimized && (

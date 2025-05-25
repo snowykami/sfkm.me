@@ -2,6 +2,7 @@ import { CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { MapPin } from "lucide-react"
+import { t } from "i18next"
 
 export default function ProfileContent() {
   return (
@@ -15,10 +16,10 @@ export default function ProfileContent() {
         </Avatar>
 
         <h1 className="text-2xl font-bold text-white mb-1">Snowykami</h1>
-        <p className="text-slate-300 font-medium mb-2">远野千束</p>
+        <p className="text-slate-300 font-medium mb-2">{t("profile.subname")}</p>
         <div className="flex items-center text-slate-400 text-sm mb-4">
           <MapPin className="w-4 h-4 mr-1" />
-          <span>中国 重庆</span>
+          <span>{t("profile.location")}</span>
         </div>
       </div>
 
@@ -29,7 +30,7 @@ export default function ProfileContent() {
       </div>
 
       <div className="mb-6">
-        <h3 className="text-sm font-semibold text-slate-200 mb-3">标签</h3>
+        <h3 className="text-sm font-semibold text-slate-200 mb-3">{t("profile.tag")}</h3>
         <div className="flex flex-wrap gap-2">
           {/* 此处是个人介绍的标签部分 */}
           <Badge className="bg-teal-500/20 text-teal-300 hover:bg-teal-500/30 border-teal-500/30">Python</Badge>
