@@ -35,7 +35,7 @@ export function TopMenuBar({ className = "", title = "Window Title" }: TopMenuBa
         {/* 左侧区域 */}
         <div className="flex items-center space-x-4">
           <AppleWidget />
-          <span className="text-slate-300 text-sm font-medium">{t(title)}</span>
+          <span className="text-slate-300 text-sm font-medium">{title}</span>
         </div>
         {/* 右侧状态区域 */}
         <div className="flex items-center space-x-1">

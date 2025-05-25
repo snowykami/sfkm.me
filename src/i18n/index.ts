@@ -5,7 +5,7 @@ const getDefaultLang = () => {
     if (typeof window !== "undefined") {
         // 优先 localStorage，其次浏览器语言
         return (
-            localStorage.getItem("i18nextLng") ||
+            localStorage.getItem("language") ||
             navigator.language.split("-")[0] ||
             "zh"
         )
@@ -33,7 +33,11 @@ i18n.use(initReactI18next).init({
                 greeting: "你好，世界！",
                 profile: {
                     title: "个人资料",
-                    description: "很高兴认识你！",
+                    description1: "你好呀！",
+                    description2: "欢迎来到我的主页",
+                    description3: "山高月小，水落石出。",
+                    description4: "浮生若梦，为欢几何？",
+                    description5: "轻思若水，雪化生香。",
                     location: "中国 重庆",
                     subname: "远野千束",
                     tag: "标签",
@@ -71,7 +75,11 @@ i18n.use(initReactI18next).init({
                 greeting: "Hello, world!",
                 profile: {
                     title: "Profile",
-                    description: "Nice to meet you!",
+                    description1: "Hi there!",
+                    description2: "Welcome to my homepage",
+                    description3: "Mountains high, moon small, water falls, stones emerge.",
+                    description4: "Life is but a dream, how much joy can we have?",
+                    description5: "Light thoughts like water, snow melts and fragrance arises.",
                     location: "Chongqing, China",
                     subname: "Toono Chisato",
                     tag: "Tags",
@@ -109,7 +117,11 @@ i18n.use(initReactI18next).init({
                 greeting: "こんにちは、世界！",
                 profile: {
                     title: "プロフィール",
-                    description: "お会いできて嬉しいです！",
+                    description1: "こんにちは！",
+                    description2: "私のホームページへようこそ",
+                    description3: "山は高く、月は小さく、水は落ち、石は出る。",
+                    description4: "人生は夢のようなもの、どれだけの喜びがあるのか？",
+                    description5: "軽い思いは水のように、雪は溶けて香りを生む。",
                     location: "中国 重慶",
                     subname: "遠野千束",
                     tag: "タグ",

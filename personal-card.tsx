@@ -14,6 +14,8 @@ import ProjectsContent from "./components/windows/Projects"
 import SkillsContent from "./components/windows/Skills"
 import ContactsContent from "./components/windows/Contacts"
 import Dock from "./components/windows/Dock"
+import { MobileLangFloatButton } from "@/components/widgets/MobileLangFloatButton"
+
 
 import { useTranslation } from "react-i18next"
 
@@ -318,6 +320,7 @@ export default function Component() {
       }}
     >
       {/* 顶部菜单栏 */}
+      <MobileLangFloatButton />
 
       <TopMenuBar title={currentTitle} />
 
