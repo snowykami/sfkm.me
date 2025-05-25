@@ -22,7 +22,7 @@ export default function MobileSlider({
   getWindowContent: (id: string) => React.ReactNode
 }) {
   const [touchStart, setTouchStart] = useState(0)
-  const [touchEnd, setTouchEnd] = useState(0)
+  const [, setTouchEnd] = useState(0)
   const sliderRef = useRef<HTMLDivElement>(null)
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -33,19 +33,19 @@ export default function MobileSlider({
     setTouchEnd(e.targetTouches[0].clientX)
   }
 
-  const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return
-
-    const distance = touchStart - touchEnd
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const endX = e.changedTouches[0].clientX
+    const distance = touchStart - endX
     const isLeftSwipe = distance > 50
     const isRightSwipe = distance < -50
 
     if (isLeftSwipe && currentIndex < windows.length - 1) {
       onIndexChange(currentIndex + 1)
-    }
-    if (isRightSwipe && currentIndex > 0) {
+    } else if (isRightSwipe && currentIndex > 0) {
       onIndexChange(currentIndex - 1)
     }
+    setTouchStart(0)
+    setTouchEnd(0)
   }
 
   const goToPrevious = () => {
@@ -76,7 +76,7 @@ export default function MobileSlider({
         </button>
 
         <div className="flex-1 text-center">
-          <span className="text-slate-800 dark:text-slate-300 text-sm font-bold">
+          <span className="text-slate-800 dark:text-slate-300 text-sm font-">
             {t(windows[currentIndex]?.title)}
           </span>
         </div>
@@ -114,7 +114,7 @@ export default function MobileSlider({
       </div>
 
       {/* 页面指示器 */}
-      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-2">
+      <div className="absolute left-1/2 transform -translate-x-1/2 bottom-4 z-50 flex space-x-2">
         {windows.map((_, index) => (
           <button
             key={index}
