@@ -14,7 +14,10 @@ import ProjectsContent from "./components/windows/Projects"
 import SkillsContent from "./components/windows/Skills"
 import ContactsContent from "./components/windows/Contacts"
 import Dock from "./components/windows/Dock"
+
+// float button
 import { MobileLangFloatButton } from "@/components/widgets/MobileLangFloatButton"
+import { MobileThemeFloatButton} from "@/components/widgets/ThemeFloatButton"
 
 
 import { useTranslation } from "react-i18next"
@@ -320,9 +323,12 @@ export default function Component() {
       }}
     >
       {/* 顶部菜单栏 */}
-      <MobileLangFloatButton />
-
       <TopMenuBar title={currentTitle} />
+
+      {/* 浮动按钮 */}
+      <MobileLangFloatButton />
+      <MobileThemeFloatButton />
+
 
       {/* 深色玻璃板覆盖层 */}
       <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm pointer-events-none" />
@@ -371,62 +377,14 @@ export default function Component() {
         restoreWindow={restoreWindow}
         openWindow={openWindow}
       />
-
+      <iframe
+        width={330}
+        height={86}
+        src="https://music.163.com/outchain/player?type=2&id=2105406259&auto=1&height=66"
+        style={{ display: "none", border: "none" }}
+      />
       {/* 添加自定义动画样式 */}
-      <style jsx>{`
-        @keyframes window-open {
-          0% {
-            opacity: 0;
-            transform: scale(0.8) translateY(20px);
-          }
-          100% {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-          }
-        }
-
-        @keyframes window-close {
-          0% {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-          }
-          50% {
-            opacity: 0.8;
-            transform: scale(0.95) translateY(-10px);
-          }
-          100% {
-            opacity: 0;
-            transform: scale(0.7) translateY(-30px);
-          }
-        }
-
-        @keyframes window-minimize {
-          0% {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-          }
-          50% {
-            opacity: 0.6;
-            transform: scale(0.8) translateY(10px);
-          }
-          100% {
-            opacity: 0;
-            transform: scale(0.3) translateY(calc(100vh - 100px)) translateX(calc(50vw - 50px));
-          }
-        }
-
-        .animate-window-open {
-          animation: window-open 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .animate-window-close {
-          animation: window-close 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .animate-window-minimize {
-          animation: window-minimize 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-      `}</style>
+      
     </div>
   )
 }

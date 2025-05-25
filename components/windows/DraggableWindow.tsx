@@ -5,6 +5,7 @@ import { Rnd } from "react-rnd"
 import { t } from "i18next"
 
 
+
 export default function DraggableWindow({
   title,
   initialX,
@@ -83,9 +84,9 @@ export default function DraggableWindow({
   const maximizedStyle = isMaximized
     ? {
       left: 0,
-      top: 28,
-      width: window.innerWidth || 800, // 给默认值
-      height: window.innerHeight - 28 || 600, // 给默认值
+      top: 35, // 顶栏高度改为60px
+      width: window.innerWidth || 800, // 默认宽度
+      height: (window.innerHeight - 35) || 600, // 高度减去顶栏高度
       borderRadius: 0,
     }
     : isMobile
@@ -151,9 +152,15 @@ export default function DraggableWindow({
     >
       <div
         ref={windowRef}
-        className={`bg-slate-900/95 backdrop-blur-md shadow-2xl border border-slate-700/30 overflow-hidden
-          ${isClosing ? "animate-window-close" : isMinimizing ? "animate-window-minimize" : "animate-window-open"}
-        `}
+        // 滑条
+        className={`
+    bg-slate-100/90 dark:bg-slate-800/90
+    backdrop-blur-md
+    shadow-2xl
+    border border-slate-300/60 dark:border-slate-700/30
+    overflow-hidden
+    ${isClosing ? "animate-window-close" : isMinimizing ? "animate-window-minimize" : "animate-window-open"}
+  `}
         style={{
           width: "100%",
           height: "100%",
@@ -164,10 +171,17 @@ export default function DraggableWindow({
       >
         {/* 标题栏 */}
         <div
-          className={`window-drag-handle bg-slate-800/80 backdrop-blur-sm border-b border-slate-700/50 px-4 py-3 flex items-center select-none ${isMaximized || isMobile
-            ? "cursor-default"
-            : "cursor-grab active:cursor-grabbing"
-            }`}
+          className={`
+      window-drag-handle
+      bg-slate-300/80 dark:bg-slate-800/80
+      backdrop-blur-sm
+      border-b border-slate-300/60 dark:border-slate-800/50
+      px-4 py-3 flex items-center select-none relative
+      ${isMaximized || isMobile
+              ? "cursor-default"
+              : "cursor-grab active:cursor-grabbing"
+            }
+    `}
         >
           <div className="window-controls flex items-center space-x-2">
             {/* 关闭按钮 */}
@@ -206,15 +220,17 @@ export default function DraggableWindow({
               </div>
             )}
           </div>
-          <div className="flex-1 text-center pointer-events-none">
-            <span className="text-slate-300 text-sm font-medium">{t(title)}</span>
+          {/* 绝对居中标题 */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-max pointer-events-none z-0">
+            <span className="text-slate-700 dark:text-slate-300 text-sm font-medium">{t(title)}</span>
           </div>
+
           <div className="w-[60px]" />
         </div>
 
         {/* 内容区域 */}
         <div
-          className="overflow-y-auto custom-scrollbar flex-1"
+          className="overflow-y-auto custom-scrollbar flex-1 text-slate-800 dark:text-slate-200"
           style={{
             transition: isDragging ? "none" : "height 0.3s ease",
           }}

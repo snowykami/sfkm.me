@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import i18n from "@/src/i18n"
 import AboutCardWindow from "@/components/windows/About"
+import { t } from "i18next"
 
 export function AppleWidget() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -47,7 +48,7 @@ export function AppleWidget() {
   }
 
   return (
-    <div className="relative flex items-center justify-center w-6 h-6 rounded cursor-pointer transition-colors hover:bg-slate-700/50">
+    <div className="relative flex items-center justify-center w-6 h-6 rounded cursor-pointer transition-colors hover:bg-slate-200/80 dark:hover:bg-slate-700/50">
       <div
         onClick={() => setMenuOpen(v => !v)}
         className="w-full h-full flex items-center justify-center"
@@ -64,37 +65,37 @@ export function AppleWidget() {
       {/* 下拉菜单 */}
       <div
         ref={menuRef}
-        className={`absolute top-7 left-4 min-w-[200px] z-50 transition-all duration-200
+        className={`absolute top-7 left-4 min-w-[200px] z-50 transition-all duration-200 dark:!bg-slate-800/95 dark:!border-slate-700/50 dark:!shadow-black/25
           ${menuOpen
             ? "opacity-100 scale-100 pointer-events-auto"
             : "opacity-0 scale-95 pointer-events-none"
           }
         `}
         style={{
-          background: "rgba(30,41,59,0.95)",
+          background: "rgba(255,255,255,0.95)",
           backdropFilter: "blur(8px)",
           borderRadius: "0.5rem",
-          boxShadow: "0 8px 32px 0 rgba(0,0,0,0.25)",
-          border: "1px solid rgba(51,65,85,0.5)",
+          boxShadow: "0 8px 32px 0 rgba(0,0,0,0.15)",
+          border: "1px solid rgba(203,213,225,0.5)",
         }}
       >
         {/* 关于 */}
         <div
-          className="px-4 py-2 text-slate-300 text-sm hover:bg-slate-700/50 cursor-pointer transition-colors"
+          className="px-4 py-2 text-slate-700 dark:text-slate-300 text-sm hover:bg-slate-200/80 dark:hover:bg-slate-700/50 cursor-pointer transition-colors"
           onClick={() => {
             setAboutOpen(true)
             setMenuOpen(false)
           }}
         >
-          关于此名片
+          {t("menu.about")}
         </div>
-        <div className="border-t border-slate-700/50 my-1"></div>
+        <div className="border-t border-slate-200 dark:border-slate-700/50 my-1"></div>
         {/* 语言设置 */}
         <div
-          className="px-4 py-2 text-slate-300 text-sm hover:bg-slate-700/50 cursor-pointer transition-colors flex justify-between items-center"
+          className="px-4 py-2 text-slate-700 dark:text-slate-300 text-sm hover:bg-slate-200/80 dark:hover:bg-slate-700/50 cursor-pointer transition-colors flex justify-between items-center"
           onClick={() => setLangMenuOpen(v => !v)}
         >
-          语言设置
+          <span>{t("menu.language")}</span>
           <span className="ml-2 text-xs">{langMenuOpen ? "▲" : "▼"}</span>
         </div>
         {/* 二级语言菜单 */}
@@ -103,8 +104,10 @@ export function AppleWidget() {
             {languages.map(lng => (
               <div
                 key={lng}
-                className={`px-4 py-2 text-slate-300 text-sm hover:bg-slate-700/50 cursor-pointer transition-colors ${i18n.language === lng ? "font-bold text-blue-400" : ""
-                  }`}
+                className={`px-4 py-2 text-sm cursor-pointer transition-colors hover:bg-slate-200/80 dark:hover:bg-slate-700/50 
+                  ${i18n.language === lng 
+                    ? "font-bold text-blue-600 dark:text-blue-400" 
+                    : "text-slate-700 dark:text-slate-300"}`}
                 onClick={() => {
                   i18n.changeLanguage(lng)
                   localStorage.setItem("language", lng)
@@ -122,10 +125,10 @@ export function AppleWidget() {
         )}
         {/* 强制退出 */}
         <div
-          className="px-4 py-2 text-slate-300 text-sm hover:bg-red-700/50 cursor-pointer transition-colors"
+          className="px-4 py-2 text-slate-700 dark:text-slate-300 text-sm hover:bg-red-100 dark:hover:bg-red-700/50 hover:text-red-700 dark:hover:text-red-300 cursor-pointer transition-colors"
           onClick={handleForceQuit}
         >
-          强制退出
+          {t("menu.exit")}
         </div>
       </div>
 

@@ -1,14 +1,13 @@
-
 import { t } from "i18next"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import React, { useState, useRef } from "react"
-// 移动端滑动组件
+
 interface WindowItem {
   id: string
   title: string
   isVisible: boolean
   isMinimized: boolean
-  // 你可以根据实际需要补充其它字段
+  // 其它字段…
 }
 
 export default function MobileSlider({
@@ -65,27 +64,29 @@ export default function MobileSlider({
   const slidePercentage = (100 / windows.length) * currentIndex
 
   return (
-    <div className="fixed inset-0 bg-slate-900/95 backdrop-blur-md z-40">
+    <div className="fixed inset-0 bg-slate-100/90 dark:bg-slate-900/95 backdrop-blur-md z-40">
       {/* 标题栏 */}
-      <div className="bg-slate-800/80 backdrop-blur-sm border-b border-slate-700/50 px-4 py-3 flex items-center justify-between">
+      <div className="bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm border-b border-slate-300/60 dark:border-slate-700/50 px-4 py-3 flex items-center justify-between">
         <button
           onClick={goToPrevious}
           disabled={currentIndex === 0}
-          className="p-2 rounded-lg bg-slate-700/50 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-600/50 transition-colors"
+          className="p-2 rounded-lg bg-slate-300/50 dark:bg-slate-700/50 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-200/50 dark:hover:bg-slate-600/50 transition-colors"
         >
-          <ChevronLeft className="w-5 h-5 text-slate-300" />
+          <ChevronLeft className="w-5 h-5 text-slate-800 dark:text-slate-300" />
         </button>
 
         <div className="flex-1 text-center">
-          <span className="text-slate-300 text-sm font-medium">{t(windows[currentIndex]?.title)}</span>
+          <span className="text-slate-800 dark:text-slate-300 text-sm font-bold">
+            {t(windows[currentIndex]?.title)}
+          </span>
         </div>
 
         <button
           onClick={goToNext}
           disabled={currentIndex === windows.length - 1}
-          className="p-2 rounded-lg bg-slate-700/50 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-600/50 transition-colors"
+          className="p-2 rounded-lg bg-slate-300/50 dark:bg-slate-700/50 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-200/50 dark:hover:bg-slate-600/50 transition-colors"
         >
-          <ChevronRight className="w-5 h-5 text-slate-300" />
+          <ChevronRight className="w-5 h-5 text-slate-800 dark:text-slate-300" />
         </button>
       </div>
 
@@ -101,7 +102,7 @@ export default function MobileSlider({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {windows.map((window, ) => (
+        {windows.map((window) => (
           <div
             key={window.id}
             className="h-full overflow-y-auto flex-shrink-0"
@@ -118,8 +119,9 @@ export default function MobileSlider({
           <button
             key={index}
             onClick={() => onIndexChange(index)}
-            className={`w-2 h-2 rounded-full transition-colors ${index === currentIndex ? "bg-slate-300" : "bg-slate-600"
-              }`}
+            className={`w-2 h-2 rounded-full transition-colors ${
+              index === currentIndex ? "bg-slate-800 dark:bg-slate-300" : "bg-slate-400 dark:bg-slate-600"
+            }`}
           />
         ))}
       </div>
