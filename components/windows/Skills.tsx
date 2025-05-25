@@ -2,19 +2,20 @@ import { CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Award } from "lucide-react"
 import { Progress } from "../ui/progress"
+import { t } from "i18next"
 
 export default function SkillsContent() {
   const skills = [
-    { name: "Python", level: 90, category: "后端" },
-    { name: "Go", level: 80, category: "后端" },
-    { name: "TypeScript", level: 85, category: "前端" },
-    { name: "Vue.js", level: 80, category: "前端" },
-    { name: "FastAPI", level: 85, category: "后端" },
-    { name: "Docker", level: 80, category: "运维" },
-    { name: "Kubernetes", level: 50, category: "运维" },
-    { name: "Linux", level: 80, category: "运维" },
-    { name: "PostgreSQL", level: 70, category: "数据库" },
-    { name: "Redis", level: 75, category: "数据库" },
+    { name: "Python", level: 90, category: "backend" },
+    { name: "Go", level: 80, category: "backend" },
+    { name: "TypeScript", level: 85, category: "frontend" },
+    { name: "Vue.js", level: 80, category: "frontend" },
+    { name: "FastAPI", level: 85, category: "backend" },
+    { name: "Docker", level: 80, category: "devops" },
+    { name: "Kubernetes", level: 50, category: "devops" },
+    { name: "Linux", level: 80, category: "database" },
+    { name: "PostgreSQL", level: 70, category: "database" },
+    { name: "Redis", level: 75, category: "database" },
   ]
 
   return (
@@ -22,7 +23,7 @@ export default function SkillsContent() {
       <div className="space-y-4">
         <div className="flex items-center mb-4">
           <Award className="w-5 h-5 text-slate-400 mr-2" />
-          <h2 className="text-lg font-semibold text-white">技能详情</h2>
+          <h2 className="text-lg font-semibold text-white">{t("skills.title")}</h2>
         </div>
 
         {skills.map((skill, index) => (
@@ -31,7 +32,7 @@ export default function SkillsContent() {
               <span className="text-slate-200 font-medium">{skill.name}</span>
               <div className="flex items-center space-x-2">
                 <Badge variant="outline" className="text-xs text-slate-400 border-slate-600">
-                  {skill.category}
+                  {t("skills."+skill.category)}
                 </Badge>
                 <span className="text-slate-400 text-sm">{skill.level}%</span>
               </div>
@@ -41,7 +42,7 @@ export default function SkillsContent() {
         ))}
 
         <div className="mt-6 p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
-          <h3 className="text-slate-200 font-medium mb-2">学习中</h3>
+          <h3 className="text-slate-200 font-medium mb-2">{t("skills.learning")}</h3>
           <div className="flex flex-wrap gap-2">
             <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30">Rust</Badge>
             <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30">Kubernetes</Badge>

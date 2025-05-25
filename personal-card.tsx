@@ -1,12 +1,6 @@
 "use client"
 
 import type React from "react"
-import {
-  Code,
-  User,
-  FolderOpen,
-  MessageCircle,
-} from "lucide-react"
 // import LiteyukiLabSvg from "./public/liteyuki-lab.svg"
 import { useState, useEffect } from "react"
 import { TopMenuBar } from "./components/menu-bar/top-menu-bar"
@@ -20,6 +14,10 @@ import ProjectsContent from "./components/windows/Projects"
 import SkillsContent from "./components/windows/Skills"
 import ContactsContent from "./components/windows/Contacts"
 import Dock from "./components/windows/Dock"
+
+import { useTranslation } from "react-i18next"
+
+
 
 const ID_TO_HASH = {
   profile: "#profile",
@@ -86,10 +84,11 @@ function calculateOptimalLayout(windowCount: number, screenWidth: number, screen
 }
 
 export default function Component() {
+  const { t } = useTranslation()
   const [windows, setWindows] = useState([
     {
       id: "profile",
-      title: "个人名片",
+      title: "profile.title",
       isVisible: true,
       isMinimized: false,
       isMaximized: false,
@@ -101,7 +100,7 @@ export default function Component() {
     },
     {
       id: "projects",
-      title: "项目展示",
+      title: "projects.title",
       isVisible: true,
       isMinimized: false,
       isMaximized: false,
@@ -113,7 +112,7 @@ export default function Component() {
     },
     {
       id: "skills",
-      title: "技能详情",
+      title: "skills.title",
       isVisible: true,
       isMinimized: false,
       isMaximized: false,
@@ -125,7 +124,7 @@ export default function Component() {
     },
     {
       id: "contact",
-      title: "联系方式",
+      title: "contacts.title",
       isVisible: true,
       isMinimized: false,
       isMaximized: false,

@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Briefcase, ExternalLink} from "lucide-react"
 import { Button } from "../ui/button"
+import { t } from "i18next"
 
 export default function ProjectsContent() {
   const projects = [
@@ -40,7 +41,7 @@ export default function ProjectsContent() {
       <div className="space-y-4">
         <div className="flex items-center mb-4">
           <Briefcase className="w-5 h-5 text-slate-400 mr-2" />
-          <h2 className="text-lg font-semibold text-white">项目展示</h2>
+          <h2 className="text-lg font-semibold text-white">{t("projects.title")}</h2>
         </div>
 
         {projects.map((project, index) => (
@@ -74,7 +75,7 @@ export default function ProjectsContent() {
 
         <Button className="w-full mt-4 bg-slate-700 hover:bg-slate-600 text-slate-200">
           <ExternalLink className="w-4 h-4 mr-2" />
-          查看更多项目
+          {t("projects.exploer")}
         </Button>
       </div>
     </CardContent>

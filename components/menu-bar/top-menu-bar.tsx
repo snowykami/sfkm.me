@@ -7,6 +7,7 @@ import { WeatherWidget } from "./widgets/weather-widget"
 import { WiFiWidget } from "./widgets/wifi-widget"
 import { BatteryWidget } from "./widgets/battery-widget"
 import { VolumeWidget } from "./widgets/volume-widget"
+import { t } from "i18next"
 // import { NotificationWidget } from "./widgets/notification-widget"
 
 interface TopMenuBarProps {
@@ -38,7 +39,7 @@ export function TopMenuBar({ className = "", title = "Window Title" }: TopMenuBa
         {/* 左侧区域 */}
         <div className="flex items-center space-x-4">
           <AppleWidget />
-          <span className="text-slate-300 text-sm font-medium">{title}</span>
+          <span className="text-slate-300 text-sm font-medium">{t(title)}</span>
         </div>
 
         {/* 右侧状态区域 */}

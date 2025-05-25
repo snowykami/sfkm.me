@@ -14,4 +14,7 @@ export interface WindowProps {
   onMaximize: () => void
   onFocus: () => void
   children: React.ReactNode
+  showClose?: boolean
+  showMinimize?: boolean
+  showMaximize?: boolean
 }
