@@ -25,7 +25,7 @@ export default function ProfileContent() {
 
       <div className="mb-6">
         <p className="text-slate-300 text-sm leading-relaxed text-center">
-          很高兴认识你！
+          {t("profile.description")}
         </p>
       </div>
 

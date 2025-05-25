@@ -9,11 +9,11 @@ export function VolumeWidget() {
 
   const getVolumeIcon = () => {
     if (isMuted || volume === 0) {
-      return <VolumeX className="w-3 h-3 text-slate-400" />
+      return <VolumeX className="h-5 text-slate-400" />
     } else if (volume < 50) {
-      return <Volume1 className="w-3 h-3 text-slate-300" />
+      return <Volume1 className="h-5 text-slate-300" />
     } else {
-      return <Volume2 className="w-3 h-3 text-slate-300" />
+      return <Volume2 className="h-5 text-slate-300" />
     }
   }
 
