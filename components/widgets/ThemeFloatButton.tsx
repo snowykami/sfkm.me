@@ -26,8 +26,20 @@ export function MobileThemeFloatButton() {
   // 初始化主题状态，防止 SSR 与客户端不一致
   useEffect(() => {
     if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("theme")
       const html = document.documentElement
-      setIsDark(html.classList.contains("dark"))
+      if (savedTheme === "dark") {
+        html.classList.add("dark")
+        setIsDark(true)
+      } else if (savedTheme === "light") {
+        html.classList.remove("dark")
+        setIsDark(false)
+      } else {
+        // 没有保存时跟随系统
+        const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+        html.classList.toggle("dark", systemDark)
+        setIsDark(systemDark)
+      }
     }
   }, [mounted])
 
