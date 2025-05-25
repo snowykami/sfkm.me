@@ -1,4 +1,5 @@
 
+import { t } from "i18next"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import React, { useState, useRef } from "react"
 // 移动端滑动组件
@@ -76,7 +77,7 @@ export default function MobileSlider({
         </button>
 
         <div className="flex-1 text-center">
-          <span className="text-slate-300 text-sm font-medium">{windows[currentIndex]?.title}</span>
+          <span className="text-slate-300 text-sm font-medium">{t(windows[currentIndex]?.title)}</span>
         </div>
 
         <button

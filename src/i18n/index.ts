@@ -1,6 +1,18 @@
 import i18n from "i18next"
 import { initReactI18next } from "react-i18next"
 
+const getDefaultLang = () => {
+    if (typeof window !== "undefined") {
+        // 优先 localStorage，其次浏览器语言
+        return (
+            localStorage.getItem("i18nextLng") ||
+            navigator.language.split("-")[0] ||
+            "zh"
+        )
+    }
+    return "zh"
+}
+
 i18n.use(initReactI18next).init({
     resources: {
         zh: {
@@ -118,10 +130,7 @@ i18n.use(initReactI18next).init({
             },
         }
     },
-    lng: typeof window !== "undefined"
-        ? localStorage.getItem("language") || "zh"
-        : "zh",
-    // ...
+    lng: getDefaultLang(),
     fallbackLng: "zh",
     interpolation: {
         escapeValue: false,

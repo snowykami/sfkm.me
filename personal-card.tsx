@@ -308,9 +308,8 @@ export default function Component() {
       .sort((a, b) => b.z - a.z)[0]
     : null
 
-  const currentTitle =
-    maximizedWindow?.title || topWindow?.title || "Snowykami"
 
+  const currentTitle = t(maximizedWindow?.title || topWindow?.title || "Snowykami")
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden"
@@ -319,6 +318,7 @@ export default function Component() {
       }}
     >
       {/* 顶部菜单栏 */}
+
       <TopMenuBar title={currentTitle} />
 
       {/* 深色玻璃板覆盖层 */}
