@@ -320,7 +320,7 @@ export default function Component() {
       }}
     >
       {/* 顶部菜单栏 */}
-      <TopMenuBar />
+      <TopMenuBar title={currentTitle} />
 
       {/* 深色玻璃板覆盖层 */}
       <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm pointer-events-none" />
