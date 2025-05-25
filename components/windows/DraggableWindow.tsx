@@ -136,7 +136,10 @@ export default function DraggableWindow({
         transform: isDragging ? "scale(1.02)" : "scale(1)",
         willChange: isDragging ? "transform" : "auto",
       }}
-      onDragStart={() => setIsDragging(true)}
+      onDragStart={() => {
+        setIsDragging(true)
+        onFocus() // 拖拽时置顶
+      }}
       onDragStop={(_, d) => {
         setIsDragging(false)
         setPosition({ x: d.x, y: d.y })
