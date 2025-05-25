@@ -1,4 +1,4 @@
-interface WindowProps {
+export interface WindowProps {
   id: string
   title: string
   initialX: number

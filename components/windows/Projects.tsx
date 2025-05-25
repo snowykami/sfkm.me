@@ -1,7 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Briefcase, ExternalLink, MapPin } from "lucide-react"
+import { Briefcase, ExternalLink} from "lucide-react"
 import { Button } from "../ui/button"
 
 export default function ProjectsContent() {

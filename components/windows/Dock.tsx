@@ -1,7 +1,14 @@
 import { User, FolderOpen, Code, MessageCircle } from "lucide-react"
 
+interface WindowItem {
+  id: string
+  isVisible: boolean
+  isMinimized: boolean
+  // 你可以根据实际需要补充其它字段
+}
+
 interface DockProps {
-  windows: any[]
+  windows: WindowItem[]
   isMobile: boolean
   mobileCurrentIndex: number
   handleMobileWindowSelect: (id: string) => void
