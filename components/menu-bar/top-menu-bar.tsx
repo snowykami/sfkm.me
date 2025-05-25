@@ -11,9 +11,10 @@ import { VolumeWidget } from "./widgets/volume-widget"
 
 interface TopMenuBarProps {
   className?: string
+  title?: string    // 新增
 }
 
-export function TopMenuBar({ className = "" }: TopMenuBarProps) {
+export function TopMenuBar({ className = "", title = "Window Title" }: TopMenuBarProps) {
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -37,7 +38,7 @@ export function TopMenuBar({ className = "" }: TopMenuBarProps) {
         {/* 左侧区域 */}
         <div className="flex items-center space-x-4">
           <AppleWidget />
-          <span className="text-slate-300 text-sm font-medium">个人名片</span>
+          <span className="text-slate-300 text-sm font-medium">{title}</span>
         </div>
 
         {/* 右侧状态区域 */}
