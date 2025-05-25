@@ -10,10 +10,10 @@ export function ThemeToggleButton() {
     if (typeof window !== "undefined") {
       const savedTheme = localStorage.getItem("theme")
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-      
+
       // 优先使用存储的主题,否则使用系统主题
       const theme = savedTheme || (systemTheme ? "dark" : "light")
-      
+
       setIsDark(theme === "dark")
       document.documentElement.classList.toggle("dark", theme === "dark")
     }
@@ -23,7 +23,7 @@ export function ThemeToggleButton() {
     if (typeof window === "undefined") return
     const html = document.documentElement
     const newTheme = html.classList.contains("dark") ? "light" : "dark"
-    
+
     html.classList.toggle("dark")
     localStorage.setItem("theme", newTheme)
     setIsDark(newTheme === "dark")
@@ -36,6 +36,26 @@ export function ThemeToggleButton() {
       onClick={toggleTheme}
       aria-label="切换主题"
       type="button"
+      style={{
+        transition: "box-shadow 0.2s",
+        boxShadow: isDark
+          ? undefined
+          : undefined,
+        // 更小的hover阴影
+        ...(typeof window !== "undefined" && window.matchMedia(":hover").matches
+          ? {
+            boxShadow: isDark
+              ? undefined
+              : undefined
+          }
+          : {}),
+      }}
+      onMouseEnter={e => {
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 2px 8px 0 rgba(0,0,0,0.15)"
+      }}
+      onMouseLeave={e => {
+        (e.currentTarget as HTMLButtonElement).style.boxShadow = ""
+      }}
     >
       {isDark ? (
         <Moon className="w-5 h-5 text-slate-400" />
