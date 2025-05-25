@@ -23,8 +23,7 @@ export function WiFiWidget() {
       bars.push(
         <div
           key={i}
-          className={`w-0.5 rounded-full ${i < signalStrength ? "bg-slate-300 h-2" : "bg-slate-600 h-1"}`}
-          style={{ height: `${4 + i * 2}px` }}
+          className={`w-0.5 rounded-full ${i < signalStrength ? "bg-slate-300" : "bg-slate-600"}`}
         />,
       )
     }
@@ -32,11 +31,11 @@ export function WiFiWidget() {
   }
 
   return (
-    <div className="flex items-center justify-center w-6 h-6 rounded cursor-pointer hover:bg-slate-700/30 transition-colors">
+    <div className="flex items-center justify-center rounded cursor-pointer hover:bg-slate-700/30 transition-colors">
       {isConnected ? (
         <div className="flex items-end space-x-0.5">{getSignalBars()}</div>
       ) : (
-        <WifiOff className="w-3 h-3 text-slate-500" />
+        <WifiOff className=" text-slate-500" />
       )}
     </div>
   )

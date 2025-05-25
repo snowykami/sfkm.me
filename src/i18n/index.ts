@@ -21,6 +21,7 @@ i18n.use(initReactI18next).init({
                 greeting: "你好，世界！",
                 profile: {
                     title: "个人资料",
+                    description: "很高兴认识你！",
                     location: "中国 重庆",
                     subname: "远野千束",
                     tag: "标签",
@@ -58,6 +59,7 @@ i18n.use(initReactI18next).init({
                 greeting: "Hello, world!",
                 profile: {
                     title: "Profile",
+                    description: "Nice to meet you!",
                     location: "Chongqing, China",
                     subname: "Toono Chisato",
                     tag: "Tags",
@@ -95,6 +97,7 @@ i18n.use(initReactI18next).init({
                 greeting: "こんにちは、世界！",
                 profile: {
                     title: "プロフィール",
+                    description: "お会いできて嬉しいです！",
                     location: "中国 重慶",
                     subname: "遠野千束",
                     tag: "タグ",

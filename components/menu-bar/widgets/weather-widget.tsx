@@ -33,15 +33,15 @@ export function WeatherWidget() {
   const getWeatherIcon = () => {
     switch (weather.condition) {
       case "sunny":
-        return <Sun className="w-3 h-3 text-yellow-400" />
+        return <Sun className="h-5 text-yellow-400" />
       case "cloudy":
-        return <Cloud className="w-3 h-3 text-slate-400" />
+        return <Cloud className="h-5 text-slate-400" />
       case "rainy":
-        return <CloudRain className="w-3 h-3 text-blue-400" />
+        return <CloudRain className="h-5 text-blue-400" />
       case "snowy":
-        return <CloudSnow className="w-3 h-3 text-slate-300" />
+        return <CloudSnow className="h-5 text-slate-300" />
       default:
-        return <Sun className="w-3 h-3 text-yellow-400" />
+        return <Sun className="h-5 text-yellow-400" />
     }
   }
 

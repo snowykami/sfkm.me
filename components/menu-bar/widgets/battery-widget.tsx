@@ -31,11 +31,11 @@ export function BatteryWidget() {
     <div className="flex items-center space-x-1 px-2 py-1 rounded cursor-pointer hover:bg-slate-700/30 transition-colors">
       <div className="relative">
         {isCharging ? (
-          <Zap className={`w-3 h-3 ${getBatteryColor()}`} />
+          <Zap className={`${getBatteryColor()}`} />
         ) : batteryLevel < 20 ? (
-          <BatteryLow className={`w-3 h-3 ${getBatteryColor()}`} />
+          <BatteryLow className={`${getBatteryColor()}`} />
         ) : (
-          <Battery className={`w-3 h-3 ${getBatteryColor()}`} />
+          <Battery className={`${getBatteryColor()}`} />
         )}
       </div>
       <span className={`text-xs font-medium ${getBatteryColor()}`}>{batteryLevel}%</span>
