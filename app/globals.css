@@ -120,3 +120,28 @@
     @apply bg-background text-foreground;
   }
 }
+/* 全局滑动条 */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.5); /* slate-500/50 */
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.8); /* slate-500/80 */
+}
+.custom-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* 兼容 Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100,116,139,0.5) transparent;
+}
+.custom-scrollbar:hover {
+  scrollbar-color: rgba(100,116,139,0.8) transparent;
+}

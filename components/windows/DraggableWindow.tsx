@@ -1,9 +1,9 @@
 import type React from "react"
 // import LiteyukiLabSvg from "./public/liteyuki-lab.svg"
 import { useState, useRef, useCallback, useEffect } from "react"
+import { WindowProps } from "./types"
 
 export default function DraggableWindow({
-  id,
   title,
   initialX,
   initialY,
@@ -20,7 +20,7 @@ export default function DraggableWindow({
   children,
 }: WindowProps) {
   const [position, setPosition] = useState({ x: initialX, y: initialY })
-  const [zIndex, setZIndex] = useState(initialZ)
+  const [, setZIndex] = useState(initialZ)
   const [isDragging, setIsDragging] = useState(false)
   const [savedPosition, setSavedPosition] = useState({ x: initialX, y: initialY })
   const [isMobile, setIsMobile] = useState(false)
@@ -259,6 +259,7 @@ export default function DraggableWindow({
           )}
         </div>
 
+
         <div className="flex-1 text-center pointer-events-none">
           <span className="text-slate-300 text-sm font-medium">{title}</span>
         </div>
@@ -268,7 +269,7 @@ export default function DraggableWindow({
 
       {/* 内容区域 */}
       <div
-        className={`overflow-y-auto ${isMaximized || isMobile ? "h-[calc(100vh-88px)]" : "max-h-[500px]"}`}
+        className={`overflow-y-auto custom-scrollbar ${isMaximized || isMobile ? "h-[calc(100vh-88px)]" : "max-h-[500px]"}`}
         style={{
           transition: isDragging ? "none" : "height 0.3s ease",
         }}

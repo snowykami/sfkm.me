@@ -2,13 +2,21 @@
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import React, { useState, useRef } from "react"
 // 移动端滑动组件
+interface WindowItem {
+  id: string
+  title: string
+  isVisible: boolean
+  isMinimized: boolean
+  // 你可以根据实际需要补充其它字段
+}
+
 export default function MobileSlider({
   windows,
   currentIndex,
   onIndexChange,
   getWindowContent,
 }: {
-  windows: any[]
+  windows: WindowItem[]
   currentIndex: number
   onIndexChange: (index: number) => void
   getWindowContent: (id: string) => React.ReactNode
@@ -92,7 +100,7 @@ export default function MobileSlider({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {windows.map((window, index) => (
+        {windows.map((window, ) => (
           <div
             key={window.id}
             className="h-full overflow-y-auto flex-shrink-0"
