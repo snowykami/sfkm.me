@@ -45,7 +45,7 @@ export default function AboutCardWindow({
         <div className="text-sm text-slate-400 mb-4">个人名片 · macOS 风格</div>
         <div className="text-slate-200 mb-6 text-center leading-relaxed">
           这是一个仿 macOS 风格的个人名片页面，支持多窗口、Dock、菜单栏、主题切换等功能。
-          最初是由vercel v0生成，后续由作者本人进行维护和更新(不会react qwq)。
+          最初是由vercel v0生成，后续由作者本人进行维护和更新(不太会react qwq)。
         </div>
         <button
           className="px-6 py-1.5 rounded bg-blue-500 text-white hover:bg-blue-600 transition font-medium shadow"
