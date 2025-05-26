@@ -126,7 +126,7 @@ export default function DraggableWindow({
         zIndex: initialZ + 1000,
         borderRadius: (isMaximized || isMobile) ? 0 : 16,
         overflow: "hidden",
-        position: "fixed",
+        // position: "fixed", // 修复拖动定位不准确的问题
         boxShadow: isDragging
           ? "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
           : "0 20px 25px -5px rgba(0, 0, 0, 0.3)",
