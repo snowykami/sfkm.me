@@ -34,7 +34,7 @@ jobs:
         run: |
           git config --global user.name 'liteyuki-flow'
           git config --global user.email 'liteyuki-flow@liteyuki.org'
-          git add public/preview.png
+          git add images/screenshot.png
           git commit -m "chore: update preview screenshot [skip ci]" || echo "No changes"
           git push
 
