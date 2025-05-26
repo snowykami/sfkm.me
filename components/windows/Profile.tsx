@@ -1,7 +1,7 @@
 import { CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, ExternalLink, Github} from "lucide-react"
+import { MapPin, ExternalLink, Github } from "lucide-react"
 import { t } from "i18next"
 import { useEffect, useState } from "react"
 
@@ -81,12 +81,14 @@ export default function ProfileContent() {
           </div>
         </div>
         {/* 大昵称 */}
-        <h1
-          className="text-2xl font-bold mb-1 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent leading-relaxed min-h-[2.5rem]"
-          style={{ fontFamily: "'Pacifico', cursive" }}
-        >
-          Snowykami
-        </h1>
+        <div className="w-full max-w-full overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
+          <h1
+            className="text-2xl font-bold mb-1 bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent leading-relaxed py-1 min-w-[12rem] px-4"
+            style={{ fontFamily: "'Pacifico', cursive" }}
+          >
+            Snowykami
+          </h1>
+        </div>
 
         {/* <p className="text-slate-500 dark:text-slate-300 font-medium mb-2">{t("profile.subname")}</p> */}
         <div className="flex items-center text-slate-500 dark:text-slate-400 text-sm mb-4">
