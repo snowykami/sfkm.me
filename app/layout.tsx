@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Snowykami's Personal Card",
+  title: "Snowykami OS",
   description: "Welcome~",
 };
 
