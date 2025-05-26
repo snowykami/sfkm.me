@@ -4,6 +4,8 @@ export interface WindowProps {
   initialX: number
   initialY: number
   initialZ: number
+  initialHeight?: number
+  initialWidth?: number
   isVisible: boolean
   isMinimized: boolean
   isMaximized: boolean
