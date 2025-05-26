@@ -158,7 +158,7 @@ export default function DraggableWindow({
         ref={windowRef}
         // 滑条
         className={`
-    bg-slate-100/90 dark:bg-slate-800/90
+    bg-slate-100/95 dark:bg-slate-800/95
     backdrop-blur-md
     shadow-2xl
     border border-slate-300/60 dark:border-slate-700/30
