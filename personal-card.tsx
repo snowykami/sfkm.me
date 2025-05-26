@@ -90,16 +90,6 @@ function calculateOptimalLayout(windowCount: number, screenWidth: number, screen
 
 export default function Component() {
   const { t } = useTranslation()
-  // 先计算初始布局
-  const initialPositions = typeof window !== "undefined"
-    ? calculateOptimalLayout(4, window.innerWidth, window.innerHeight)
-    : [
-        { x: 50, y: 50 },
-        { x: 450, y: 50 },
-        { x: 50, y: 350 },
-        { x: 450, y: 350 },
-      ]
-
   const [windows, setWindows] = useState([
     {
       id: "profile",
@@ -109,8 +99,8 @@ export default function Component() {
       isMaximized: false,
       isClosing: false,
       isMinimizing: false,
-      x: initialPositions[0]?.x ?? 50,
-      y: initialPositions[0]?.y ?? 50,
+      x: 50,
+      y: 50,
       z: 1000,
     },
     {
@@ -121,8 +111,8 @@ export default function Component() {
       isMaximized: false,
       isClosing: false,
       isMinimizing: false,
-      x: initialPositions[1]?.x ?? 450,
-      y: initialPositions[1]?.y ?? 50,
+      x: 450,
+      y: 50,
       z: 999,
     },
     {
@@ -133,8 +123,8 @@ export default function Component() {
       isMaximized: false,
       isClosing: false,
       isMinimizing: false,
-      x: initialPositions[2]?.x ?? 50,
-      y: initialPositions[2]?.y ?? 350,
+      x: 50,
+      y: 350,
       z: 998,
     },
     {
@@ -145,8 +135,8 @@ export default function Component() {
       isMaximized: false,
       isClosing: false,
       isMinimizing: false,
-      x: initialPositions[3]?.x ?? 450,
-      y: initialPositions[3]?.y ?? 350,
+      x: 450,
+      y: 350,
       z: 997,
     },
   ])
