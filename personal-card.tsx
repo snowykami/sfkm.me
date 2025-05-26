@@ -239,12 +239,13 @@ export default function Component() {
   }, [isLayoutCalculated, isMobile, windows.length])
 
   const closeWindow = (id: string) => {
-    // 先触发关闭动画
     setWindows((prev) => prev.map((w) => (w.id === id ? { ...w, isClosing: true } : w)))
-
-    // 300ms 后真正关闭窗口
     setTimeout(() => {
       setWindows((prev) => prev.map((w) => (w.id === id ? { ...w, isVisible: false, isClosing: false } : w)))
+      // 清空 hash，防止 handleHashChange 重新打开
+      if (window.location.hash === ID_TO_HASH[id as keyof typeof ID_TO_HASH]) {
+        window.location.hash = ""
+      }
     }, 300)
   }
 
