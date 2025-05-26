@@ -138,6 +138,7 @@ export function AppleWidget() {
           isVisible={aboutOpen}
           initialX={getCenterPos().x}
           initialY={getCenterPos().y}
+          initialZ={1000}
           onClose={() => setAboutOpen(false)}
         />
       )}

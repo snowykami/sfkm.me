@@ -6,6 +6,7 @@ interface AboutCardWindowProps {
   isVisible: boolean
   initialX: number
   initialY: number
+  initialZ: number
   onClose: () => void
 }
 
