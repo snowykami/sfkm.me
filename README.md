@@ -1,8 +1,18 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Snowykami's 的首页
 
-## Getting Started
+这是一个由Next.js（https://nextjs.org）创建的项目，使用了[`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app)。
 
-First, run the development server:
+仿照macOS界面的风格制作的个人主页。
+
+## 预览
+
+<!-- START_PREVIEW_IMAGE -->
+![预览](./images/screenshot.png)
+<!-- END_PREVIEW_IMAGE -->
+
+## 开始
+
+启动开发服务器：
 
 ```bash
 npm run dev
@@ -14,23 +24,22 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+打开 [http://localhost:3000](http://localhost:3000) 在浏览器中查看结果。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 构建
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+项目使用了静态构建，构建好后可以部署到任何静态文件服务器上。（单页应用）
 
-## Learn More
+```bash
+npm run build
 
-To learn more about Next.js, take a look at the following resources:
+pnpm build
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+yarn build
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+bun build
+```
 
-## Deploy on Vercel
+## 其他
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+这个项目最初由vercel v0生成并完成基础组件，后续由作者本人进行修改和完善。
