@@ -149,6 +149,11 @@
 }
 
 a {
-  color: #499bff; /* Tailwind的blue-400 */
+  color: oklch(68.5% 0.169 237.323);
   text-decoration: underline;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: oklch(62.3% 0.214 259.815);
 }
