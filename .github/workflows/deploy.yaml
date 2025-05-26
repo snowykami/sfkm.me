@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -29,11 +32,16 @@ jobs:
         run: |
           npm install --save-dev playwright
           npx playwright install
+          npx playwright cripts/screenshot.js
 
       - name: Commit new preview screenshot
         run: |
           git config --global user.name 'liteyuki-flow'
           git config --global user.email 'liteyuki-flow@liteyuki.org'
+          
+          git checkout -- package.json
+          git checkout -- package-lock.json
+
           git add images/screenshot.png
           git commit -m "chore: update preview screenshot [skip ci]" || echo "No changes"
           git push
