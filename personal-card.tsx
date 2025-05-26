@@ -40,28 +40,33 @@ const HASH_TO_ID = {
 // 智能窗口布局计算函数
 function calculateOptimalLayout(windowCount: number, screenWidth: number, screenHeight: number) {
   const WINDOW_WIDTH = 384
-  const WINDOW_HEIGHT = 500 // 估算窗口高度
-  const MIN_MARGIN = 30 // 最小边距
-  const DOCK_HEIGHT = 80 // Dock 高度
-  const MENU_BAR_HEIGHT = 28 // 菜单栏高度
+  let WINDOW_HEIGHT = 500 // 默认高度
+  const MIN_MARGIN = 30
+  const DOCK_HEIGHT = 80
+  const MENU_BAR_HEIGHT = 28
 
-  // 可用空间
   const availableWidth = screenWidth - MIN_MARGIN * 2
   const availableHeight = screenHeight - MIN_MARGIN * 2 - DOCK_HEIGHT - MENU_BAR_HEIGHT
 
-  // 计算每行可以放几个窗口
   const maxWindowsPerRow = Math.floor(availableWidth / (WINDOW_WIDTH + MIN_MARGIN))
   const actualWindowsPerRow = Math.min(maxWindowsPerRow, windowCount)
-
-  // 计算行数
   const rows = Math.ceil(windowCount / actualWindowsPerRow)
 
-  // 计算实际间距（居中对齐）
+  // 动态调整窗口高度（只在多行时）
+  if (rows > 1) {
+    // 总可用高度 = 所有窗口高度 + 所有间距
+    // rows * h + (rows+1)*MIN_MARGIN = availableHeight
+    // => h = (availableHeight - (rows+1)*MIN_MARGIN) / rows
+    WINDOW_HEIGHT = Math.max(
+    200, // 最小高度
+      Math.floor((availableHeight - (rows + 1) * MIN_MARGIN) / rows)
+    )
+  }
+
   const totalWindowWidth = actualWindowsPerRow * WINDOW_WIDTH
   const totalMarginWidth = availableWidth - totalWindowWidth
   const horizontalSpacing = totalMarginWidth / (actualWindowsPerRow + 1)
 
-  // 计算垂直间距
   const totalWindowHeight = rows * WINDOW_HEIGHT
   const totalMarginHeight = availableHeight - totalWindowHeight
   const verticalSpacing = Math.max(MIN_MARGIN, totalMarginHeight / (rows + 1))
@@ -72,7 +77,6 @@ function calculateOptimalLayout(windowCount: number, screenWidth: number, screen
     const row = Math.floor(i / actualWindowsPerRow)
     const col = i % actualWindowsPerRow
 
-    // 如果是最后一行且窗口数量不足，居中对齐
     const isLastRow = row === rows - 1
     const windowsInThisRow = isLastRow ? windowCount - row * actualWindowsPerRow : actualWindowsPerRow
     const rowOffset = isLastRow
@@ -82,7 +86,7 @@ function calculateOptimalLayout(windowCount: number, screenWidth: number, screen
     const x = horizontalSpacing + col * (WINDOW_WIDTH + horizontalSpacing) + rowOffset
     const y = MENU_BAR_HEIGHT + verticalSpacing + row * (WINDOW_HEIGHT + verticalSpacing)
 
-    positions.push({ x: Math.round(x), y: Math.round(y) })
+    positions.push({ x: Math.round(x), y: Math.round(y), width: WINDOW_WIDTH, height: WINDOW_HEIGHT })
   }
 
   return positions
@@ -90,6 +94,7 @@ function calculateOptimalLayout(windowCount: number, screenWidth: number, screen
 
 export default function Component() {
   const { t } = useTranslation()
+  const initialHeight = 500 // 初始高度
   const [windows, setWindows] = useState([
     {
       id: "profile",
@@ -102,6 +107,7 @@ export default function Component() {
       x: 50,
       y: 50,
       z: 1000,
+      height: initialHeight, // 初始高度
     },
     {
       id: "projects",
@@ -114,6 +120,7 @@ export default function Component() {
       x: 450,
       y: 50,
       z: 999,
+      height: initialHeight, // 初始高度
     },
     {
       id: "skills",
@@ -126,6 +133,7 @@ export default function Component() {
       x: 50,
       y: 350,
       z: 998,
+      height: initialHeight, // 初始高度
     },
     {
       id: "contact",
@@ -138,6 +146,7 @@ export default function Component() {
       x: 450,
       y: 350,
       z: 997,
+      height: initialHeight, // 初始高度
     },
   ])
 
@@ -150,16 +159,15 @@ export default function Component() {
     const checkMobileAndCalculateLayout = () => {
       const mobile = window.innerWidth < 768
       setIsMobile(mobile)
-
       // 只在桌面端计算布局
       if (!mobile && !isLayoutCalculated) {
         const positions = calculateOptimalLayout(windows.length, window.innerWidth, window.innerHeight)
-
         setWindows((prev) =>
           prev.map((window, index) => ({
             ...window,
             x: positions[index]?.x || window.x,
             y: positions[index]?.y || window.y,
+            height: positions[index]?.height || window.height,
           })),
         )
 
@@ -184,6 +192,7 @@ export default function Component() {
             ...window,
             x: positions[index]?.x || window.x,
             y: positions[index]?.y || window.y,
+            height: positions[index]?.height || window.height,
           })),
         )
       }
@@ -303,7 +312,7 @@ export default function Component() {
     window.addEventListener("hashchange", handleHashChange)
     handleHashChange()
     return () => window.removeEventListener("hashchange", handleHashChange)
-  }, [isMobile])
+  }, [isMobile, windows])
 
   const maximizedWindow = windows.find(w => w.isVisible && w.isMaximized)
   // 如果没有最大化窗口，找z值最大的可见且未最小化窗口
@@ -353,6 +362,7 @@ export default function Component() {
             initialX={window.x}
             initialY={window.y}
             initialZ={window.z}
+            initialHeight={window.height}
             isVisible={window.isVisible}
             isMinimized={window.isMinimized}
             isMaximized={window.isMaximized}

@@ -11,6 +11,8 @@ export default function DraggableWindow({
   initialX,
   initialY,
   initialZ,
+  initialHeight,
+  initialWidth,
   isVisible,
   isMinimized,
   isMaximized,
@@ -26,12 +28,12 @@ export default function DraggableWindow({
   showMaximize = true,
 }: WindowProps) {
   const [position, setPosition] = useState({ x: initialX, y: initialY })
-  const [size, setSize] = useState({ width: 384, height: 500 })
+  const [size, setSize] = useState({ width: initialWidth ?? 384, height: initialHeight ?? 500 })
   const [isDragging, setIsDragging] = useState(false)
   const [savedPosition, setSavedPosition] = useState({ x: initialX, y: initialY })
   const [isMobile, setIsMobile] = useState(false)
   const windowRef = useRef<HTMLDivElement>(null)
-  
+
 
   // 检测移动端
   useEffect(() => {
@@ -48,6 +50,13 @@ export default function DraggableWindow({
     setPosition({ x: initialX, y: initialY })
     setSavedPosition({ x: initialX, y: initialY })
   }, [initialX, initialY])
+
+  useEffect(() => {
+    if (initialHeight) {
+      setSize(s => ({ ...s, height: initialHeight }))
+    }
+  }, [initialHeight])
+
   useEffect(() => {
     setSize({ width: 384, height: 600 })
   }, [isMaximized, isMobile])
