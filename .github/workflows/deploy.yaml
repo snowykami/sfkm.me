@@ -42,7 +42,7 @@ jobs:
           git checkout -- package.json
           git checkout -- package-lock.json
 
-          git add images/screenshot.png
+          git add images/preview-*.png
           git commit -m "chore: update preview screenshot [skip ci]" || echo "No changes"
           git push
 

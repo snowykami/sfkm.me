@@ -7,7 +7,8 @@
 ## 预览
 
 <!-- START_PREVIEW_IMAGE -->
-![预览](./images/screenshot.png)
+![白天预览](./images/preview-light.png)
+![夜间预览](./images/preview-dark.png)
 <!-- END_PREVIEW_IMAGE -->
 
 ## 开始
