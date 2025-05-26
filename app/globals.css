@@ -147,3 +147,8 @@
 .custom-scrollbar:hover {
   scrollbar-color: rgba(100,116,139,0.8) transparent;
 }
+
+a {
+  color: #499bff; /* Tailwind的blue-400 */
+  text-decoration: underline;
+}

@@ -51,6 +51,16 @@ const songs: Song[] = [
         offset: -6500,
     },
     {
+        title: "君恋し - EasyPop / 巡音ルカ",
+        fetchFrom: () => getUrlFromNCM("29163452"),
+        lrcFetchFrom: () => getLRCFromNCM("29163452"),
+    },
+    {
+        title: "まっすぐ - 大原ゆい子",
+        fetchFrom: () => getUrlFromNCM("1906977699"),
+        lrcFetchFrom: () => getLRCFromNCM("1906977699"),
+    },
+    {
         title: "心拍数#0822 - H△G",
         fetchFrom: () => getUrlFromNCM("472219448"),
         lrcFetchFrom: () => getLRCFromNCM("472219448"),
