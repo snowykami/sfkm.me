@@ -36,9 +36,14 @@ export default function DraggableWindow({
 
 
   // 检测移动端
+  // 检测移动端
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
+      const ww = window.innerWidth
+      const wh = window.innerHeight
+      const ratio = ww / wh
+      // 宽度小于600 或 宽高比小于0.625（约等于10:16）都视为移动端
+      setIsMobile(ww < 600 || ratio < 0.625)
     }
     checkMobile()
     window.addEventListener("resize", checkMobile)
@@ -56,6 +61,12 @@ export default function DraggableWindow({
       setSize(s => ({ ...s, height: initialHeight }))
     }
   }, [initialHeight])
+
+  useEffect(() => {
+    if (initialWidth) {
+      setSize(s => ({ ...s, width: initialWidth }))
+    }
+  }, [initialWidth])
 
   useEffect(() => {
     setSize({ width: 384, height: 600 })
@@ -127,11 +138,11 @@ export default function DraggableWindow({
           }
           : position
       }
-      minWidth={320}
+      minWidth={220}
       minHeight={200}
       bounds="window"
-      disableDragging={isMaximized || isMobile}
-      enableResizing={!isMaximized && !isMobile}
+      disableDragging={isMaximized}
+      enableResizing={!isMaximized}
       style={{
         zIndex: initialZ + 1000,
         borderRadius: (isMaximized || isMobile) ? 0 : 16,

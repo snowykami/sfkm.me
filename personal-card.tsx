@@ -17,7 +17,7 @@ import Dock from "./components/windows/Dock"
 
 // float button
 import { MobileLangFloatButton } from "@/components/widgets/MobileLangFloatButton"
-import { MobileThemeFloatButton} from "@/components/widgets/ThemeFloatButton"
+import { MobileThemeFloatButton } from "@/components/widgets/ThemeFloatButton"
 
 
 import { useTranslation } from "react-i18next"
@@ -38,9 +38,16 @@ const HASH_TO_ID = {
 }
 
 // 智能窗口布局计算函数
-function calculateOptimalLayout(windowCount: number, screenWidth: number, screenHeight: number) {
-  const WINDOW_WIDTH = 384
-  let WINDOW_HEIGHT = 500 // 默认高度
+function calculateOptimalLayout(
+  windowCount: number,
+  screenWidth: number,
+  screenHeight: number,
+  forceRows?: number
+) {
+  const MIN_WINDOW_WIDTH = 220 // 你可以根据实际体验调整
+  const MAX_WINDOW_WIDTH = 384
+  let WINDOW_WIDTH = MAX_WINDOW_WIDTH
+  let WINDOW_HEIGHT = 500
   const MIN_MARGIN = 30
   const DOCK_HEIGHT = 80
   const MENU_BAR_HEIGHT = 28
@@ -48,17 +55,31 @@ function calculateOptimalLayout(windowCount: number, screenWidth: number, screen
   const availableWidth = screenWidth - MIN_MARGIN * 2
   const availableHeight = screenHeight - MIN_MARGIN * 2 - DOCK_HEIGHT - MENU_BAR_HEIGHT
 
-  const maxWindowsPerRow = Math.floor(availableWidth / (WINDOW_WIDTH + MIN_MARGIN))
-  const actualWindowsPerRow = Math.min(maxWindowsPerRow, windowCount)
-  const rows = Math.ceil(windowCount / actualWindowsPerRow)
+  let rows: number
+  let actualWindowsPerRow: number
 
-  // 动态调整窗口高度（只在多行时）
+  if (forceRows) {
+    rows = forceRows
+    actualWindowsPerRow = Math.ceil(windowCount / rows)
+  } else {
+    const maxWindowsPerRow = Math.floor(availableWidth / (MIN_WINDOW_WIDTH + MIN_MARGIN))
+    actualWindowsPerRow = Math.min(maxWindowsPerRow, windowCount)
+    rows = Math.ceil(windowCount / actualWindowsPerRow)
+  }
+
+  // 重新计算窗口宽度，保证不会重叠
+  WINDOW_WIDTH = Math.min(
+    MAX_WINDOW_WIDTH,
+    Math.max(
+      MIN_WINDOW_WIDTH,
+      Math.floor((availableWidth - actualWindowsPerRow * MIN_MARGIN) / actualWindowsPerRow)
+    )
+  )
+
+  // 动态调整窗口高度
   if (rows > 1) {
-    // 总可用高度 = 所有窗口高度 + 所有间距
-    // rows * h + (rows+1)*MIN_MARGIN = availableHeight
-    // => h = (availableHeight - (rows+1)*MIN_MARGIN) / rows
     WINDOW_HEIGHT = Math.max(
-    200, // 最小高度
+      200,
       Math.floor((availableHeight - (rows + 1) * MIN_MARGIN) / rows)
     )
   }
@@ -86,15 +107,20 @@ function calculateOptimalLayout(windowCount: number, screenWidth: number, screen
     const x = horizontalSpacing + col * (WINDOW_WIDTH + horizontalSpacing) + rowOffset
     const y = MENU_BAR_HEIGHT + verticalSpacing + row * (WINDOW_HEIGHT + verticalSpacing)
 
-    positions.push({ x: Math.round(x), y: Math.round(y), width: WINDOW_WIDTH, height: WINDOW_HEIGHT })
+    positions.push({
+      x: Math.round(x),
+      y: Math.round(y),
+      width: WINDOW_WIDTH,
+      height: WINDOW_HEIGHT,
+    })
   }
 
   return positions
 }
-
 export default function Component() {
   const { t } = useTranslation()
   const initialHeight = 500 // 初始高度
+  const initialWidth = 384 // 初始宽度
   const [windows, setWindows] = useState([
     {
       id: "profile",
@@ -108,6 +134,7 @@ export default function Component() {
       y: 50,
       z: 1000,
       height: initialHeight, // 初始高度
+      width: initialWidth, // 初始宽度
     },
     {
       id: "projects",
@@ -121,6 +148,7 @@ export default function Component() {
       y: 50,
       z: 999,
       height: initialHeight, // 初始高度
+      width: initialWidth, // 初始宽度
     },
     {
       id: "skills",
@@ -134,6 +162,7 @@ export default function Component() {
       y: 350,
       z: 998,
       height: initialHeight, // 初始高度
+      width: initialWidth, // 初始宽度
     },
     {
       id: "contact",
@@ -147,6 +176,7 @@ export default function Component() {
       y: 350,
       z: 997,
       height: initialHeight, // 初始高度
+      width: initialWidth, // 初始宽度
     },
   ])
 
@@ -159,9 +189,16 @@ export default function Component() {
     const checkMobileAndCalculateLayout = () => {
       const mobile = window.innerWidth < 768
       setIsMobile(mobile)
-      // 只在桌面端计算布局
       if (!mobile && !isLayoutCalculated) {
-        const positions = calculateOptimalLayout(windows.length, window.innerWidth, window.innerHeight)
+        // 判断宽高比
+        const ratio = window.innerWidth / window.innerHeight
+        const forceRows = ratio < 1.4 ? 2 : 1 // 竖屏或接近正方形用双行，否则单行
+        const positions = calculateOptimalLayout(
+          windows.length,
+          window.innerWidth,
+          window.innerHeight,
+          forceRows
+        )
         setWindows((prev) =>
           prev.map((window, index) => ({
             ...window,
@@ -170,7 +207,6 @@ export default function Component() {
             height: positions[index]?.height || window.height,
           })),
         )
-
         setIsLayoutCalculated(true)
       }
     }
@@ -363,6 +399,7 @@ export default function Component() {
             initialY={window.y}
             initialZ={window.z}
             initialHeight={window.height}
+            initialWidth={window.width}
             isVisible={window.isVisible}
             isMinimized={window.isMinimized}
             isMaximized={window.isMaximized}
@@ -388,7 +425,7 @@ export default function Component() {
         openWindow={openWindow}
       />
       {/* 添加自定义动画样式 */}
-      
+
     </div>
   )
 }
