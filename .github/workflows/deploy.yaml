@@ -31,8 +31,8 @@ jobs:
       - name: Install Playwright and screenshot
         run: |
           npm install --save-dev playwright
-          npx playwright install
-          npx playwright scripts/screenshot.js
+          npx playwright install --with-deps
+          node scripts/screenshot.js
 
       - name: Commit new preview screenshot
         run: |
