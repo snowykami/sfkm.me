@@ -39,11 +39,8 @@ export default function DraggableWindow({
   // 检测移动端
   useEffect(() => {
     const checkMobile = () => {
-      const ww = window.innerWidth
-      const wh = window.innerHeight
-      const ratio = ww / wh
       // 宽度小于600 或 宽高比小于0.625（约等于10:16）都视为移动端
-      setIsMobile(ww < 600 || ratio < 0.625)
+      setIsMobile(window.innerWidth <= 768)
     }
     checkMobile()
     window.addEventListener("resize", checkMobile)
