@@ -1,14 +1,18 @@
 // 播放器组件
-import React, { useState, useRef, useEffect, } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { CirclePlay, CirclePause, SkipForward, SkipBack } from "lucide-react"
 import LyricParser from "lyric-parser"
 import { VolumeWidget } from "./volume-widget"
 
+// fetchFrom和src二选一，优先判断src，若为null则使用fetchFrom从异步函数获取URL
 interface Song {
     title: string
-    src: string
+    src?: string
+    fetchFrom?: () => Promise<string>   // 解析的音频url
     lrc?: string
+    lrcFetchFrom?: () => Promise<string>    // 解析的歌词文本/不是url
     cover?: string
+    offset?: number // 歌词偏移，单位毫秒
 }
 
 type LyricLine = {
@@ -16,33 +20,58 @@ type LyricLine = {
     txt: string
 }
 
+async function getUrlFromNCM(mid: string): Promise<string> {
+    const response = await fetch(`https://music.0013107.xyz/music/?action=netease&module=get_url&mids=${mid}`)
+    if (!response.ok) {
+        throw new Error("获取歌曲 URL 失败")
+    }
+    const data = await response.json()
+    return data.data[0].url.replace("http://", "https://") // 确保使用 HTTPS
+}
+
+async function getLRCFromNCM(mid: string): Promise<string> {
+    const response = await fetch(`https://ncm.api.liteyuki.org/api/song/media?id=${mid}`)
+    if (!response.ok) {
+        throw new Error("获取歌词失败")
+    }
+    const data = await response.json()
+    return data.lyric || ""
+}
+
 const songs: Song[] = [
     {
-        title: "あの夢をなぞって(初音ミク Ver.) - Ayase, 初音ミク",
-        src: "https://drive.liteyuki.org/f/aMTO/Ayase%2C%E5%88%9D%E9%9F%B3%E3%83%9F%E3%82%AF%20-%20%E3%81%82%E3%81%AE%E5%A4%A2%E3%82%92%E3%81%AA%E3%81%9D%E3%82%99%E3%81%A3%E3%81%A6%20%28%E5%88%9D%E9%9F%B3%E3%83%9F%E3%82%AF%20Ver.%29.flac",
-        lrc: "https://drive.liteyuki.org/f/gKik/Ayase%2C%E5%88%9D%E9%9F%B3%E3%83%9F%E3%82%AF%20-%20%E3%81%82%E3%81%AE%E5%A4%A2%E3%82%92%E3%81%AA%E3%81%9D%E3%82%99%E3%81%A3%E3%81%A6%20%28%E5%88%9D%E9%9F%B3%E3%83%9F%E3%82%AF%20Ver.%29.lrc"
+        title: "夜に駆ける(初音ミク ver.) - Ayase, 初音ミク",
+        fetchFrom: () => getUrlFromNCM("1466019525"),
+        lrcFetchFrom: () => getLRCFromNCM("1466019525"),
     },
     {
-        title: "不因寂寞才想你 - 1个球",
-        src: "https://drive.liteyuki.org/f/JEhn/1%E4%B8%AA%E7%90%83%20-%20%E4%B8%8D%E6%98%AF%E5%9B%A0%E4%B8%BA%E5%AF%82%E5%AF%9E%E6%89%8D%E6%83%B3%E4%BD%A0.flac",
-        lrc: "https://drive.liteyuki.org/f/lKfn/1%E4%B8%AA%E7%90%83%20-%20%E4%B8%8D%E6%98%AF%E5%9B%A0%E4%B8%BA%E5%AF%82%E5%AF%9E%E6%89%8D%E6%83%B3%E4%BD%A0.lrc"
+        title: "希望有羽毛和翅膀 - 知更鸟 / HOYO-MiX / Chevy",
+        fetchFrom: () => getUrlFromNCM("2155423468"),
+        lrcFetchFrom: () => getLRCFromNCM("2155423468"),
+        offset: -6500,
     },
     {
-        title: "爱言叶III - DECO*27, 初音ミク",
-        src: "https://drive.liteyuki.org/f/DdSL/DECO27%2C%E5%88%9D%E9%9F%B3%E3%83%9F%E3%82%AF%20-%20%E6%84%9B%E8%A8%80%E8%91%89III.flac",
-        lrc: "https://drive.liteyuki.org/f/OVCz/DECO27%2C%E5%88%9D%E9%9F%B3%E3%83%9F%E3%82%AF%20-%20%E6%84%9B%E8%A8%80%E8%91%89III.lrc"
+        title: "心拍数#0822 - H△G",
+        fetchFrom: () => getUrlFromNCM("472219448"),
+        lrcFetchFrom: () => getLRCFromNCM("472219448"),
     },
     {
-        title: "同担☆拒否 - HoneyWorks, かぴ",
-        src: "https://drive.liteyuki.org/f/B9Un/HoneyWorks%2C%E3%81%8B%E3%81%B2%E3%82%9A%20-%20%E5%90%8C%E6%8B%85%E2%98%86%E6%8B%92%E5%90%A6.flac",
-        lrc: "https://drive.liteyuki.org/f/3Bum/HoneyWorks%2C%E3%81%8B%E3%81%B2%E3%82%9A%20-%20%E5%90%8C%E6%8B%85%E2%98%86%E6%8B%92%E5%90%A6.lrc"
+        title: "乙女的ストーキング - なるみや",
+        fetchFrom: () => getUrlFromNCM("2118709322"),
+        lrcFetchFrom: () => getLRCFromNCM("2118709322"),
     },
+    {
+        title: "轻涟 La vaguelette - HOYO-MiX",
+        fetchFrom: () => getUrlFromNCM("2100334024"),
+        lrcFetchFrom: () => getLRCFromNCM("2100334024"),
+    }
 ]
 
 export function PlayerWidget() {
     const [currentSongIndex, setCurrentSongIndex] = useState(0)
     const [isPlaying, setIsPlaying] = useState(false)
     const [currentLrc, setCurrentLrc] = useState("")
+    const [audioSrc, setAudioSrc] = useState<string>("")
     const [, setMarqueeActive] = useState(false)
     const audioRef = useRef<HTMLAudioElement>(null)
     const lyricParserRef = useRef<LyricParser | null>(null)
@@ -50,9 +79,40 @@ export function PlayerWidget() {
     const lyricBoxRef = useRef<HTMLDivElement>(null)
     const lyricTextRef = useRef<HTMLDivElement>(null)
     const isPlayingRef = useRef(isPlaying)
+    const [lyricFade, setLyricFade] = useState(true) // 控制歌词淡入淡出
+    // 歌词切换时动画
+    useEffect(() => {
+        setLyricFade(false) // 先淡出
+        const timer = setTimeout(() => {
+            setLyricFade(true) // 再淡入
+        }, 200) // 200ms淡出，再淡入
+        return () => clearTimeout(timer)
+    }, [currentLrc, currentSongIndex])
+
     useEffect(() => {
         isPlayingRef.current = isPlaying
     }, [isPlaying])
+
+    // 歌曲切换或播放时，优先用src，否则用fetchFrom
+    useEffect(() => {
+        let cancelled = false
+        const song = songs[currentSongIndex]
+        async function resolveSrc() {
+            if (song.src) {
+                setAudioSrc(song.src)
+            } else if (song.fetchFrom) {
+                const url = await song.fetchFrom()
+                song.src = url // 缓存直链，避免重复请求
+                if (!cancelled) setAudioSrc(url)
+            } else {
+                setAudioSrc("")
+            }
+        }
+        if (isPlaying) {
+            resolveSrc()
+        }
+        return () => { cancelled = true }
+    }, [currentSongIndex, isPlaying])
 
     // 歌词加载和同步
     useEffect(() => {
@@ -61,36 +121,49 @@ export function PlayerWidget() {
         lyricParserRef.current = null
         const currentSong = songs[currentSongIndex]
         let isActive = true // 标志当前 effect 是否有效
-        if (currentSong?.lrc) {
-            fetch(currentSong.lrc)
-                .then(res => res.text())
-                .then(text => {
-                    lyricParserRef.current = new LyricParser(
-                        text,
-                        (line: LyricLine) => {
-                            if (!isActive) return
-                            if (!isPlayingRef.current) return
-                            if (line.txt !== lastLrcRef.current) {
-                                lastLrcRef.current = line.txt
-                                setCurrentLrc(line.txt)
-                            }
-                        }
-                    )
-                    if (audioRef.current) {
-                        lyricParserRef.current.seek(audioRef.current.currentTime * 1000)
-                    }
-                })
-                .catch(err => {
+
+        async function loadLrc() {
+            let lrcText = ""
+            try {
+                if (currentSong?.lrc) {
+                    lrcText = await fetch(currentSong.lrc).then(res => res.text())
+                } else if (currentSong?.lrcFetchFrom) {
+                    lrcText = await currentSong.lrcFetchFrom() // 这里直接拿到歌词文本
+                }
+            } catch (err) {
+                if (!isActive) return
+                console.error("加载歌词失败", err)
+                lyricParserRef.current = null
+                setCurrentLrc("")
+                return
+            }
+            if (!isActive) return
+            lyricParserRef.current = new LyricParser(
+                lrcText,
+                (line: LyricLine) => {
                     if (!isActive) return
-                    console.error("加载歌词失败", err)
-                    lyricParserRef.current = null
-                    setCurrentLrc("")
-                })
+                    if (!isPlayingRef.current) return
+                    if (line.txt !== lastLrcRef.current) {
+                        lastLrcRef.current = line.txt
+                        console.log("当前歌词：", line.txt)
+                        setCurrentLrc(line.txt)
+                    }
+                }
+            )
+            if (audioRef.current) {
+                const offset = songs[currentSongIndex]?.offset ?? 0
+                lyricParserRef.current.seek(audioRef.current.currentTime * 1000 - offset)
+            }
         }
+
+        if (currentSong?.lrc || currentSong?.lrcFetchFrom) {
+            loadLrc()
+        }
+
         return () => {
             isActive = false // 切歌时让旧回调失效
         }
-    }, [currentSongIndex])
+    }, [currentSongIndex, audioSrc])
 
     // 跑马灯动画控制：歌词变化或歌曲切换时判断是否需要动画
     useEffect(() => {
@@ -111,14 +184,15 @@ export function PlayerWidget() {
         if (!audio) return
         const handleTimeUpdate = () => {
             if (lyricParserRef.current) {
-                lyricParserRef.current.seek(audio.currentTime * 1000)
+                const offset = songs[currentSongIndex]?.offset ?? 0
+                lyricParserRef.current.seek(audio.currentTime * 1000 - offset)
             }
         }
         audio.addEventListener("timeupdate", handleTimeUpdate)
         return () => {
             audio.removeEventListener("timeupdate", handleTimeUpdate)
         }
-    }, [])
+    }, [currentSongIndex])
 
     // 播放/暂停时控制 audio
     useEffect(() => {
@@ -129,7 +203,7 @@ export function PlayerWidget() {
         } else {
             audioRef.current?.pause()
         }
-    }, [isPlaying, currentSongIndex])
+    }, [isPlaying, audioSrc])
 
     const handlePlayPause = () => {
         if (audioRef.current) {
@@ -148,7 +222,6 @@ export function PlayerWidget() {
         setIsPlaying(true)
     }
 
-
     return (
         <div className="flex items-center space-x-2 px-4 py-2">
             <div
@@ -160,13 +233,21 @@ export function PlayerWidget() {
                     className="w-full text-right text-sm font-medium text-slate-700 dark:text-slate-300 pr-2"
                     style={{
                         whiteSpace: "nowrap",
-                        overflow: "visible", // 不裁剪
-                        direction: "rtl",    // 让文本右端对齐容器右侧，左侧无限延伸
-                        textAlign: "left"    // 让内容从右往左自然排列
+                        overflow: "visible",
+                        direction: "rtl",
+                        textAlign: "left"
                     }}
                 >
-                    <span style={{ direction: "ltr", unicodeBidi: "plaintext" }}>
-                        {songs[currentSongIndex]?.lrc
+                    <span
+                        style={{
+                            direction: "ltr",
+                            unicodeBidi: "plaintext",
+                            transition: "opacity 0.3s",
+                            opacity: lyricFade ? 1 : 0,
+                            display: "inline-block"
+                        }}
+                    >
+                        {(songs[currentSongIndex]?.lrc || songs[currentSongIndex]?.lrcFetchFrom)
                             ? (currentLrc || songs[currentSongIndex]?.title || "loading...")
                             : songs[currentSongIndex]?.title}
                     </span>
@@ -181,7 +262,10 @@ export function PlayerWidget() {
             <button onClick={handleNext} className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full">
                 <SkipForward className="w-5 h-5" />
             </button>
-            <audio ref={audioRef} src={songs[currentSongIndex]?.src} onEnded={handleNext} />
+            {/* 只有audioSrc有值时才渲染audio，避免空字符串警告 */}
+            {audioSrc ? (
+                <audio ref={audioRef} src={audioSrc} onEnded={handleNext} />
+            ) : null}
             <VolumeWidget audioRef={audioRef} />
         </div>
     )
