@@ -377,12 +377,6 @@ export default function Component() {
         restoreWindow={restoreWindow}
         openWindow={openWindow}
       />
-      <iframe
-        width={330}
-        height={86}
-        src="https://music.163.com/outchain/player?type=2&id=2105406259&auto=1&height=66"
-        style={{ display: "none", border: "none" }}
-      />
       {/* 添加自定义动画样式 */}
       
     </div>
