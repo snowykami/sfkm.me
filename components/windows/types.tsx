@@ -17,4 +17,5 @@ export interface WindowProps {
   showClose?: boolean
   showMinimize?: boolean
   showMaximize?: boolean
+  windowType?: "default" | "mobile"
 }

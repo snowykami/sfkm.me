@@ -31,6 +31,7 @@ export default function DraggableWindow({
   const [savedPosition, setSavedPosition] = useState({ x: initialX, y: initialY })
   const [isMobile, setIsMobile] = useState(false)
   const windowRef = useRef<HTMLDivElement>(null)
+  
 
   // 检测移动端
   useEffect(() => {
