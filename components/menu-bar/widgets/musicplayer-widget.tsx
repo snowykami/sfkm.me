@@ -68,6 +68,7 @@ const songs: SongOrPromise[] = [
 ]
 
 const STORAGE_KEY = "musicplayer_state"
+const PLAYMODE_KEY = "musicplayer_playmode"
 
 // 1. 初始化时直接读取 localStorage
 function getInitialState() {
@@ -116,12 +117,17 @@ export function MusicPlayerWidget() {
     const [pendingSeek, setPendingSeek] = useState<number | null>(initial.time > 0 ? initial.time : null)
     const [playMode, setPlayMode] = useState<PlayMode>("order")
 
-    // 切换播放模式
+    // 切换播放模式并保存
     const handleSwitchPlayMode = () => {
         setPlayMode(mode => {
-            if (mode === "order") return "repeat-one"
-            if (mode === "repeat-one") return "shuffle"
-            return "order"
+            let next: PlayMode
+            if (mode === "order") next = "repeat-one"
+            else if (mode === "repeat-one") next = "shuffle"
+            else next = "order"
+            try {
+                localStorage.setItem(PLAYMODE_KEY, next)
+            } catch { }
+            return next
         })
     }
 
