@@ -58,8 +58,25 @@ const songs: SongOrPromise[] = [
     () => fetchSongFromNCM("2100334024"),   // 轻涟 La vaguelette - HOYO-MiX
 ]
 
+const STORAGE_KEY = "musicplayer_state"
+
 export function MusicPlayerWidget() {
-    const [currentSongIndex, setCurrentSongIndex] = useState(0)
+    // 1. 初始化时优先读取 localStorage，没有则随机
+    const [currentSongIndex, setCurrentSongIndex] = useState(() => {
+        if (typeof window !== "undefined") {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY)
+                if (saved) {
+                    const { index } = JSON.parse(saved)
+                    if (typeof index === "number" && index >= 0 && index < songs.length) {
+                        return index
+                    }
+                }
+            } catch { }
+            return Math.floor(Math.random() * songs.length)
+        }
+        return 0
+    })
     const [currentSong, setCurrentSong] = useState<Song | null>(null)
     const [isPlaying, setIsPlaying] = useState(false)
     const [currentLrc, setCurrentLrc] = useState("")
@@ -73,13 +90,48 @@ export function MusicPlayerWidget() {
     const isPlayingRef = useRef(isPlaying)
     const lastLrcRef = useRef("")
     const lyricRef = useRef<Lyric | null>(null)
-
-    // 封面旋转效果
     const [coverRotate, setCoverRotate] = useState(0)
     const rotateRef = useRef(0)
     const animFrameRef = useRef<number>(0)
-    // 用于唯一标识当前歌词解析器
     const lrcSessionRef = useRef(0)
+
+    // 2. 恢复播放进度
+    useEffect(() => {
+        if (typeof window === "undefined") return
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY)
+            if (saved) {
+                const { index, time } = JSON.parse(saved)
+                if (audioRef.current && typeof time === "number" && index === currentSongIndex) {
+                    audioRef.current.currentTime = time
+                }
+            }
+        } catch { }
+    }, [audioSrc, currentSongIndex])
+
+    // 3. 切歌或进度变化时保存
+    useEffect(() => {
+        if (typeof window === "undefined") return
+        const saveState = () => {
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify({
+                    index: currentSongIndex,
+                    time: audioRef.current?.currentTime || 0,
+                })
+            )
+        }
+        // 保存索引
+        saveState()
+        // 保存进度
+        const audio = audioRef.current
+        if (audio) {
+            audio.addEventListener("timeupdate", saveState)
+            return () => audio.removeEventListener("timeupdate", saveState)
+        }
+    }, [currentSongIndex, audioSrc])
+
+    // ...其余 useEffect 和逻辑保持不变...
 
     useEffect(() => {
         if (!isPlaying) return
@@ -87,7 +139,6 @@ export function MusicPlayerWidget() {
         function animate(now: number) {
             const delta = now - last
             last = now
-            // 4秒一圈，360/4000 = 0.09 deg/ms
             rotateRef.current += delta * 0.09
             setCoverRotate(rotateRef.current)
             animFrameRef.current = requestAnimationFrame(animate)
@@ -98,13 +149,11 @@ export function MusicPlayerWidget() {
         }
     }, [isPlaying])
 
-    // 切歌时重置角度
     useEffect(() => {
         rotateRef.current = 0
         setCoverRotate(0)
     }, [currentSongIndex])
 
-    // Media Session API 整合
     useEffect(() => {
         const audio = audioRef.current
         if (!audio) return
@@ -131,8 +180,8 @@ export function MusicPlayerWidget() {
 
         navigator.mediaSession.metadata = new window.MediaMetadata({
             title: currentSong.title,
-            artist: currentSong.artist || "Unknown", // 你可以补充歌手名
-            album: currentSong.album || "Unknown", // 你可以补充专辑名
+            artist: currentSong.artist || "Unknown",
+            album: currentSong.album || "Unknown",
             artwork: currentSong.cover
                 ? [
                     { src: currentSong.cover, sizes: "96x96", type: "image/png" },
@@ -163,7 +212,6 @@ export function MusicPlayerWidget() {
                 )
             }
         })
-        // 清理
         return () => {
             navigator.mediaSession.setActionHandler("play", null)
             navigator.mediaSession.setActionHandler("pause", null)
@@ -176,7 +224,6 @@ export function MusicPlayerWidget() {
         isPlayingRef.current = isPlaying
     }, [isPlaying])
 
-    // 切歌时请求歌曲信息
     useEffect(() => {
         let cancelled = false
         const songOrPromise = songs[currentSongIndex]
@@ -203,7 +250,6 @@ export function MusicPlayerWidget() {
         return () => { cancelled = true }
     }, [currentSongIndex])
 
-    // 音频地址加载
     useEffect(() => {
         if (currentSong?.src) {
             setAudioSrc(currentSong.src)
@@ -212,12 +258,10 @@ export function MusicPlayerWidget() {
         }
     }, [currentSong])
 
-    // 歌曲切换时立即清空歌词显示
     useEffect(() => {
         if (!currentSong?.lrc) setDisplayLrc("")
     }, [currentSongIndex, currentSong?.lrc])
 
-    // 歌词切换动画
     useEffect(() => {
         if (currentLrc === displayLrc) return
         setLyricFade(false)
@@ -228,7 +272,6 @@ export function MusicPlayerWidget() {
         return () => clearTimeout(timer)
     }, [currentLrc, displayLrc])
 
-    // 歌词加载和同步（只允许一个歌词解析器生效）
     useEffect(() => {
         setCurrentLrc("")
         lastLrcRef.current = ""
@@ -244,12 +287,11 @@ export function MusicPlayerWidget() {
             return
         }
 
-        // 创建新的歌词解析实例
         const parser = new Lyric({
             lyric: currentSong.lrc,
             offset: currentSong.offset ?? 0,
             onPlay: (_lineNum: number, text: string) => {
-                if (lrcSessionRef.current !== thisSession) return // 已切歌
+                if (lrcSessionRef.current !== thisSession) return
                 if (!isPlayingRef.current) return
                 if (text !== lastLrcRef.current) {
                     lastLrcRef.current = text
@@ -259,7 +301,6 @@ export function MusicPlayerWidget() {
         })
         lyricRef.current = parser
 
-        // 歌曲切换时立即同步到当前播放进度
         if (audioRef.current) {
             parser.play(audioRef.current.currentTime * 1000)
         }
@@ -270,7 +311,6 @@ export function MusicPlayerWidget() {
         }
     }, [currentSong, audioSrc, currentSongIndex])
 
-    // 跑马灯动画
     useEffect(() => {
         setMarqueeActive(false)
         const timer = setTimeout(() => {
@@ -283,12 +323,10 @@ export function MusicPlayerWidget() {
         return () => clearTimeout(timer)
     }, [displayLrc, currentSongIndex])
 
-    // 歌词和播放进度同步
     useEffect(() => {
         const audio = audioRef.current
         if (!audio) return
 
-        // 进度变化时同步歌词
         const handleTimeUpdate = () => {
             if (lyricRef.current && currentSong?.lrc) {
                 const offset = currentSong.offset ?? 0
@@ -296,7 +334,6 @@ export function MusicPlayerWidget() {
             }
         }
 
-        // 拖动进度条时也要同步歌词
         const handleSeeked = () => {
             if (lyricRef.current && currentSong?.lrc) {
                 const offset = currentSong.offset ?? 0
@@ -312,7 +349,6 @@ export function MusicPlayerWidget() {
         }
     }, [currentSong?.lrc, currentSong?.offset, currentSongIndex])
 
-    // 播放/暂停时控制 audio
     useEffect(() => {
         if (isPlaying) {
             audioRef.current?.play().catch(err => {
@@ -339,7 +375,6 @@ export function MusicPlayerWidget() {
         setCurrentSongIndex(prev => (prev === songs.length - 1 ? 0 : prev + 1))
         setIsPlaying(true)
     }
-
 
     return (
         <div className="flex items-center space-x-2 px-4 py-2">
@@ -373,7 +408,6 @@ export function MusicPlayerWidget() {
                     </span>
                 </div>
             </div>
-            {/* 封面图，放在上一首按钮左侧 */}
             {currentSong?.cover ? (
                 <div
                     className="flex items-center justify-center relative"
@@ -400,7 +434,6 @@ export function MusicPlayerWidget() {
                         style={{ minWidth: 18, minHeight: 18 }}
                         unoptimized
                     />
-                    {/* 可选：水印 */}
                 </div>
             ) : (
                 <div
