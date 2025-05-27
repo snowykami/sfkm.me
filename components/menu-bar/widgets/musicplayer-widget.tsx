@@ -393,7 +393,7 @@ export function MusicPlayerWidget() {
                 >
                     <Image
                         src={currentSong.cover}
-                        alt="cover"
+                        alt={currentSong.album || "cover"}
                         width={18}
                         height={18}
                         className="rounded-full"
