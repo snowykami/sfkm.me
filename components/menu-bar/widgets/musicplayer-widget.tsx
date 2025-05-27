@@ -112,24 +112,27 @@ export function MusicPlayerWidget() {
     // 3. 切歌或进度变化时保存
     useEffect(() => {
         if (typeof window === "undefined") return
-        const saveState = () => {
-            localStorage.setItem(
-                STORAGE_KEY,
-                JSON.stringify({
-                    index: currentSongIndex,
-                    time: audioRef.current?.currentTime || 0,
-                })
-            )
-        }
-        // 保存索引
-        saveState()
-        // 保存进度
+        let savedTime = 0
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY)
+            if (saved) {
+                const { index, time } = JSON.parse(saved)
+                if (typeof time === "number" && index === currentSongIndex) {
+                    savedTime = time
+                }
+            }
+        } catch { }
         const audio = audioRef.current
-        if (audio) {
-            audio.addEventListener("timeupdate", saveState)
-            return () => audio.removeEventListener("timeupdate", saveState)
+        if (audio && savedTime > 0) {
+            const setTime = () => {
+                audio.currentTime = savedTime
+            }
+            audio.addEventListener("loadedmetadata", setTime)
+            // 如果已经加载好，直接设置
+            if (audio.readyState >= 1) setTime()
+            return () => audio.removeEventListener("loadedmetadata", setTime)
         }
-    }, [currentSongIndex, audioSrc])
+    }, [audioSrc, currentSongIndex])
 
     // ...其余 useEffect 和逻辑保持不变...
 
