@@ -36,9 +36,9 @@ async function fetchSongFromNCM(mid: string, offset: number = 0): Promise<Song> 
 // 歌曲列表，支持常量和懒加载
 const songs: SongOrPromise[] = [
     // 懒加载
-    () => fetchSongFromNCM("2165386067"), // 糖果色的梦 - Kirara
+    () => fetchSongFromNCM("2165386067", 1200), // 糖果色的梦 - Kirara
     () => fetchSongFromNCM("2155423468", -6000), // 希望有羽毛和翅膀
-    () => fetchSongFromNCM("1944651767"),   // Antler - 鹿角
+    () => fetchSongFromNCM("1944651767",),   // Antler - 鹿角
     () => fetchSongFromNCM("1466019525"),   // 夜に駆ける(初音ミク ver.)
     () => fetchSongFromNCM("2616952326"),   // 夢で逢いましょう
     () => fetchSongFromNCM("1991282192"),   // Automaton Waltz - Plum - Melodic Artist
