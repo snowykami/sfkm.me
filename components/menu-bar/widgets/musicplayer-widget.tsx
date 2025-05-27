@@ -70,10 +70,59 @@ export function MusicPlayerWidget() {
     const isPlayingRef = useRef(isPlaying)
     const lastLrcRef = useRef("")
     const lyricRef = useRef<Lyric | null>(null)
+
+    // 封面旋转效果
+    const [coverRotate, setCoverRotate] = useState(0)
+    const rotateRef = useRef(0)
+    const animFrameRef = useRef<number>()
     // 用于唯一标识当前歌词解析器
     const lrcSessionRef = useRef(0)
 
+    useEffect(() => {
+        if (!isPlaying) return
+        let last = performance.now()
+        function animate(now: number) {
+            const delta = now - last
+            last = now
+            // 4秒一圈，360/4000 = 0.09 deg/ms
+            rotateRef.current += delta * 0.09
+            setCoverRotate(rotateRef.current)
+            animFrameRef.current = requestAnimationFrame(animate)
+        }
+        animFrameRef.current = requestAnimationFrame(animate)
+        return () => {
+            if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
+        }
+    }, [isPlaying])
+
+    // 切歌时重置角度
+    useEffect(() => {
+        rotateRef.current = 0
+        setCoverRotate(0)
+    }, [currentSongIndex])
+
     // Media Session API 整合
+    useEffect(() => {
+        const audio = audioRef.current
+        if (!audio) return
+        const onPlay = () => {
+            if ("mediaSession" in navigator) {
+                navigator.mediaSession.playbackState = "playing"
+            }
+        }
+        const onPause = () => {
+            if ("mediaSession" in navigator) {
+                navigator.mediaSession.playbackState = "paused"
+            }
+        }
+        audio.addEventListener("play", onPlay)
+        audio.addEventListener("pause", onPause)
+        return () => {
+            audio.removeEventListener("play", onPlay)
+            audio.removeEventListener("pause", onPause)
+        }
+    }, [audioSrc])
+
     useEffect(() => {
         if (!("mediaSession" in navigator) || !currentSong) return
 
@@ -93,6 +142,24 @@ export function MusicPlayerWidget() {
         navigator.mediaSession.setActionHandler("pause", () => setIsPlaying(false))
         navigator.mediaSession.setActionHandler("previoustrack", handlePrev)
         navigator.mediaSession.setActionHandler("nexttrack", handleNext)
+        navigator.mediaSession.setActionHandler("seekto", (details) => {
+            if (audioRef.current && typeof details.seekTime === "number") {
+                audioRef.current.currentTime = details.seekTime
+            }
+        })
+        navigator.mediaSession.setActionHandler("seekbackward", (details) => {
+            if (audioRef.current) {
+                audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - (details.seekOffset || 10))
+            }
+        })
+        navigator.mediaSession.setActionHandler("seekforward", (details) => {
+            if (audioRef.current) {
+                audioRef.current.currentTime = Math.min(
+                    audioRef.current.duration || Infinity,
+                    audioRef.current.currentTime + (details.seekOffset || 10)
+                )
+            }
+        })
         // 清理
         return () => {
             navigator.mediaSession.setActionHandler("play", null)
@@ -217,15 +284,28 @@ export function MusicPlayerWidget() {
     useEffect(() => {
         const audio = audioRef.current
         if (!audio) return
+
+        // 进度变化时同步歌词
         const handleTimeUpdate = () => {
             if (lyricRef.current && currentSong?.lrc) {
                 const offset = currentSong.offset ?? 0
                 lyricRef.current.play(audio.currentTime * 1000 - offset)
             }
         }
+
+        // 拖动进度条时也要同步歌词
+        const handleSeeked = () => {
+            if (lyricRef.current && currentSong?.lrc) {
+                const offset = currentSong.offset ?? 0
+                lyricRef.current.play(audio.currentTime * 1000 - offset)
+            }
+        }
+
         audio.addEventListener("timeupdate", handleTimeUpdate)
+        audio.addEventListener("seeked", handleSeeked)
         return () => {
             audio.removeEventListener("timeupdate", handleTimeUpdate)
+            audio.removeEventListener("seeked", handleSeeked)
         }
     }, [currentSong?.lrc, currentSong?.offset, currentSongIndex])
 
@@ -293,17 +373,19 @@ export function MusicPlayerWidget() {
             {/* 封面图，放在上一首按钮左侧 */}
             {currentSong?.cover ? (
                 <div
-                    className="flex items-center justify-center"
+                    className="flex items-center justify-center relative"
                     style={{
                         width: 22,
                         height: 22,
                         minWidth: 22,
                         minHeight: 22,
                         borderRadius: "50%",
-                        border: "1.5px solid #cbd5e1", // 更细的边框
+                        border: "1.5px solid #cbd5e1",
                         background: "#f1f5f9",
                         overflow: "hidden",
                         marginRight: 4,
+                        transform: `rotate(${coverRotate}deg)`,
+                        transition: isPlaying ? undefined : "transform 0.2s linear"
                     }}
                 >
                     <Image
@@ -311,10 +393,11 @@ export function MusicPlayerWidget() {
                         alt="cover"
                         width={18}
                         height={18}
-                        className={isPlaying ? "rounded-full animate-spin-slow" : "rounded-full"}
+                        className="rounded-full"
                         style={{ minWidth: 18, minHeight: 18 }}
                         unoptimized
                     />
+                    {/* 可选：水印 */}
                 </div>
             ) : (
                 <div

@@ -18,7 +18,7 @@
 - [x] 响应式设计,支持手机端和大部分比例桌面端
 - [x] 适配日间/夜间模式，支持动态检测和切换
 - [x] 支持多语言（简体中文/English/日本語），可动态切换和自动检测浏览器语言，可扩展
-- [x] 播放器支持网易云音乐（由[Liteyuki](https://github.com/LiteyukiStudio)和ffmpeg提供歌词和音频解析接口）
+- [x] 播放器支持网易云音乐和外链音乐，且实现MediaSession API（由[Liteyuki](https://github.com/LiteyukiStudio)和ffmpeg提供歌词和音频解析接口）
 
 ## 开始
 
