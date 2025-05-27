@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react"
 import Image from "next/image"
-import { CirclePlay, CirclePause, SkipForward, SkipBack } from "lucide-react"
+import { CirclePlay, CirclePause, SkipForward, SkipBack, Repeat, Repeat1, Shuffle } from "lucide-react"
 import { VolumeWidget } from "./volume-widget"
 import Lyric from 'lrc-file-parser'
 
@@ -15,6 +15,13 @@ interface Song {
     offset?: number
 }
 
+type PlayMode = "order" | "repeat-one" | "shuffle"
+
+const PLAY_MODE_ICONS = {
+    order: <Repeat className="w-5 h-5 opacity-60" />,
+    "repeat-one": <Repeat1 className="w-5 h-5 opacity-60" />,
+    shuffle: <Shuffle className="w-5 h-5 opacity-60" />,
+}
 
 type SongOrPromise = Song | Promise<Song> | (() => Promise<Song>)
 
@@ -32,7 +39,7 @@ async function fetchSongFromNCM(mid: string, offset: number = 0): Promise<Song> 
         album: songData.data[0].album || "Unknown Album",
         artist: songData.data[0].singer || "Unknown Artist",
         src: songData.data[0].url.replace("http://", "https://"),
-        lrc: lrcData.lyric || "",
+        lrc: lrcData.lyric || `[00:00:00]${songData.data[0].song} - ${songData.data[0].singer}`,
         cover: songData.data[0].cover,
         offset,
     }
@@ -52,7 +59,9 @@ const songs: SongOrPromise[] = [
     () => fetchSongFromNCM("1991282192"),   // Automaton Waltz - Plum - Melodic Artist
     () => fetchSongFromNCM("29163452"),     // 君恋し - EasyPop / 巡音ルカ
     () => fetchSongFromNCM("1906977699"),   // まっすぐ - 大原ゆい子
+    () => fetchSongFromNCM("26349198"), // 何度も RAM WIRE
     () => fetchSongFromNCM("472219448"),    // 心拍数#0822 - H△G
+    () => fetchSongFromNCM("1975923438", 1000), // 菟园
     () => fetchSongFromNCM("1819778023"), // Classy Kitty
     () => fetchSongFromNCM("2118709322", -2500),   // 乙女的ストーキング - なるみや
     () => fetchSongFromNCM("2100334024"),   // 轻涟 La vaguelette - HOYO-MiX
@@ -105,6 +114,58 @@ export function MusicPlayerWidget() {
     const animFrameRef = useRef<number>(0)
     const lrcSessionRef = useRef(0)
     const [pendingSeek, setPendingSeek] = useState<number | null>(initial.time > 0 ? initial.time : null)
+    const [playMode, setPlayMode] = useState<PlayMode>("order")
+
+    // 切换播放模式
+    const handleSwitchPlayMode = () => {
+        setPlayMode(mode => {
+            if (mode === "order") return "repeat-one"
+            if (mode === "repeat-one") return "shuffle"
+            return "order"
+        })
+    }
+
+    // 下一首逻辑根据播放模式调整
+    const handleNext = () => {
+        if (playMode === "shuffle") {
+            let next = Math.floor(Math.random() * songs.length)
+            // 避免和当前重复
+            if (songs.length > 1 && next === currentSongIndex) {
+                next = (next + 1) % songs.length
+            }
+            setCurrentSongIndex(next)
+        } else if (playMode === "repeat-one") {
+            setCurrentSongIndex(currentSongIndex) // 保持不变
+        } else {
+            setCurrentSongIndex(prev => (prev === songs.length - 1 ? 0 : prev + 1))
+        }
+        setIsPlaying(true)
+    }
+
+    // 上一首逻辑（顺序/随机模式下）
+    const handlePrev = () => {
+        if (playMode === "shuffle") {
+            let prev = Math.floor(Math.random() * songs.length)
+            if (songs.length > 1 && prev === currentSongIndex) {
+                prev = (prev + 1) % songs.length
+            }
+            setCurrentSongIndex(prev)
+        } else if (playMode === "repeat-one") {
+            setCurrentSongIndex(currentSongIndex)
+        } else {
+            setCurrentSongIndex(prev => (prev === 0 ? songs.length - 1 : prev - 1))
+        }
+        setIsPlaying(true)
+    }
+
+    // 播放结束时的行为
+    const handleEnded = () => {
+        if (playMode === "repeat-one") {
+            audioRef.current?.play()
+        } else {
+            handleNext()
+        }
+    }
 
     // 只在 audioSrc 变化且 pendingSeek 有值时设置 currentTime
     useEffect(() => {
@@ -114,7 +175,7 @@ export function MusicPlayerWidget() {
             }
             setPendingSeek(null)
         }
-    }, [audioSrc])
+    }, [audioSrc, pendingSeek])
 
     // 持续保存进度
     useEffect(() => {
@@ -370,16 +431,6 @@ export function MusicPlayerWidget() {
         setIsPlaying(prev => !prev)
     }
 
-    const handlePrev = () => {
-        setCurrentSongIndex(prev => (prev === 0 ? songs.length - 1 : prev - 1))
-        setIsPlaying(true)
-    }
-
-    const handleNext = () => {
-        setCurrentSongIndex(prev => (prev === songs.length - 1 ? 0 : prev + 1))
-        setIsPlaying(true)
-    }
-
     return (
         <div className="flex items-center space-x-2 px-4 py-2">
             <div
@@ -445,6 +496,7 @@ export function MusicPlayerWidget() {
                     style={{ width: 18, height: 18, minWidth: 18, minHeight: 18, marginRight: 4 }}
                 />
             )}
+            {/* ...上一首、播放/暂停、下一首... */}
             <button onClick={handlePrev} className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full">
                 <SkipBack className="w-5 h-5" />
             </button>
@@ -454,8 +506,22 @@ export function MusicPlayerWidget() {
             <button onClick={handleNext} className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full">
                 <SkipForward className="w-5 h-5" />
             </button>
+            <button
+                onClick={handleSwitchPlayMode}
+                className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full"
+                title={
+                    playMode === "order"
+                        ? "顺序播放"
+                        : playMode === "repeat-one"
+                            ? "单曲循环"
+                            : "随机播放"
+                }
+                style={{ marginRight: 2 }}
+            >
+                {PLAY_MODE_ICONS[playMode]}
+            </button>
             {audioSrc ? (
-                <audio ref={audioRef} src={audioSrc} onEnded={handleNext} preload="auto" />
+                <audio ref={audioRef} src={audioSrc} onEnded={handleEnded} preload="auto" />
             ) : null}
             <VolumeWidget audioRef={audioRef} />
         </div>

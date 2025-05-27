@@ -1,7 +1,7 @@
 import i18n from "i18next"
 import { initReactI18next } from "react-i18next"
 
-const getDefaultLang = () => {
+export const getDefaultLang = () => {
     if (typeof window !== "undefined") {
         // 优先 localStorage，其次浏览器语言
         return (

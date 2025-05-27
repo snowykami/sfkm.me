@@ -2,6 +2,17 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+function getLang() {
+  if (typeof navigator !== "undefined" && navigator.language) {
+    return navigator.language.split("-")[0];
+  }
+  if (typeof window !== "undefined" && window.navigator.language) {
+    return window.navigator.language.split("-")[0];
+  }
+  // fallback
+  return "en";
+}
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -23,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang={getLang()}>
       <head>
         <link rel="icon" href="https://q.qlogo.cn/g?b=qq&nk=2751454815&s=640" />
       </head>
