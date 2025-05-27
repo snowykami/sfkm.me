@@ -77,7 +77,7 @@ export default function MobileSlider({
     <div className="fixed inset-0 bg-slate-100/90 dark:bg-slate-900/95 backdrop-blur-md z-40">
       {/* 顶栏（含播放器）整体 */}
       <div
-        className="overflow-x-auto scrollbar-hide bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm border-b border-slate-300/60 dark:border-slate-700/50 px-4 pt-3 pb-5"
+        className="overflow-x-auto scrollbar-hide backdrop-blur-sm border-b px-4 pt-3 pb-6"
         ref={topbarScrollRef}
       >
         <div className="flex min-w-max items-center">
@@ -93,13 +93,11 @@ export default function MobileSlider({
         >
           <ChevronLeft className="w-5 h-5 text-slate-800 dark:text-slate-300" />
         </button>
-
         <div className="flex-1 text-center">
           <span className="text-slate-800 dark:text-slate-300 text-sm font-">
             {t(windows[currentIndex]?.title)}
           </span>
         </div>
-
         <button
           onClick={goToNext}
           disabled={currentIndex === windows.length - 1}

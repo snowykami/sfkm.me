@@ -15,7 +15,7 @@ interface TopMenuBarProps {
 
 export function TopMenuBar({ className = "", title = "Window Title" }: TopMenuBarProps) {
   const [mounted, setMounted] = useState(false)
-  const [, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -39,12 +39,12 @@ export function TopMenuBar({ className = "", title = "Window Title" }: TopMenuBa
     >
       <div className="flex items-center justify-between px-4 py-2 max-h-9 min-h-9">
         {/* 左侧区域 */}
-        <div className="flex items-center space-x-4">
+        {!isMobile && <div className="flex items-center space-x-4">
           <AppleWidget />
           <span className="text-slate-600 dark:text-slate-300 text-sm font-bold transition-colors">
             {title}
           </span>
-        </div>
+        </div>}
         {/* 右侧状态区域 */}
         <div className="flex items-center space-x-1">
           <MusicPlayerWidget />
