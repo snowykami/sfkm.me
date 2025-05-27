@@ -74,7 +74,7 @@ export function MusicPlayerWidget() {
     // 封面旋转效果
     const [coverRotate, setCoverRotate] = useState(0)
     const rotateRef = useRef(0)
-    const animFrameRef = useRef<number>()
+    const animFrameRef = useRef<number>(0)
     // 用于唯一标识当前歌词解析器
     const lrcSessionRef = useRef(0)
 

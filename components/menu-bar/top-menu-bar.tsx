@@ -15,7 +15,7 @@ interface TopMenuBarProps {
 
 export function TopMenuBar({ className = "", title = "Window Title" }: TopMenuBarProps) {
   const [mounted, setMounted] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const [, setIsMobile] = useState(false)
 
   useEffect(() => {
     setMounted(true)
