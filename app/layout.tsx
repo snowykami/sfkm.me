@@ -37,6 +37,7 @@ export default function RootLayout({
     <html lang={getLang()}>
       <head>
         <link rel="icon" href="https://q.qlogo.cn/g?b=qq&nk=2751454815&s=640" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
