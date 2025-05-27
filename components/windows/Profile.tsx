@@ -15,6 +15,13 @@ const descriptionKeys = [
   "profile.description6",
 ]
 
+const gradientClasses = [
+  "bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400",
+  "bg-gradient-to-r from-pink-400 via-red-400 to-yellow-400",
+  "bg-gradient-to-r from-green-400 via-teal-400 to-blue-400",
+  "bg-gradient-to-r from-purple-400 via-fuchsia-400 to-pink-400",
+]
+
 // 定义应用数组
 const apps = [
   { label: "Blog", url: "https://blog.sfkm.me", icon: ExternalLink },
@@ -43,7 +50,16 @@ const skillBadges: SkillBadge[] = [
 
 export default function ProfileContent() {
   const [descIndex, setDescIndex] = useState(0)
+  const [gradientIndex, setGradientIndex] = useState(0) // 昵称背景渐变索引
   const [fade, setFade] = useState(true)
+  // 昵称背景渐变数组
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setGradientIndex(i => (i + 1) % gradientClasses.length)
+    }, 500)
+    return () => clearInterval(timer)
+  }, [])
+
   useEffect(() => {
     const timer = setInterval(() => {
       setFade(false)
@@ -83,7 +99,7 @@ export default function ProfileContent() {
         {/* 大昵称 */}
         <div className="w-full max-w-full overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
           <h1
-            className="text-2xl font-bold mb-1 bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent leading-relaxed py-1 min-w-[12rem] px-4"
+            className={`text-2xl font-bold mb-1 ${gradientClasses[gradientIndex]} bg-clip-text text-transparent leading-relaxed py-1 min-w-[12rem] px-4 transition-colors duration-700`}
             style={{ fontFamily: "'Pacifico', cursive" }}
           >
             Snowykami
