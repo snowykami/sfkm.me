@@ -369,7 +369,7 @@ export default function Component() {
       }}
     >
       {/* 顶部菜单栏 */}
-      <TopMenuBar title={currentTitle} />
+      {!isMobile && <TopMenuBar title={currentTitle} />}
 
       {/* 浮动按钮 */}
       <MobileLangFloatButton />

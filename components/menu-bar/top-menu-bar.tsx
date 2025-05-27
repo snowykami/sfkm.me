@@ -32,7 +32,6 @@ export function TopMenuBar({ className = "", title = "Window Title" }: TopMenuBa
 
   // 等待组件挂载后再根据 isMobile 渲染数据
   if (!mounted) return null
-  if (isMobile) return null
 
   return (
     <div
