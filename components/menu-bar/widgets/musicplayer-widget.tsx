@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react"
 import { CirclePlay, CirclePause, SkipForward, SkipBack } from "lucide-react"
 import { VolumeWidget } from "./volume-widget"
-import LyricParser, { LyricLine } from "lyric-parser"
+import Lyric from 'lrc-file-parser'
 
 // Song 类型
 interface Song {
@@ -11,6 +11,7 @@ interface Song {
     cover?: string
     offset?: number
 }
+
 
 type SongOrPromise = Song | Promise<Song> | (() => Promise<Song>)
 
@@ -35,6 +36,7 @@ async function fetchSongFromNCM(mid: string, offset: number = 0): Promise<Song> 
 // 歌曲列表，支持常量和懒加载
 const songs: SongOrPromise[] = [
     // 懒加载
+    () => fetchSongFromNCM("2165386067"), // 糖果色的梦 - Kirara
     () => fetchSongFromNCM("2155423468", -6000), // 希望有羽毛和翅膀
     () => fetchSongFromNCM("1944651767"),   // Antler - 鹿角
     () => fetchSongFromNCM("1466019525"),   // 夜に駆ける(初音ミク ver.)
@@ -54,38 +56,23 @@ export function MusicPlayerWidget() {
     const [isPlaying, setIsPlaying] = useState(false)
     const [currentLrc, setCurrentLrc] = useState("")
     const [audioSrc, setAudioSrc] = useState<string>("")
+    const [displayLrc, setDisplayLrc] = useState("")
+    const [lyricFade, setLyricFade] = useState(true)
     const [, setMarqueeActive] = useState(false)
     const audioRef = useRef<HTMLAudioElement>(null)
-    const lyricParserRef = useRef<LyricParser | null>(null)
-    const lastLrcRef = useRef("")
     const lyricBoxRef = useRef<HTMLDivElement>(null)
     const lyricTextRef = useRef<HTMLDivElement>(null)
     const isPlayingRef = useRef(isPlaying)
-    const [lyricFade, setLyricFade] = useState(true)
-    const [displayLrc, setDisplayLrc] = useState("")
-
-
-    // 歌词切换时动画
-    useEffect(() => {
-        setLyricFade(false)
-        const timer = setTimeout(() => setLyricFade(true), 200)
-        return () => clearTimeout(timer)
-    }, [currentLrc, currentSongIndex])
-    useEffect(() => {
-        if (currentLrc === displayLrc) return
-        setLyricFade(false)
-        const timer = setTimeout(() => {
-            setDisplayLrc(currentLrc)
-            setLyricFade(true)
-        }, 200)
-        return () => clearTimeout(timer)
-    }, [currentLrc, displayLrc])
+    const lastLrcRef = useRef("")
+    const lyricRef = useRef<Lyric | null>(null)
+    // 用于唯一标识当前歌词解析器
+    const lrcSessionRef = useRef(0)
 
     useEffect(() => {
         isPlayingRef.current = isPlaying
     }, [isPlaying])
 
-    // 切换曲目时，无论是否播放，都请求元信息，失败自动切下一首
+    // 切歌时请求歌曲信息
     useEffect(() => {
         let cancelled = false
         const songOrPromise = songs[currentSongIndex]
@@ -121,55 +108,65 @@ export function MusicPlayerWidget() {
         }
     }, [currentSong])
 
-    // 歌词加载和同步
+    // 歌曲切换时立即清空歌词显示
+    useEffect(() => {
+        setDisplayLrc("")
+    }, [currentSongIndex])
+
+    // 歌词切换动画
+    useEffect(() => {
+        if (currentLrc === displayLrc) return
+        setLyricFade(false)
+        const timer = setTimeout(() => {
+            setDisplayLrc(currentLrc)
+            setLyricFade(true)
+        }, 200)
+        return () => clearTimeout(timer)
+    }, [currentLrc, displayLrc])
+
+    // 歌词加载和同步（只允许一个歌词解析器生效）
     useEffect(() => {
         setCurrentLrc("")
         lastLrcRef.current = ""
-        lyricParserRef.current = null
-        let isActive = true
+        lrcSessionRef.current += 1
+        const thisSession = lrcSessionRef.current
 
-        async function loadLrc() {
-            let lrcText = ""
-            try {
-                if (currentSong?.lrc) {
-                    lrcText = currentSong.lrc
-                }
-            } catch (err) {
-                if (!isActive) return
-                console.error("加载歌词失败", err)
-                lyricParserRef.current = null
-                setCurrentLrc("")
-                return
-            }
-            if (!isActive) return
-            if (!lrcText) return
-            lyricParserRef.current = new LyricParser(
-                lrcText,
-                (line: LyricLine) => {
-                    if (!isActive) return
-                    if (!isPlayingRef.current) return
-                    if (line.txt !== lastLrcRef.current) {
-                        lastLrcRef.current = line.txt
-                        setCurrentLrc(line.txt)
-                    }
-                }
-            )
-            if (audioRef.current) {
-                const offset = currentSong?.offset ?? 0
-                lyricParserRef.current.seek(audioRef.current.currentTime * 1000 - offset)
-            }
+        if (lyricRef.current) {
+            lyricRef.current.pause()
+            lyricRef.current = null
         }
 
-        if (currentSong?.lrc) {
-            loadLrc()
+        if (!currentSong?.lrc) {
+            return
+        }
+
+        // 创建新的歌词解析实例
+        const parser = new Lyric({
+            lyric: currentSong.lrc,
+            offset: currentSong.offset ?? 0,
+            onPlay: (_lineNum: number, text: string) => {
+                if (lrcSessionRef.current !== thisSession) return // 已切歌
+                if (!isPlayingRef.current) return
+                if (text !== lastLrcRef.current) {
+                    lastLrcRef.current = text
+                    setCurrentLrc(text)
+                }
+            }
+        })
+        lyricRef.current = parser
+
+        // 歌曲切换时立即同步到当前播放进度
+        if (audioRef.current) {
+            parser.play(audioRef.current.currentTime * 1000)
         }
 
         return () => {
-            isActive = false
+            lyricRef.current?.pause()
+            lyricRef.current = null
         }
-    }, [currentSong, audioSrc])
+    }, [currentSong, audioSrc, currentSongIndex])
 
-    // 跑马灯动画控制
+    // 跑马灯动画
     useEffect(() => {
         setMarqueeActive(false)
         const timer = setTimeout(() => {
@@ -180,16 +177,16 @@ export function MusicPlayerWidget() {
             }
         }, 20)
         return () => clearTimeout(timer)
-    }, [currentLrc, currentSongIndex])
+    }, [displayLrc, currentSongIndex])
 
     // 歌词和播放进度同步
     useEffect(() => {
         const audio = audioRef.current
         if (!audio) return
         const handleTimeUpdate = () => {
-            if (lyricParserRef.current) {
-                const offset = currentSong?.offset ?? 0
-                lyricParserRef.current.seek(audio.currentTime * 1000 - offset)
+            if (lyricRef.current && currentSong?.lrc) {
+                const offset = currentSong.offset ?? 0
+                lyricRef.current.play(audio.currentTime * 1000 - offset)
             }
         }
         audio.addEventListener("timeupdate", handleTimeUpdate)
