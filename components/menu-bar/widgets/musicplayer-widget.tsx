@@ -346,7 +346,7 @@ export function MusicPlayerWidget() {
             <div
                 className="relative"
                 ref={lyricBoxRef}
-                style={{ minWidth: "8rem", maxWidth: "40rem" }}
+                style={{ minWidth: "4rem", maxWidth: "40rem" }}
             >
                 <div
                     className="w-full text-right text-sm font-medium text-slate-700 dark:text-slate-300 pr-2"
