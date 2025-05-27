@@ -63,6 +63,7 @@ const songs: SongOrPromise[] = [
     () => fetchSongFromNCM("29163452"),     // 君恋し - EasyPop / 巡音ルカ
     () => fetchSongFromNCM("1906977699"),   // まっすぐ - 大原ゆい子
     () => fetchSongFromNCM("1456393572"), // 枕边童话
+    () => fetchSongFromNCM("1809242210"), // 有何不可红石音乐
     () => fetchSongFromNCM("406716121"), // miku
     () => fetchSongFromNCM("26349198"), // 何度も RAM WIRE
     () => fetchSongFromNCM("472219448"),    // 心拍数#0822 - H△G
