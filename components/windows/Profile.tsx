@@ -56,7 +56,7 @@ export default function ProfileContent() {
   useEffect(() => {
     const timer = setInterval(() => {
       setGradientIndex(i => (i + 1) % gradientClasses.length)
-    }, 500)
+    }, 2000)
     return () => clearInterval(timer)
   }, [])
 

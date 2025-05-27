@@ -6,7 +6,7 @@ import { TimeWidget } from "./widgets/time-widget"
 import { WeatherWidget } from "./widgets/weather-widget"
 import { Marquee } from "./widgets/marquee-widget"
 import { ThemeToggleButton } from "./widgets/theme-widget"
-import { PlayerWidget } from "./widgets/player-widget"
+import { MusicPlayerWidget } from "./widgets/musicplayer-widget"
 
 interface TopMenuBarProps {
   className?: string
@@ -48,7 +48,7 @@ export function TopMenuBar({ className = "", title = "Window Title" }: TopMenuBa
         </div>
         {/* 右侧状态区域 */}
         <div className="flex items-center space-x-1">
-          <PlayerWidget />
+          <MusicPlayerWidget />
           <Marquee />
           <WeatherWidget />
           <ThemeToggleButton />

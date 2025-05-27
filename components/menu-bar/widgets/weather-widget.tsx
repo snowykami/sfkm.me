@@ -25,7 +25,7 @@ export function WeatherWidget() {
         temperature: Math.floor(Math.random() * 30) + 5,
         condition: conditions[Math.floor(Math.random() * conditions.length)],
       }))
-    }, 30000) // 30秒更新一次
+    }, 300000) // 30秒更新一次
 
     return () => clearInterval(timer)
   }, [])
