@@ -95,22 +95,10 @@ export function MusicPlayerWidget() {
     const animFrameRef = useRef<number>(0)
     const lrcSessionRef = useRef(0)
 
-    // 2. 恢复播放进度
-    useEffect(() => {
-        if (typeof window === "undefined") return
-        try {
-            const saved = localStorage.getItem(STORAGE_KEY)
-            if (saved) {
-                const { index, time } = JSON.parse(saved)
-                if (audioRef.current && typeof time === "number" && index === currentSongIndex) {
-                    audioRef.current.currentTime = time
-                }
-            }
-        } catch { }
-    }, [audioSrc, currentSongIndex])
+    const [pendingSeek, setPendingSeek] = useState<number | null>(null)
 
-    // 3. 切歌或进度变化时保存
     useEffect(() => {
+        // 读取本地进度
         if (typeof window === "undefined") return
         let savedTime = 0
         try {
@@ -122,17 +110,43 @@ export function MusicPlayerWidget() {
                 }
             }
         } catch { }
-        const audio = audioRef.current
-        if (audio && savedTime > 0) {
-            const setTime = () => {
-                audio.currentTime = savedTime
-            }
-            audio.addEventListener("loadedmetadata", setTime)
-            // 如果已经加载好，直接设置
-            if (audio.readyState >= 1) setTime()
-            return () => audio.removeEventListener("loadedmetadata", setTime)
-        }
+        if (savedTime > 0) setPendingSeek(savedTime)
+        else setPendingSeek(null)
     }, [audioSrc, currentSongIndex])
+
+    useEffect(() => {
+        const audio = audioRef.current
+        if (!audio || pendingSeek == null) return
+        const setTime = () => {
+            audio.currentTime = pendingSeek
+            setPendingSeek(null)
+        }
+        audio.addEventListener("loadedmetadata", setTime)
+        if (audio.readyState >= 1) setTime()
+        return () => audio.removeEventListener("loadedmetadata", setTime)
+    }, [pendingSeek, audioSrc])
+
+    // 2. 持续保存进度
+    useEffect(() => {
+        if (typeof window === "undefined") return
+        const saveState = () => {
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify({
+                    index: currentSongIndex,
+                    time: audioRef.current?.currentTime || 0,
+                })
+            )
+        }
+        // 切歌时立即保存一次
+        saveState()
+        // 监听播放进度
+        const audio = audioRef.current
+        if (audio) {
+            audio.addEventListener("timeupdate", saveState)
+            return () => audio.removeEventListener("timeupdate", saveState)
+        }
+    }, [currentSongIndex, audioSrc])
 
     // ...其余 useEffect 和逻辑保持不变...
 
