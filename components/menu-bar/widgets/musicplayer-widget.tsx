@@ -98,7 +98,6 @@ export function MusicPlayerWidget() {
     const [pendingSeek, setPendingSeek] = useState<number | null>(null)
 
     useEffect(() => {
-        // 读取本地进度
         if (typeof window === "undefined") return
         let savedTime = 0
         try {
@@ -115,16 +114,20 @@ export function MusicPlayerWidget() {
     }, [audioSrc, currentSongIndex])
 
     useEffect(() => {
+        if (pendingSeek == null) return
         const audio = audioRef.current
-        if (!audio || pendingSeek == null) return
+        if (!audio) return
+
+        // 只在 loadedmetadata 事件触发时设置 currentTime
         const setTime = () => {
             audio.currentTime = pendingSeek
             setPendingSeek(null)
         }
         audio.addEventListener("loadedmetadata", setTime)
+        // 如果已经加载好，直接设置
         if (audio.readyState >= 1) setTime()
         return () => audio.removeEventListener("loadedmetadata", setTime)
-    }, [pendingSeek, audioSrc])
+    }, [pendingSeek])
 
     // 2. 持续保存进度
     useEffect(() => {
@@ -468,7 +471,7 @@ export function MusicPlayerWidget() {
                 <SkipForward className="w-5 h-5" />
             </button>
             {audioSrc ? (
-                <audio ref={audioRef} src={audioSrc} onEnded={handleNext} />
+                <audio ref={audioRef} src={audioSrc} onEnded={handleNext} preload="auto"/>
             ) : null}
             <VolumeWidget audioRef={audioRef} />
         </div>
