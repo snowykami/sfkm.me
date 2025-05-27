@@ -17,7 +17,6 @@ import Dock from "./components/windows/Dock"
 
 // float button
 import { MobileLangFloatButton } from "@/components/widgets/MobileLangFloatButton"
-import { MobileThemeFloatButton } from "@/components/widgets/ThemeFloatButton"
 
 
 import { useTranslation } from "react-i18next"
@@ -373,7 +372,6 @@ export default function Component() {
 
       {/* 浮动按钮 */}
       <MobileLangFloatButton />
-      <MobileThemeFloatButton />
 
 
       {/* 深色玻璃板覆盖层 */}
