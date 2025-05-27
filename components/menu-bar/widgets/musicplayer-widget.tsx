@@ -54,6 +54,7 @@ const songs: SongOrPromise[] = [
     () => fetchSongFromNCM("1466019525"),   // 夜に駆ける(初音ミク ver.)
     () => fetchSongFromNCM("2155422573"), // 使一颗心免于哀伤
     () => fetchSongFromNCM("22821014"), // 活动小丑
+    () => fetchSongFromNCM("2657083161"), // 愛♡スクリ～ム！
     () => fetchSongFromNCM("2138674818"), // 沐雨
     () => fetchSongFromNCM("2616952326"),   // 夢で逢いましょう
     () => fetchSongFromNCM("40915694"), // 心做し 鹿乃
