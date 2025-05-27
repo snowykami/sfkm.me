@@ -76,7 +76,7 @@ i18n.use(initReactI18next).init({
                     },
                     magipoke: {
                         name: "Magipoke APP",
-                        description: "一个涵盖学校生活的多功能应用",
+                        description: "掌上重邮，一个涵盖学校生活的多功能应用，APP在各个平台使用原生技术开发，后端使用云原生微服务架构",
                         link: "https://app.redrock.team/#/",
                     },
                     serverstatus: {
