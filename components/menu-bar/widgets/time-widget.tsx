@@ -41,10 +41,10 @@ export function TimeWidget() {
   if (!time) return null
 
   return (
-    <div className="flex items-end px-2 py-1 rounded cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700/30 transition-colors">
-      <div className="text-slate-700 dark:text-slate-300 text-sm leading-none mt-0.5">{formatDate(time)}</div>
+    <div className="flex items-end px-2 py-1 rounded cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700/30 transition-colors whitespace-nowrap">
+      <span className="text-slate-700 dark:text-slate-300 text-sm leading-none mt-0.5">{formatDate(time)}</span>
       <span className="mx-1"></span>
-      <div className="text-slate-700 dark:text-slate-300 text-sm font-medium leading-none">{formatTime(time)}</div>
+      <span className="text-slate-700 dark:text-slate-300 text-sm font-medium leading-none">{formatTime(time)}</span>
     </div>
   )
 }
