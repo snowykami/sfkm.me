@@ -93,6 +93,18 @@ function getInitialState() {
     return { index: 0, time: 0 }
 }
 
+function getInitialPlayMode(): PlayMode {
+    if (typeof window !== "undefined") {
+        try {
+            const saved = localStorage.getItem(PLAYMODE_KEY)
+            if (saved === "repeat-one" || saved === "shuffle" || saved === "order") {
+                return saved as PlayMode
+            }
+        } catch { }
+    }
+    return "order"
+}
+
 export function MusicPlayerWidget() {
     // 初始化
     const initial = getInitialState()
@@ -115,7 +127,7 @@ export function MusicPlayerWidget() {
     const animFrameRef = useRef<number>(0)
     const lrcSessionRef = useRef(0)
     const [pendingSeek, setPendingSeek] = useState<number | null>(initial.time > 0 ? initial.time : null)
-    const [playMode, setPlayMode] = useState<PlayMode>("order")
+    const [playMode, setPlayMode] = useState<PlayMode>(getInitialPlayMode())
 
     // 切换播放模式并保存
     const handleSwitchPlayMode = () => {
