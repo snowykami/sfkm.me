@@ -45,13 +45,12 @@ export default function ProjectsContent() {
           <Briefcase className="w-5 h-5 text-slate-500 dark:text-slate-400 mr-2" />
           <h2 className="text-lg font-semibold text-slate-800 dark:text-white">{t("projects.title")}</h2>
         </div>
-
         {projects.map((project, index) => (
           <Card
             key={index}
             className="bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 transition-colors"
           >
-            <CardContent className="p-4">
+            <CardContent className="pt-0 pb-0 px-3">
               <div className="flex items-start justify-between mb-2">
                 {/* 项目名称加链接 */}
                 <a
