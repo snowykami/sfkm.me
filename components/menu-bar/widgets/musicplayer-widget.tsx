@@ -214,8 +214,8 @@ export function MusicPlayerWidget() {
 
     // 歌曲切换时立即清空歌词显示
     useEffect(() => {
-        setDisplayLrc("")
-    }, [currentSongIndex])
+        if (!currentSong?.lrc) setDisplayLrc("")
+    }, [currentSongIndex, currentSong?.lrc])
 
     // 歌词切换动画
     useEffect(() => {
