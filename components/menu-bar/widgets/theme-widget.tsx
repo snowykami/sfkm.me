@@ -5,14 +5,17 @@ import { Sun, Moon } from "lucide-react"
 export function ThemeToggleButton() {
   const [isDark, setIsDark] = useState(false)
 
+  // 检查系统默认主题
+  const getSystemTheme = () =>
+    typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light"
+
   useEffect(() => {
-    // 检查 localStorage 中存储的主题
     if (typeof window !== "undefined") {
       const savedTheme = localStorage.getItem("theme")
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-
-      // 优先使用存储的主题,否则使用系统主题
-      const theme = savedTheme || (systemTheme ? "dark" : "light")
+      const systemTheme = getSystemTheme()
+      const theme = savedTheme || systemTheme
 
       setIsDark(theme === "dark")
       document.documentElement.classList.toggle("dark", theme === "dark")
@@ -22,11 +25,19 @@ export function ThemeToggleButton() {
   const toggleTheme = () => {
     if (typeof window === "undefined") return
     const html = document.documentElement
-    const newTheme = html.classList.contains("dark") ? "light" : "dark"
+    const systemTheme = getSystemTheme()
+    const isNowDark = html.classList.contains("dark")
+    const newTheme = isNowDark ? "light" : "dark"
 
     html.classList.toggle("dark")
-    localStorage.setItem("theme", newTheme)
     setIsDark(newTheme === "dark")
+
+    // 如果切换后的主题和系统主题一致，则清除 localStorage
+    if (newTheme === systemTheme) {
+      localStorage.removeItem("theme")
+    } else {
+      localStorage.setItem("theme", newTheme)
+    }
   }
 
   return (
@@ -38,16 +49,11 @@ export function ThemeToggleButton() {
       type="button"
       style={{
         transition: "box-shadow 0.2s",
-        boxShadow: isDark
-          ? undefined
-          : undefined,
-        // 更小的hover阴影
+        boxShadow: isDark ? undefined : undefined,
         ...(typeof window !== "undefined" && window.matchMedia(":hover").matches
           ? {
-            boxShadow: isDark
-              ? undefined
-              : undefined
-          }
+              boxShadow: isDark ? undefined : undefined
+            }
           : {}),
       }}
       onMouseEnter={e => {
