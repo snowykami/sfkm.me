@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react"
+import Image from "next/image"
 import { CirclePlay, CirclePause, SkipForward, SkipBack } from "lucide-react"
 import { VolumeWidget } from "./volume-widget"
 import Lyric from 'lrc-file-parser'
@@ -7,6 +8,8 @@ import Lyric from 'lrc-file-parser'
 interface Song {
     title: string
     src: string
+    artist?: string
+    album?: string
     lrc?: string
     cover?: string
     offset?: number
@@ -25,7 +28,9 @@ async function fetchSongFromNCM(mid: string, offset: number = 0): Promise<Song> 
     if (!lrcResponse.ok) throw new Error("获取歌词失败")
     const lrcData = await lrcResponse.json()
     return {
-        title: `${songData.data[0].song} - ${songData.data[0].singer}` || "Unknown",
+        title: songData.data[0].song || "Unknown",
+        album: songData.data[0].album || "Unknown Album",
+        artist: songData.data[0].singer || "Unknown Artist",
         src: songData.data[0].url.replace("http://", "https://"),
         lrc: lrcData.lyric || "",
         cover: songData.data[0].cover,
@@ -36,7 +41,7 @@ async function fetchSongFromNCM(mid: string, offset: number = 0): Promise<Song> 
 // 歌曲列表，支持常量和懒加载
 const songs: SongOrPromise[] = [
     // 懒加载
-    () => fetchSongFromNCM("2165386067", 1200), // 糖果色的梦 - Kirara
+    () => fetchSongFromNCM("2165386067", 1500), // 糖果色的梦 - Kirara
     () => fetchSongFromNCM("2155423468", -6000), // 希望有羽毛和翅膀
     () => fetchSongFromNCM("1944651767",),   // Antler - 鹿角
     () => fetchSongFromNCM("1466019525"),   // 夜に駆ける(初音ミク ver.)
@@ -67,6 +72,35 @@ export function MusicPlayerWidget() {
     const lyricRef = useRef<Lyric | null>(null)
     // 用于唯一标识当前歌词解析器
     const lrcSessionRef = useRef(0)
+
+    // Media Session API 整合
+    useEffect(() => {
+        if (!("mediaSession" in navigator) || !currentSong) return
+
+        navigator.mediaSession.metadata = new window.MediaMetadata({
+            title: currentSong.title,
+            artist: currentSong.artist || "Unknown", // 你可以补充歌手名
+            album: currentSong.album || "Unknown", // 你可以补充专辑名
+            artwork: currentSong.cover
+                ? [
+                    { src: currentSong.cover, sizes: "96x96", type: "image/png" },
+                    { src: currentSong.cover, sizes: "192x192", type: "image/png" },
+                ]
+                : [],
+        })
+
+        navigator.mediaSession.setActionHandler("play", () => setIsPlaying(true))
+        navigator.mediaSession.setActionHandler("pause", () => setIsPlaying(false))
+        navigator.mediaSession.setActionHandler("previoustrack", handlePrev)
+        navigator.mediaSession.setActionHandler("nexttrack", handleNext)
+        // 清理
+        return () => {
+            navigator.mediaSession.setActionHandler("play", null)
+            navigator.mediaSession.setActionHandler("pause", null)
+            navigator.mediaSession.setActionHandler("previoustrack", null)
+            navigator.mediaSession.setActionHandler("nexttrack", null)
+        }
+    }, [currentSong, isPlaying, audioSrc])
 
     useEffect(() => {
         isPlayingRef.current = isPlaying
@@ -193,7 +227,7 @@ export function MusicPlayerWidget() {
         return () => {
             audio.removeEventListener("timeupdate", handleTimeUpdate)
         }
-    }, [currentSong?.offset, currentSongIndex])
+    }, [currentSong?.lrc, currentSong?.offset, currentSongIndex])
 
     // 播放/暂停时控制 audio
     useEffect(() => {
@@ -223,6 +257,7 @@ export function MusicPlayerWidget() {
         setIsPlaying(true)
     }
 
+
     return (
         <div className="flex items-center space-x-2 px-4 py-2">
             <div
@@ -250,11 +285,43 @@ export function MusicPlayerWidget() {
                         }}
                     >
                         {currentSong?.lrc
-                            ? (displayLrc || currentSong?.title || "loading...")
+                            ? (displayLrc || currentSong?.title + " - " + currentSong?.artist || "loading...")
                             : currentSong?.title}
                     </span>
                 </div>
             </div>
+            {/* 封面图，放在上一首按钮左侧 */}
+            {currentSong?.cover ? (
+                <div
+                    className="flex items-center justify-center"
+                    style={{
+                        width: 22,
+                        height: 22,
+                        minWidth: 22,
+                        minHeight: 22,
+                        borderRadius: "50%",
+                        border: "1.5px solid #cbd5e1", // 更细的边框
+                        background: "#f1f5f9",
+                        overflow: "hidden",
+                        marginRight: 4,
+                    }}
+                >
+                    <Image
+                        src={currentSong.cover}
+                        alt="cover"
+                        width={18}
+                        height={18}
+                        className={isPlaying ? "rounded-full animate-spin-slow" : "rounded-full"}
+                        style={{ minWidth: 18, minHeight: 18 }}
+                        unoptimized
+                    />
+                </div>
+            ) : (
+                <div
+                    className="rounded-full bg-slate-200 dark:bg-slate-700 border border-slate-300 dark:border-slate-700"
+                    style={{ width: 18, height: 18, minWidth: 18, minHeight: 18, marginRight: 4 }}
+                />
+            )}
             <button onClick={handlePrev} className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full">
                 <SkipBack className="w-5 h-5" />
             </button>
