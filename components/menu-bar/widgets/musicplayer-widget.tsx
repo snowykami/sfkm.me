@@ -21,7 +21,7 @@ type SongOrPromise = Song | Promise<Song> | (() => Promise<Song>)
 // 工具函数,从网易云音乐获取歌曲信息和歌词
 async function fetchSongFromNCM(mid: string, offset: number = 0): Promise<Song> {
     console.log(`Fetching song with mid: ${mid}, offset: ${offset}`)
-    const songResponse = await fetch(`https://music.0013107.xyz/music/?action=netease&module=get_url&mids=${mid}`)
+    const songResponse = await fetch(`https://music.api.liteyuki.org/music/?action=netease&module=get_url&mids=${mid}`)
     if (!songResponse.ok) throw new Error("获取歌曲信息失败")
     const songData = await songResponse.json()
     const lrcResponse = await fetch(`https://ncm.api.liteyuki.org/api/song/media?id=${mid}`)
@@ -60,23 +60,33 @@ const songs: SongOrPromise[] = [
 
 const STORAGE_KEY = "musicplayer_state"
 
-export function MusicPlayerWidget() {
-    // 1. 初始化时优先读取 localStorage，没有则随机
-    const [currentSongIndex, setCurrentSongIndex] = useState(() => {
-        if (typeof window !== "undefined") {
-            try {
-                const saved = localStorage.getItem(STORAGE_KEY)
-                if (saved) {
-                    const { index } = JSON.parse(saved)
-                    if (typeof index === "number" && index >= 0 && index < songs.length) {
-                        return index
-                    }
+// 1. 初始化时直接读取 localStorage
+function getInitialState() {
+    if (typeof window !== "undefined") {
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY)
+            if (saved) {
+                const { index, time } = JSON.parse(saved)
+                if (
+                    typeof index === "number" &&
+                    index >= 0 &&
+                    index < songs.length &&
+                    typeof time === "number" &&
+                    time > 0
+                ) {
+                    return { index, time }
                 }
-            } catch { }
-            return Math.floor(Math.random() * songs.length)
-        }
-        return 0
-    })
+            }
+        } catch { }
+        return { index: Math.floor(Math.random() * songs.length), time: 0 }
+    }
+    return { index: 0, time: 0 }
+}
+
+export function MusicPlayerWidget() {
+    // 初始化
+    const initial = getInitialState()
+    const [currentSongIndex, setCurrentSongIndex] = useState(initial.index)
     const [currentSong, setCurrentSong] = useState<Song | null>(null)
     const [isPlaying, setIsPlaying] = useState(false)
     const [currentLrc, setCurrentLrc] = useState("")
@@ -94,42 +104,19 @@ export function MusicPlayerWidget() {
     const rotateRef = useRef(0)
     const animFrameRef = useRef<number>(0)
     const lrcSessionRef = useRef(0)
+    const [pendingSeek, setPendingSeek] = useState<number | null>(initial.time > 0 ? initial.time : null)
 
-    const [pendingSeek, setPendingSeek] = useState<number | null>(null)
-
+    // 只在 audioSrc 变化且 pendingSeek 有值时设置 currentTime
     useEffect(() => {
-        if (typeof window === "undefined") return
-        let savedTime = 0
-        try {
-            const saved = localStorage.getItem(STORAGE_KEY)
-            if (saved) {
-                const { index, time } = JSON.parse(saved)
-                if (typeof time === "number" && index === currentSongIndex) {
-                    savedTime = time
-                }
+        if (audioSrc && pendingSeek != null) {
+            if (audioRef.current) {
+                audioRef.current.currentTime = pendingSeek
             }
-        } catch { }
-        if (savedTime > 0) setPendingSeek(savedTime)
-        else setPendingSeek(null)
-    }, [audioSrc, currentSongIndex])
-
-    useEffect(() => {
-        if (pendingSeek == null) return
-        const audio = audioRef.current
-        if (!audio) return
-
-        // 只在 loadedmetadata 事件触发时设置 currentTime
-        const setTime = () => {
-            audio.currentTime = pendingSeek
             setPendingSeek(null)
         }
-        audio.addEventListener("loadedmetadata", setTime)
-        // 如果已经加载好，直接设置
-        if (audio.readyState >= 1) setTime()
-        return () => audio.removeEventListener("loadedmetadata", setTime)
-    }, [pendingSeek])
+    }, [audioSrc])
 
-    // 2. 持续保存进度
+    // 持续保存进度
     useEffect(() => {
         if (typeof window === "undefined") return
         const saveState = () => {
@@ -141,9 +128,7 @@ export function MusicPlayerWidget() {
                 })
             )
         }
-        // 切歌时立即保存一次
         saveState()
-        // 监听播放进度
         const audio = audioRef.current
         if (audio) {
             audio.addEventListener("timeupdate", saveState)
@@ -151,8 +136,7 @@ export function MusicPlayerWidget() {
         }
     }, [currentSongIndex, audioSrc])
 
-    // ...其余 useEffect 和逻辑保持不变...
-
+    // 旋转封面
     useEffect(() => {
         if (!isPlaying) return
         let last = performance.now()
@@ -212,8 +196,8 @@ export function MusicPlayerWidget() {
 
         navigator.mediaSession.setActionHandler("play", () => setIsPlaying(true))
         navigator.mediaSession.setActionHandler("pause", () => setIsPlaying(false))
-        navigator.mediaSession.setActionHandler("previoustrack", handlePrev)
-        navigator.mediaSession.setActionHandler("nexttrack", handleNext)
+        navigator.mediaSession.setActionHandler("previoustrack", () => setCurrentSongIndex(prev => (prev === 0 ? songs.length - 1 : prev - 1)))
+        navigator.mediaSession.setActionHandler("nexttrack", () => setCurrentSongIndex(prev => (prev === songs.length - 1 ? 0 : prev + 1)))
         navigator.mediaSession.setActionHandler("seekto", (details) => {
             if (audioRef.current && typeof details.seekTime === "number") {
                 audioRef.current.currentTime = details.seekTime
@@ -372,7 +356,7 @@ export function MusicPlayerWidget() {
     useEffect(() => {
         if (isPlaying) {
             audioRef.current?.play().catch(err => {
-                console.log("播放错误：", err)
+                console.error("播放音频失败:", err)
             })
         } else {
             audioRef.current?.pause()
@@ -471,7 +455,7 @@ export function MusicPlayerWidget() {
                 <SkipForward className="w-5 h-5" />
             </button>
             {audioSrc ? (
-                <audio ref={audioRef} src={audioSrc} onEnded={handleNext} preload="auto"/>
+                <audio ref={audioRef} src={audioSrc} onEnded={handleNext} preload="auto" />
             ) : null}
             <VolumeWidget audioRef={audioRef} />
         </div>
