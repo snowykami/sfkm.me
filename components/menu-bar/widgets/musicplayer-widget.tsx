@@ -128,6 +128,17 @@ export function MusicPlayerWidget() {
     const lrcSessionRef = useRef(0)
     const [pendingSeek, setPendingSeek] = useState<number | null>(initial.time > 0 ? initial.time : null)
     const [playMode, setPlayMode] = useState<PlayMode>(getInitialPlayMode())
+    const [showLyricMobile, setShowLyricMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
 
     // 切换播放模式并保存
     const handleSwitchPlayMode = () => {
@@ -451,97 +462,230 @@ export function MusicPlayerWidget() {
 
     return (
         <div className="flex items-center space-x-2 px-4 py-2">
-            <div
-                className="relative"
-                ref={lyricBoxRef}
-                style={{ minWidth: "4rem", maxWidth: "40rem" }}
-            >
-                <div
-                    className="w-full text-right text-sm font-medium text-slate-700 dark:text-slate-300 pr-2"
-                    style={{
-                        whiteSpace: "nowrap",
-                        overflow: "visible",
-                        direction: "rtl",
-                        textAlign: "left"
-                    }}
-                >
-                    <span
-                        ref={lyricTextRef}
+            {/* 歌词/封面切换逻辑 */}
+            {isMobile ? (
+                <div style={{ position: "relative", width: "100%" }}>
+                    <div
                         style={{
-                            direction: "ltr",
-                            unicodeBidi: "plaintext",
-                            transition: "opacity 0.3s",
-                            opacity: lyricFade ? 1 : 0,
-                            display: "inline-block"
+                            transition: "opacity 0.3s, visibility 0.3s",
+                            opacity: showLyricMobile ? 1 : 0,
+                            visibility: showLyricMobile ? "visible" : "hidden",
+                            position: showLyricMobile ? "static" : "absolute",
+                            width: "100%",
+                            zIndex: 2,
                         }}
                     >
-                        {currentSong?.lrc
-                            ? (displayLrc || currentSong?.title + " - " + currentSong?.artist || "loading...")
-                            : currentSong?.title}
-                    </span>
-                </div>
-            </div>
-            {currentSong?.cover ? (
-                <div
-                    className="flex items-center justify-center relative"
-                    style={{
-                        width: 22,
-                        height: 22,
-                        minWidth: 22,
-                        minHeight: 22,
-                        borderRadius: "50%",
-                        border: "1.5px solid #cbd5e1",
-                        background: "#f1f5f9",
-                        overflow: "hidden",
-                        marginRight: 4,
-                        transform: `rotate(${coverRotate}deg)`,
-                        transition: isPlaying ? undefined : "transform 0.2s linear"
-                    }}
-                >
-                    <Image
-                        src={currentSong.cover}
-                        alt={currentSong.album || "cover"}
-                        width={18}
-                        height={18}
-                        className="rounded-full"
-                        style={{ minWidth: 18, minHeight: 18 }}
-                        unoptimized
-                    />
+                        {/* 显示歌词，点击后切换回封面，且隐藏所有按钮和封面 */}
+                        <div
+                            className="relative"
+                            ref={lyricBoxRef}
+                            style={{ minWidth: "4rem", maxWidth: "40rem", cursor: "pointer", width: "100%" }}
+                            onClick={() => setShowLyricMobile(false)}
+                            title="点击切换回封面"
+                        >
+                            <div
+                                className="w-full text-right text-sm font-medium text-slate-700 dark:text-slate-300 pr-2"
+                                style={{
+                                    whiteSpace: "nowrap",
+                                    overflow: "visible",
+                                    direction: "rtl",
+                                    textAlign: "left"
+                                }}
+                            >
+                                <span
+                                    ref={lyricTextRef}
+                                    style={{
+                                        direction: "ltr",
+                                        unicodeBidi: "plaintext",
+                                        transition: "opacity 0.3s",
+                                        opacity: lyricFade ? 1 : 0,
+                                        display: "inline-block"
+                                    }}
+                                >
+                                    {currentSong?.lrc
+                                        ? (displayLrc || currentSong?.title + " - " + currentSong?.artist || "loading...")
+                                        : currentSong?.title}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        style={{
+                            transition: "opacity 0.3s, visibility 0.3s",
+                            opacity: showLyricMobile ? 0 : 1,
+                            visibility: showLyricMobile ? "hidden" : "visible",
+                            position: !showLyricMobile ? "static" : "absolute",
+                            width: "100%",
+                            zIndex: 1,
+                            display: "flex",
+                            alignItems: "center"
+                        }}
+                    >
+                        {/* 显示封面和所有按钮 */}
+                        {currentSong?.cover ? (
+                            <div
+                                className="flex items-center justify-center relative"
+                                style={{
+                                    width: 22,
+                                    height: 22,
+                                    minWidth: 22,
+                                    minHeight: 22,
+                                    borderRadius: "50%",
+                                    border: "1.5px solid #cbd5e1",
+                                    background: "#f1f5f9",
+                                    overflow: "hidden",
+                                    marginRight: 4,
+                                    transform: `rotate(${coverRotate}deg)`,
+                                    transition: isPlaying ? undefined : "transform 0.2s linear",
+                                    cursor: "pointer"
+                                }}
+                                onClick={() => setShowLyricMobile(true)}
+                                title="点击显示歌词"
+                            >
+                                <Image
+                                    src={currentSong.cover}
+                                    alt={currentSong.album || "cover"}
+                                    width={18}
+                                    height={18}
+                                    className="rounded-full"
+                                    style={{ minWidth: 18, minHeight: 18 }}
+                                    unoptimized
+                                />
+                            </div>
+                        ) : (
+                            <div
+                                className="rounded-full bg-slate-200 dark:bg-slate-700 border border-slate-300 dark:border-slate-700"
+                                style={{ width: 18, height: 18, minWidth: 18, minHeight: 18, marginRight: 4, cursor: "pointer" }}
+                                onClick={() => setShowLyricMobile(true)}
+                                title="点击显示歌词"
+                            />
+                        )}
+                        {/* 按钮区 */}
+                        <button onClick={handlePrev} className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full">
+                            <SkipBack className="w-5 h-5" />
+                        </button>
+                        <button onClick={handlePlayPause} className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full">
+                            {isPlaying ? <CirclePause className="w-5 h-5" /> : <CirclePlay className="w-5 h-5" />}
+                        </button>
+                        <button onClick={handleNext} className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full">
+                            <SkipForward className="w-5 h-5" />
+                        </button>
+                        <button
+                            onClick={handleSwitchPlayMode}
+                            className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full"
+                            title={
+                                playMode === "order"
+                                    ? "顺序播放"
+                                    : playMode === "repeat-one"
+                                        ? "单曲循环"
+                                        : "随机播放"
+                            }
+                            style={{ marginRight: 2 }}
+                        >
+                            {PLAY_MODE_ICONS[playMode]}
+                        </button>
+                        {audioSrc ? (
+                            <audio ref={audioRef} src={audioSrc} onEnded={handleEnded} preload="auto" />
+                        ) : null}
+                        <VolumeWidget audioRef={audioRef} />
+                    </div>
                 </div>
             ) : (
-                <div
-                    className="rounded-full bg-slate-200 dark:bg-slate-700 border border-slate-300 dark:border-slate-700"
-                    style={{ width: 18, height: 18, minWidth: 18, minHeight: 18, marginRight: 4 }}
-                />
+                // 桌面端：歌词和封面都显示
+                <>
+                    <div
+                        className="relative"
+                        ref={lyricBoxRef}
+                        style={{ minWidth: "4rem", maxWidth: "40rem" }}
+                    >
+                        <div
+                            className="w-full text-right text-sm font-medium text-slate-700 dark:text-slate-300 pr-2"
+                            style={{
+                                whiteSpace: "nowrap",
+                                overflow: "visible",
+                                direction: "rtl",
+                                textAlign: "left"
+                            }}
+                        >
+                            <span
+                                ref={lyricTextRef}
+                                style={{
+                                    direction: "ltr",
+                                    unicodeBidi: "plaintext",
+                                    transition: "opacity 0.3s",
+                                    opacity: lyricFade ? 1 : 0,
+                                    display: "inline-block"
+                                }}
+                            >
+                                {currentSong?.lrc
+                                    ? (displayLrc || currentSong?.title + " - " + currentSong?.artist || "loading...")
+                                    : currentSong?.title}
+                            </span>
+                        </div>
+                    </div>
+                    {currentSong?.cover ? (
+                        <div
+                            className="flex items-center justify-center relative"
+                            style={{
+                                width: 22,
+                                height: 22,
+                                minWidth: 22,
+                                minHeight: 22,
+                                borderRadius: "50%",
+                                border: "1.5px solid #cbd5e1",
+                                background: "#f1f5f9",
+                                overflow: "hidden",
+                                marginRight: 4,
+                                transform: `rotate(${coverRotate}deg)`,
+                                transition: isPlaying ? undefined : "transform 0.2s linear"
+                            }}
+                        >
+                            <Image
+                                src={currentSong.cover}
+                                alt={currentSong.album || "cover"}
+                                width={18}
+                                height={18}
+                                className="rounded-full"
+                                style={{ minWidth: 18, minHeight: 18 }}
+                                unoptimized
+                            />
+                        </div>
+                    ) : (
+                        <div
+                            className="rounded-full bg-slate-200 dark:bg-slate-700 border border-slate-300 dark:border-slate-700"
+                            style={{ width: 18, height: 18, minWidth: 18, minHeight: 18, marginRight: 4 }}
+                        />
+                    )}
+                    {/* 桌面端按钮区 */}
+                    <button onClick={handlePrev} className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full">
+                        <SkipBack className="w-5 h-5" />
+                    </button>
+                    <button onClick={handlePlayPause} className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full">
+                        {isPlaying ? <CirclePause className="w-5 h-5" /> : <CirclePlay className="w-5 h-5" />}
+                    </button>
+                    <button onClick={handleNext} className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full">
+                        <SkipForward className="w-5 h-5" />
+                    </button>
+                    <button
+                        onClick={handleSwitchPlayMode}
+                        className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full"
+                        title={
+                            playMode === "order"
+                                ? "顺序播放"
+                                : playMode === "repeat-one"
+                                    ? "单曲循环"
+                                    : "随机播放"
+                        }
+                        style={{ marginRight: 2 }}
+                    >
+                        {PLAY_MODE_ICONS[playMode]}
+                    </button>
+                    {audioSrc ? (
+                        <audio ref={audioRef} src={audioSrc} onEnded={handleEnded} preload="auto" />
+                    ) : null}
+                    <VolumeWidget audioRef={audioRef} />
+                </>
             )}
-            {/* ...上一首、播放/暂停、下一首... */}
-            <button onClick={handlePrev} className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full">
-                <SkipBack className="w-5 h-5" />
-            </button>
-            <button onClick={handlePlayPause} className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full">
-                {isPlaying ? <CirclePause className="w-5 h-5" /> : <CirclePlay className="w-5 h-5" />}
-            </button>
-            <button onClick={handleNext} className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full">
-                <SkipForward className="w-5 h-5" />
-            </button>
-            <button
-                onClick={handleSwitchPlayMode}
-                className="p-1 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-full"
-                title={
-                    playMode === "order"
-                        ? "顺序播放"
-                        : playMode === "repeat-one"
-                            ? "单曲循环"
-                            : "随机播放"
-                }
-                style={{ marginRight: 2 }}
-            >
-                {PLAY_MODE_ICONS[playMode]}
-            </button>
-            {audioSrc ? (
-                <audio ref={audioRef} src={audioSrc} onEnded={handleEnded} preload="auto" />
-            ) : null}
-            <VolumeWidget audioRef={audioRef} />
         </div>
     )
 }
