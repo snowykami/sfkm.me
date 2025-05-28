@@ -1,5 +1,6 @@
 import i18n from "i18next"
 import { initReactI18next } from "react-i18next"
+import data from "@/data/i18n.json"
 
 export const getDefaultLang = () => {
     if (typeof window !== "undefined") {
@@ -101,8 +102,9 @@ i18n.use(initReactI18next).init({
                 },
                 ui: {
                     close: "关闭",
-                }
+                },
                 // ...其它中文翻译
+                ...data["zh"]
             },
         },
         en: {
@@ -193,7 +195,8 @@ i18n.use(initReactI18next).init({
                 },
                 ui: {
                     close: "Close",
-                }
+                },
+                ...data["en"]
                 // ...其它英文翻译
             },
         },
@@ -283,7 +286,8 @@ i18n.use(initReactI18next).init({
                 },
                 ui: {
                     close: "閉じる",
-                }
+                },
+                ...data["ja"]
                 // ...其它日文翻译
             },
         }
