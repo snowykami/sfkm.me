@@ -94,7 +94,7 @@ export default function MobileSlider({
           <ChevronLeft className="w-5 h-5 text-slate-800 dark:text-slate-300" />
         </button>
         <div className="flex-1 text-center">
-          <span className="text-slate-800 dark:text-slate-300 text-sm font-">
+          <span className="text-slate-800 dark:text-slate-300 text-sm font-bold">
             {t(windows[currentIndex]?.title)}
           </span>
         </div>
