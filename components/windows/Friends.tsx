@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Users, ExternalLink } from "lucide-react"
@@ -21,9 +21,118 @@ function shuffle<T>(arr: T[]): T[] {
     const a = arr.slice()
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1))
-        ;[a[i], a[j]] = [a[j], a[i]]
+            ;[a[i], a[j]] = [a[j], a[i]]
     }
     return a
+}
+
+// 跑马灯组件
+function Marquee({
+    text,
+    className = "",
+    speed = 60, // px/s
+    delay = 1200 // ms
+}: {
+    text: string
+    className?: string
+    speed?: number
+    delay?: number
+}) {
+    const containerRef = useRef<HTMLDivElement>(null)
+    const textRef = useRef<HTMLDivElement>(null)
+    const [shouldScroll, setShouldScroll] = useState(false)
+    const [offset, setOffset] = useState(0)
+    const [isScrolling, setIsScrolling] = useState(false)
+
+    useEffect(() => {
+        const container = containerRef.current
+        const textEl = textRef.current
+        if (!container || !textEl) return
+
+        const containerWidth = container.offsetWidth
+        const textWidth = textEl.scrollWidth
+
+        if (textWidth > containerWidth) {
+            setShouldScroll(true)
+            setOffset(textWidth - containerWidth)
+        } else {
+            setShouldScroll(false)
+            setOffset(0)
+        }
+    }, [text])
+
+    useEffect(() => {
+        if (!shouldScroll) return
+        let raf: number
+        let start: number
+        let stopped = false
+
+        const animate = (timestamp: number) => {
+            if (stopped) return
+            if (!start) start = timestamp
+            const elapsed = timestamp - start
+            const container = containerRef.current
+            if (!container) return
+
+            // 动画总时长
+            const duration = (offset / speed) * 1000
+            // 计算当前偏移
+            let x = Math.min((elapsed / duration) * offset, offset)
+            container.scrollLeft = x
+
+            if (x < offset) {
+                raf = requestAnimationFrame(animate)
+            } else {
+                // 到头后停一会再回到开头，然后重新开始
+                setTimeout(() => {
+                    if (container) container.scrollLeft = 0
+                    // 重新开始动画
+                    start = undefined as any
+                    raf = requestAnimationFrame(animate)
+                }, delay)
+            }
+        }
+
+        // 初始停顿
+        setIsScrolling(true)
+        const timer = setTimeout(() => {
+            raf = requestAnimationFrame(animate)
+        }, delay)
+
+        return () => {
+            stopped = true
+            clearTimeout(timer)
+            cancelAnimationFrame(raf)
+        }
+    }, [shouldScroll, offset, speed, delay, text])
+
+    // 重新开始动画
+    useEffect(() => {
+        if (!shouldScroll && containerRef.current) {
+            containerRef.current.scrollLeft = 0
+        }
+    }, [shouldScroll, text])
+
+    return (
+        <div
+            ref={containerRef}
+            className={`relative overflow-hidden whitespace-nowrap ${className}`}
+            style={{ cursor: shouldScroll ? "pointer" : undefined }}
+            onMouseEnter={() => shouldScroll && !isScrolling && setIsScrolling(true)}
+            onMouseLeave={() => shouldScroll && setIsScrolling(false)}
+        >
+            <div
+                ref={textRef}
+                className="inline-block"
+                style={{
+                    transition: "none",
+                    willChange: "transform"
+                }}
+            >
+                {text}
+            </div>
+        </div>
+    )
 }
 
 export default function FriendsContent() {
@@ -58,21 +167,20 @@ export default function FriendsContent() {
                         key={friend.link}
                         className="bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 transition-colors hover:bg-slate-200 hover:dark:bg-slate-700/70 cursor-pointer"
                     >
-                        <CardContent className="px-2 py-0">
+                        <CardContent className="px-2 !py-0">
                             <div className="flex items-center gap-2">
                                 <a
                                     href={friend.link}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex-shrink-0"
-                                    title={t(friend.name)}
                                 >
                                     <Image
                                         src={friend.avatar}
                                         alt={t(friend.name)}
                                         width={32}
                                         height={32}
-                                        className="w-8 h-8 rounded-full border border-slate-300 dark:border-slate-600 bg-white object-cover"
+                                        className="w-10 h-10 rounded-full border border-slate-300 dark:border-slate-600 bg-white object-cover"
                                     />
                                 </a>
                                 <div className="flex-1 min-w-0">
@@ -83,7 +191,7 @@ export default function FriendsContent() {
                                             rel="noopener noreferrer"
                                             className="font-semibold text-slate-800 dark:text-white hover:underline truncate"
                                         >
-                                            {t(friend.name)}
+                                            <Marquee text={t(friend.name)} className="max-w-[10em]" />
                                         </a>
                                         {friend.tag && (
                                             <Badge
@@ -94,8 +202,10 @@ export default function FriendsContent() {
                                             </Badge>
                                         )}
                                     </div>
-                                    <div className="text-slate-950 dark:text-slate-300 text-sm truncate">
-                                        {friend.description ? t(friend.description) : ""}
+                                    <div className="text-slate-950 dark:text-slate-300 text-sm">
+                                        {friend.description ? (
+                                            <Marquee text={t(friend.description)} className="max-w-[18em]" />
+                                        ) : ""}
                                     </div>
                                 </div>
                             </div>
