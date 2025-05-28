@@ -13,6 +13,7 @@ import ProfileContent from "./components/windows/Profile"
 import ProjectsContent from "./components/windows/Projects"
 import SkillsContent from "./components/windows/Skills"
 import ContactsContent from "./components/windows/Contacts"
+import FriendsContent from "./components/windows/Friends"
 import Dock from "./components/windows/Dock"
 
 // float button
@@ -22,18 +23,19 @@ import { MobileLangFloatButton } from "@/components/widgets/MobileLangFloatButto
 import { useTranslation } from "react-i18next"
 
 
-
 const ID_TO_HASH = {
   profile: "#profile",
   projects: "#projects",
   skills: "#skills",
   contact: "#contact",
+  friends: "#friends",
 }
 const HASH_TO_ID = {
   "#profile": "profile",
   "#projects": "projects",
   "#skills": "skills",
   "#contact": "contact",
+  "#friends": "friends",
 }
 
 // 智能窗口布局计算函数
@@ -177,6 +179,20 @@ export default function Component() {
       height: initialHeight, // 初始高度
       width: initialWidth, // 初始宽度
     },
+    {
+      id: "friends",
+      title: "friends.title",
+      isVisible: true,
+      isMinimized: false,
+      isMaximized: false,
+      isClosing: false,
+      isMinimizing: false,
+      x: 250,
+      y: 200,
+      z: 996,
+      height: initialHeight, // 初始高度
+      width: initialWidth, // 初始宽度
+    },
   ])
 
   const [isMobile, setIsMobile] = useState(false)
@@ -212,6 +228,7 @@ export default function Component() {
 
     // 初始计算
     checkMobileAndCalculateLayout()
+
 
     // 监听窗口大小变化
     const handleResize = () => {
@@ -301,6 +318,8 @@ export default function Component() {
         return <SkillsContent />
       case "contact":
         return <ContactsContent />
+      case "friends":
+        return <FriendsContent />
       default:
         return null
     }
@@ -317,7 +336,7 @@ export default function Component() {
 
   // 获取所有窗口（不只是可见的）用于移动端滑动
   const allWindows = windows
-  // 窗口内容获取函数
+
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash
@@ -348,7 +367,8 @@ export default function Component() {
     window.addEventListener("hashchange", handleHashChange)
     handleHashChange()
     return () => window.removeEventListener("hashchange", handleHashChange)
-  }, [isMobile, windows])
+    // 只依赖 isMobile，避免死循环
+  }, [isMobile])
 
   const maximizedWindow = windows.find(w => w.isVisible && w.isMaximized)
   // 如果没有最大化窗口，找z值最大的可见且未最小化窗口
@@ -373,9 +393,10 @@ export default function Component() {
       {/* 浮动按钮 */}
       <MobileLangFloatButton />
 
-
       {/* 深色玻璃板覆盖层 */}
-      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm pointer-events-none" />
+      <div
+        className={`absolute inset-0 bg-slate-900/40  pointer-events-none`}
+      />
 
       {/* 移动端滑动视图 */}
       {isMobile && (
@@ -414,15 +435,17 @@ export default function Component() {
         ))}
 
       {/* Dock */}
-      <Dock
-        windows={windows}
-        isMobile={isMobile}
-        mobileCurrentIndex={mobileCurrentIndex}
-        handleMobileWindowSelect={handleMobileWindowSelect}
-        focusWindow={focusWindow}
-        restoreWindow={restoreWindow}
-        openWindow={openWindow}
-      />
+      {!isMobile && (
+        <Dock
+          windows={windows}
+          isMobile={isMobile}
+          mobileCurrentIndex={mobileCurrentIndex}
+          handleMobileWindowSelect={handleMobileWindowSelect}
+          focusWindow={focusWindow}
+          restoreWindow={restoreWindow}
+          openWindow={openWindow}
+        />
+      )}
       {/* 添加自定义动画样式 */}
 
     </div>

@@ -1,0 +1,188 @@
+[
+  {
+    "name": "partnerLink.liteyukiIndexSite.nickname",
+    "link": "https://liteyuki.icu/",
+    "avatar": "https://cdn.liteyuki.icu/static/img/liteyuki_icon_640.png",
+    "description": "partnerLink.liteyukiIndexSite.des"
+  },
+  {
+    "name": "partnerLink.redrockteam.nickname",
+    "link": "https://redrock.team/",
+    "avatar": "https://gitlab.redrock.team/uploads/-/system/appearance/header_logo/1/Redrock.png",
+    "description": "partnerLink.redrockteam.des"
+  },
+  {
+    "name": "partnerLink.cys2004.nickname",
+    "link": "https://tcea.top/",
+    "avatar": "https://github.com/cys2004.png",
+    "description": "partnerLink.cys2004.des"
+  },
+  {
+    "name": "partnerLink.aicorein.nickname",
+    "link": "https://www.glowmem.com/",
+    "avatar": "https://github.com/aicorein.png",
+    "description": "partnerLink.aicorein.des"
+  },
+  {
+    "name": "partnerLink.dexera.nickname",
+    "link": "https://dexera.online/",
+    "avatar": "https://github.com/DexerMatters.png",
+    "description": "partnerLink.dexera.des"
+  },
+  {
+    "name": "partnerLink.lgc2333.nickname",
+    "link": "https://blog.lgc2333.top/",
+    "avatar": "https://github.com/lgc2333.png",
+    "description": "partnerLink.lgc2333.des"
+  },
+  {
+    "name": "partnerLink.edream.nickname",
+    "link": "https://blog.edmc.cn/",
+    "avatar": "https://github.com/EDream.png",
+    "description": "partnerLink.edream.des"
+  },
+  {
+    "name": "partnerLink.Executor-Cheng.nickname",
+    "link": "https://dream.day/",
+    "avatar": "https://github.com/Executor-Cheng.png",
+    "description": "partnerLink.Executor-Cheng.des"
+  },
+  {
+    "name": "partnerLink.vikiboss.nickname",
+    "link": "https://viki.moe/",
+    "avatar": "https://github.com/vikiboss.png",
+    "description": "partnerLink.vikiboss.des"
+  },
+  {
+    "name": "partnerLink.「氯离子实验室」门户网站.nickname",
+    "link": "https://chloridep.github.io",
+    "avatar": "https://chloridep.github.io/assets/images/avatar.webp",
+    "description": "partnerLink.「氯离子实验室」门户网站.des"
+  },
+  {
+    "name": "partnerLink.NoneBotX.nickname",
+    "link": "https://x.none.bot",
+    "avatar": "https://x.none.bot/favicon.png",
+    "description": "partnerLink.NoneBotX.des"
+  },
+  {
+    "name": "partnerLink.NoneBot.nickname",
+    "link": "https://nonebot.dev/",
+    "avatar": "https://nonebot.dev/logo.png",
+    "description": "partnerLink.NoneBot.des"
+  },
+  {
+    "name": "partnerLink.粥里有勺糖.nickname",
+    "link": "https://sugarat.top/",
+    "avatar": "https://cdn.upyun.sugarat.top/avatar/blog/zlyst-avatar.jpeg-wh100",
+    "description": "partnerLink.粥里有勺糖.des"
+  },
+  {
+    "name": "partnerLink.三瓶可乐不过岗.nickname",
+    "link": "https://www.threkork.com/",
+    "avatar": "https://www.threkork.com/img/512.jpg",
+    "description": "partnerLink.三瓶可乐不过岗.des"
+  },
+  {
+    "name": "partnerLink.旧梦流年.nickname",
+    "link": "https://github.com/ElapsingDreams",
+    "avatar": "https://github.com/ElapsingDreams.png",
+    "description": "partnerLink.旧梦流年.des"
+  },
+  {
+    "name": "partnerLink.艾拉酱小屋.nickname",
+    "link": "https://www.isla.ltd",
+    "avatar": "https://c-ssl.duitang.com/uploads/blog/202203/25/20220325220854_59aa8.thumb.400_0.jpg",
+    "description": "partnerLink.艾拉酱小屋.des"
+  },
+  {
+    "name": "partnerLink.小涵のGithub主页.nickname",
+    "link": "https://github.com/yuhan2680",
+    "avatar": "https://avatars.githubusercontent.com/u/89262123",
+    "description": "partnerLink.小涵のGithub主页.des"
+  },
+  {
+    "name": "partnerLink.原神.nickname",
+    "link": "https://ys.mihoyo.com/",
+    "avatar": "https://ys.mihoyo.com/main/favicon.ico",
+    "description": "partnerLink.原神.des"
+  },
+  {
+    "name": "partnerLink.daoge的github主页.nickname",
+    "link": "https://github.com/smartcmd",
+    "avatar": "https://avatars.githubusercontent.com/u/60499296?v=4",
+    "description": "partnerLink.daoge的github主页.des"
+  },
+  {
+    "name": "partnerLink.轻雪铁路.nickname",
+    "link": "https://mtr.lite.ac.cn/",
+    "avatar": "https://mtr.lite.ac.cn/favicon.ico",
+    "description": "partnerLink.轻雪铁路.des"
+  },
+  {
+    "name": "partnerLink.梅洛机器人.nickname",
+    "link": "https://docs.melobot.org/",
+    "avatar": "https://docs.melobot.org/_static/logo.png",
+    "description": "partnerLink.梅洛机器人.des"
+  },
+  {
+    "name": "partnerLink.逝与逢博客.nickname",
+    "link": "https://blog.xin-hao.top",
+    "avatar": "https://blog.xin-hao.top/wp-content/uploads/2023/10/log.png",
+    "description": "partnerLink.逝与逢博客.des"
+  },
+  {
+    "name": "partnerLink.Inkar Suki.nickname",
+    "link": "https://inkar-suki.codethink.cn/Inkar-Suki-Docs/",
+    "avatar": "https://inkar-suki.codethink.cn/Inkar-Suki-Docs/img/InkarSukiCopyright.png",
+    "description": "partnerLink.Inkar Suki.des"
+  },
+  {
+    "name": "partnerLink.一楼没太阳.nickname",
+    "link": "https://blog.ylmty.cc",
+    "avatar": "https://q1.qlogo.cn/g?b=qq&nk=24130801&s=100",
+    "description": "partnerLink.一楼没太阳.des"
+  },
+  {
+    "name": "partnerLink.eya46.nickname",
+    "link": "https://eya46.com",
+    "avatar": "https://github.com/eya46.png",
+    "description": "partnerLink.eya46.des"
+  },
+  {
+    "name": "partnerLink.「氯离子实验室」门户网站.nickname",
+    "link": "https://chloridep.github.io/blogs",
+    "avatar": "https://chloridep.github.io/blogs/assets/images/avatar.webp",
+    "description": "partnerLink.「氯离子实验室」门户网站.des"
+  },
+  {
+    "name": "partnerLink.笨蛋弥生的平行世界.nickname",
+    "link": "https://blog.kagurayayoi.top",
+    "avatar": "https://blog.kagurayayoi.top/favicon/cropped-icon.jpg",
+    "description": "partnerLink.笨蛋弥生的平行世界.des"
+  },
+  {
+    "name": "partnerLink.hch.nickname",
+    "link": "https://hch1212.github.io/",
+    "avatar": "https://cdn.redrock.team/magipoke_intergral_item.a6108b7c585285e59481aa5aa3804eb6",
+    "description": "partnerLink.hch.des"
+  },
+  {
+    "name": "partnerLink.轻雪社区.nickname",
+    "link": "https://lab.liteyuki.icu/",
+    "avatar": "https://cdn.liteyuki.icu/misskey/icon.svg",
+    "description": "partnerLink.轻雪社区.des"
+  },
+  {
+    "name": "partnerLink.「氯离子实验室」门户网站.nickname",
+    "link": "https://nyacl.shimakaze.org",
+    "avatar": "https://nyacl.shimakaze.org/assets/images/avatar.webp",
+    "description": "partnerLink.「氯离子实验室」门户网站.des"
+  },
+  {
+    "name": "partnerLink.Twisui喵～♡.nickname",
+    "link": "https://twis.uk",
+    "avatar": "https://github/com/twisuki.png",
+    "description": "partnerLink.Twisui喵～♡.des"
+  }
+]
