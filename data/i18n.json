@@ -1,0 +1,32 @@
+{
+    "zh": {
+        "friends": {
+            "title": "朋友们",
+            "apply": "申请友链",
+            "viki": {
+                "name": "Viki",
+                "description": "Viki 是一个视频平台，提供各种电视剧、电影和综艺节目。"
+            }
+        }
+    },
+    "en": {
+        "friends": {
+            "title": "Friends",
+            "apply": "Apply",
+            "viki": {
+                "name": "Viki",
+                "description": "Viki is a video platform that offers a variety of TV shows, movies, and variety programs."
+            }
+        }
+    },
+    "ja": {
+        "friends": {
+            "title": "友達",
+            "apply": "申請",
+            "viki": {
+                "name": "Viki",
+                "description": "Vikiは、さまざまなテレビ番組、映画、バラエティ番組を提供するビデオプラットフォームです。"
+            }
+        }
+    }
+}

@@ -1,4 +1,4 @@
-import { User, Award, MessageCircle, PanelsTopLeft } from "lucide-react"
+import { User, Award, MessageCircle, PanelsTopLeft, Users } from "lucide-react"
 
 interface WindowItem {
   id: string
@@ -71,6 +71,11 @@ export default function Dock({
             {window.id === "contact" && (
               <MessageCircle className="w-6 h-6 text-slate-800 dark:text-slate-300" />
             )}
+            {window.id === "friends" && (
+              <Users className="w-6 h-6 text-slate-800 dark:text-slate-300" />
+            )}
+
+            {/* 如果需要，可以添加更多窗口图标 */}
 
             {/* 最小化指示器 */}
             {!isMobile && window.isMinimized && (

@@ -167,6 +167,16 @@ export function MusicPlayerWidget() {
         window.addEventListener("resize", checkMobile);
         return () => window.removeEventListener("resize", checkMobile);
     }, []);
+    useEffect(() => {
+    fetch("https://agrihelp.oenvimor.top/api/version")
+      .then(res => res.json())
+      .then(data => {
+        console.log("AgriHelp API version info:", data)
+      })
+      .catch(err => {
+        console.error("AgriHelp API version fetch error:", err)
+      })
+  }, [])
 
     // 切换播放模式并保存
     const handleSwitchPlayMode = () => {
