@@ -13,6 +13,7 @@ interface Friend {
     avatar: string
     description?: string
     tag?: string
+    tagClass?: string // 可选的标签样式类
 }
 
 const friends: Friend[] = Friends
@@ -198,7 +199,7 @@ export default function FriendsContent() {
                                         {friend.tag && (
                                             <Badge
                                                 variant="outline"
-                                                className="text-xs text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-600"
+                                                className={`${friend.tagClass ?? ""} text-xs text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-600`}
                                             >
                                                 {t(friend.tag)}
                                             </Badge>

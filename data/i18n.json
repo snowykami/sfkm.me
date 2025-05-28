@@ -7,6 +7,10 @@
                 "name": "GlowMem",
                 "description": "GlowMem是一个专注于AI和机器学习的个人网站，提供各种资源和信息。"
             },
+            "churanneko": {
+                "name": "Churanneko的个人网站",
+                "description": "Churanneko是一个专注于技术和编程的个人网站，提供各种资源和信息。"
+            },
             "cysnies": {
                 "name": "CYS2004的个人网站",
                 "description": "CYS2004是一个专注于技术和编程的个人网站，提供各种资源和信息。"
@@ -38,6 +42,10 @@
             "liteyukiIndexSite": {
                 "name": "轻雪工作室主页",
                 "description": "轻雪工作室是一个专注于开源项目和技术分享的团队，致力于为开发者提供高质量的资源和工具。"
+            },
+            "naloveyuki": {
+                "name": "Naloveyuki的个人网站",
+                "description": "Naloveyuki是一个专注于技术和编程的个人网站，提供各种资源和信息。"
             },
             "redrockteam": {
                 "name": "红岩网校工作站",
@@ -93,6 +101,10 @@
                 "name": "GlowMem",
                 "description": "GlowMem is a personal website focused on AI and machine learning, providing various resources and information."
             },
+            "churanneko": {
+                "name": "Churanneko's Personal Website",
+                "description": "Churanneko is a personal website focused on technology and programming, providing various resources and information."
+            },
             "cysnies": {
                 "name": "CYS2004's Personal Website",
                 "description": "CYS2004 is a personal website focused on technology and programming, providing various resources and information."
@@ -120,6 +132,10 @@
             "Inkar Suki": {
                 "name": "Inkar Suki Bot",
                 "description": "Inkar Suki is a very powerful Sword of Legends 3 information integration bot with a large user base and high activity. It provides rich game information and community interaction features, making it a great helper for Sword of Legends 3 players."
+            },
+            "naloveyuki": {
+                "name": "Naloveyuki's Personal Website",
+                "description": "Naloveyuki is a personal website focused on technology and programming, providing various resources and information."
             },
             "liteyukiIndexSite": {
                 "name": "Liteyuki Index Site",
@@ -179,6 +195,10 @@
                 "name": "GlowMem",
                 "description": "GlowMemは、AIと機械学習に焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
             },
+            "churanneko": {
+                "name": "Churannekoの個人ウェブサイト",
+                "description": "Churannekoは、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
+            },
             "cysnies": {
                 "name": "CYS2004の個人ウェブサイト",
                 "description": "CYS2004は、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
@@ -206,6 +226,10 @@
             "Inkar Suki": {
                 "name": "Inkar Suki Bot",
                 "description": "Inkar Sukiは、非常に強力な剑网3情報統合ボットであり、非常に大規模なユーザーグループと活発な活動を持っています。剑网3プレイヤーのための豊富なゲーム情報とコミュニティインタラクション機能を提供し、プレイヤーの良き助けとなります。"
+            },
+            "naloveyuki": {
+                "name": "Naloveyukiの個人ウェブサイト",
+                "description": "Naloveyukiは、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
             },
             "liteyukiIndexSite": {
                 "name": "Liteyukiインデックスサイト",

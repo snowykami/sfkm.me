@@ -15,7 +15,9 @@
     "name": "friends.cysnies.name",
     "link": "https://tcea.top/",
     "avatar": "https://github.com/cysnies.png",
-    "description": "friends.cysnies.description"
+    "description": "friends.cysnies.description",
+    "tag": "CDN",
+    "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
   },
   {
     "name": "friends.aicorein.name",
@@ -40,6 +42,22 @@
     "link": "https://viki.moe/",
     "avatar": "https://github.com/vikiboss.png",
     "description": "friends.viki.description"
+  },
+  {
+    "name": "friends.naloveyuki.name",
+    "link": "https://blog.naloveyuki.top/",
+    "avatar": "https://blog.naloveyuki.top/themes/theme-Ideaflow/assets/img/default-avatar.png",
+    "description": "friends.naloveyuki.description",
+    "tag": "CDN",
+    "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
+  },
+  {
+    "name": "friends.churanneko.name",
+    "link": "https://blog.churanneko.com/",
+    "avatar": "https://blog.churanneko.com/upload/logo.jpg",
+    "description": "friends.churanneko.description",
+    "tag": "CDN",
+    "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
   },
   {
     "name": "friends.三瓶可乐不过岗.name",
@@ -105,13 +123,17 @@
     "name": "friends.轻雪社区.name",
     "link": "https://lab.liteyuki.icu/",
     "avatar": "https://cdn.liteyuki.icu/misskey/icon.svg",
-    "description": "friends.轻雪社区.description"
+    "description": "friends.轻雪社区.description",
+    "tag": "CDN",
+    "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
   },
   {
     "name": "friends.「氯离子实验室」门户网站.name",
     "link": "https://nyacl.shimakaze.org",
     "avatar": "https://nyacl.shimakaze.org/assets/images/avatar.webp",
-    "description": "friends.「氯离子实验室」门户网站.description"
+    "description": "friends.「氯离子实验室」门户网站.description",
+    "tag": "CDN",
+    "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
   },
   {
     "name": "friends.Twisui喵～♡.name",
