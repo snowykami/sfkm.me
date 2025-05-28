@@ -77,7 +77,7 @@ function Marquee({
             // 动画总时长
             const duration = (offset / speed) * 1000
             // 计算当前偏移
-            let x = Math.min((elapsed / duration) * offset, offset)
+            const x = Math.min((elapsed / duration) * offset, offset)
             container.scrollLeft = x
 
             if (x < offset) {
@@ -86,9 +86,11 @@ function Marquee({
                 // 到头后停一会再回到开头，然后重新开始
                 setTimeout(() => {
                     if (container) container.scrollLeft = 0
-                    // 重新开始动画
-                    start = undefined as any
-                    raf = requestAnimationFrame(animate)
+                    // 再次初始停顿后重新开始动画
+                    setTimeout(() => {
+                        start = undefined as unknown as number
+                        raf = requestAnimationFrame(animate)
+                    }, delay)
                 }, delay)
             }
         }
@@ -191,7 +193,7 @@ export default function FriendsContent() {
                                             rel="noopener noreferrer"
                                             className="font-semibold text-slate-800 dark:text-white hover:underline truncate"
                                         >
-                                            <Marquee text={t(friend.name)} className="max-w-[10em]" />
+                                            <Marquee text={t(friend.name)} className="max-w-[15em]" />
                                         </a>
                                         {friend.tag && (
                                             <Badge
