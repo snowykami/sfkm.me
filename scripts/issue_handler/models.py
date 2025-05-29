@@ -67,7 +67,7 @@ class ClientInterface:
         """
         raise NotImplementedError("This method should be implemented by subclasses")
     
-class GithubClient(ClientInterface):
+class GitHubClient(ClientInterface):
     """
     GitHub 客户端，用于获取 issue。
     """
@@ -184,25 +184,20 @@ class GiteaClient(ClientInterface):
         return None, Exception(f"Failed to fetch issue {issue_number} from {owner}/{repo}: {response.text}")
         
 
-class ActionIssueContext(BaseModel):
+class ActionIssueContext:
     """
     Context for issue handling, containing the issue ID and the repository details.
     """
-    issue_number: int
-    repository_name: str  # 完整的 "owner/repo"
-    repo_owner: str = ""  # 仓库所有者
-    repo_name: str = ""   # 仓库名称
-    event_action: str
-    github_token: str
-    client: ClientInterface | None = None
-    
-    def __init__(self, **data):
-        super().__init__(**data)
-        if self.repository_name and '/' in self.repository_name:
-            parts = self.repository_name.split('/')
-            if len(parts) >= 2:
-                self.repo_owner = parts[0]
-                self.repo_name = parts[1]
+    def __init__(self, issue_number: int, repository_name: str, event_action: str, github_token: str, client: ClientInterface | None = None):
+        self.issue_number = issue_number
+        self.repo_owner, self.repo_name = repository_name.split('/')
+        self.event_action = event_action
+        self.client = client
+        if client is None:
+            if 'github' in repository_name.lower():
+                self.client = GitHubClient(github_token)
+            else:
+                raise ValueError("Unsupported repository type or client not provided.")
                 
     async def get_issue(self) -> tuple[Issue | None, Err]:
         """
