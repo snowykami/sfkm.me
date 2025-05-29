@@ -1,7 +1,11 @@
 name: Update readme screenshot
+# 在部署完成后运行截图工作流更新截图
 
 on:
-  push:
+  workflow_run:
+    workflows: ["deploy"]
+    types:
+      - completed
     branches:
       - main
 
