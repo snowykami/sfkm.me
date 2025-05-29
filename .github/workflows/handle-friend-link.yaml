@@ -24,3 +24,7 @@ jobs:
       - name: Run Python script
         run: |
           uv run ./scripts/issue_handler
+        env: 
+          GITHUB_EVENT_ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_EVENT_ACTION: ${{ github.event.action }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
