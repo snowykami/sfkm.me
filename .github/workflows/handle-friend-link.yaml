@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 jobs:
-  process-friend-link:
+  handle-friend-link:
     if: contains(github.event.issue.labels.*.name, 'friend-link')
     runs-on: ubuntu-latest
     permissions:
