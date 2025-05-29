@@ -10,47 +10,84 @@ export function Marquee() {
   ]
   const [index, setIndex] = useState(0)
   const [offset, setOffset] = useState(0)
-  const [, setWidth] = useState(0)
   const textRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const offsetRef = useRef(0) // 使用ref来存储当前偏移量，避免状态更新引起的渲染循环
+  const animationRef = useRef<number>(0) // 存储动画帧ID
 
-  // 计算文本宽度
+  // 计算初始尺寸
   useEffect(() => {
-    if (textRef.current) {
-      setWidth(textRef.current.offsetWidth)
-      setOffset(containerRef.current ? containerRef.current.offsetWidth : 0)
+    if (textRef.current && containerRef.current) {
+      const containerW = containerRef.current.offsetWidth
+      offsetRef.current = containerW // 设置初始位置
+      setOffset(containerW) // 初始化状态
     }
   }, [index])
 
   // 滚动动画
   useEffect(() => {
-    let raf: number
     let start: number | null = null
     const duration = 8000 // 每条滚动时长
-    const containerW = containerRef.current ? containerRef.current.offsetWidth : 0
-    const textW = textRef.current ? textRef.current.offsetWidth : 0
 
-    function animate(ts: number) {
-      if (start === null) start = ts
-      const elapsed = ts - start
-      // 从右侧外部滚到左侧外部
+    // 在组件挂载或索引改变时重置动画
+    function resetAnimation() {
+      // 取消现有动画
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+      
+      if (containerRef.current && textRef.current) {
+        const containerW = containerRef.current.offsetWidth
+        offsetRef.current = containerW
+        setOffset(containerW) // 只在初始化和重置时设置状态
+        
+        // 延迟开始新动画，确保状态已更新
+        setTimeout(() => {
+          start = null
+          animationRef.current = requestAnimationFrame(animate)
+        }, 50)
+      }
+    }
+
+    function animate(timestamp: number) {
+      if (!containerRef.current || !textRef.current) return
+      
+      if (start === null) start = timestamp
+      const elapsed = timestamp - start
+      
+      const containerW = containerRef.current.offsetWidth
+      const textW = textRef.current.offsetWidth
       const totalDistance = containerW + textW
       const progress = Math.min(elapsed / duration, 1)
-      setOffset(containerW - totalDistance * progress)
+      
+      // 计算新的偏移量
+      offsetRef.current = containerW - totalDistance * progress
+      
+      // 只在动画帧中更新DOM，避免使用setState
+      textRef.current.style.transform = `translateX(${offsetRef.current}px)`
+      
       if (progress < 1) {
-        raf = requestAnimationFrame(animate)
+        // 继续动画
+        animationRef.current = requestAnimationFrame(animate)
       } else {
+        // 动画完成，等待一段时间后切换到下一条文本
         setTimeout(() => {
           setIndex((i) => (i + 1) % texts.length)
-          setOffset(containerW)
+          // 新的文本会触发useEffect，重置动画
         }, 500)
       }
     }
-    setOffset(containerW)
-    raf = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(raf)
-    // eslint-disable-next-line
-  }, [index])
+
+    // 启动动画
+    resetAnimation()
+
+    // 清理函数
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+    }
+  }, [index, texts.length]) // 只在索引或文本数量变化时重新启动动画
 
   return (
     <div
@@ -62,7 +99,7 @@ export function Marquee() {
         ref={textRef}
         className="absolute whitespace-nowrap text-slate-600 dark:text-slate-300 text-sm transition-colors"
         style={{
-          transform: `translateX(${offset}px)`,
+          transform: `translateX(${offset}px)`, // 初始位置由状态控制
           willChange: "transform",
         }}
       >

@@ -15,6 +15,8 @@ import SkillsContent from "./components/windows/Skills"
 import ContactsContent from "./components/windows/Contacts"
 import FriendsContent from "./components/windows/Friends"
 import Dock from "./components/windows/Dock"
+import CircularAudioVisualizer from "./components/widgets/CircularAudioVisualizer"
+
 
 // float button
 import { MobileLangFloatButton } from "@/components/widgets/MobileLangFloatButton"
@@ -368,7 +370,7 @@ export default function Component() {
     handleHashChange()
     return () => window.removeEventListener("hashchange", handleHashChange)
     // 只依赖 isMobile，避免死循环
-  }, [isMobile])
+  }, [isMobile, windows])
 
   const maximizedWindow = windows.find(w => w.isVisible && w.isMaximized)
   // 如果没有最大化窗口，找z值最大的可见且未最小化窗口
@@ -446,8 +448,12 @@ export default function Component() {
           openWindow={openWindow}
         />
       )}
-      {/* 添加自定义动画样式 */}
-
+      {/* 添加桌面端自定义音频动画样式 */}
+      {!isMobile && (
+        <div className="absolute inset-0 pointer-events-none">
+          <CircularAudioVisualizer />
+        </div>
+      )}
     </div>
   )
 }

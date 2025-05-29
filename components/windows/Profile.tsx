@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { MapPin, ExternalLink, Github } from "lucide-react"
 import { t } from "i18next"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 
 // 建议 descriptions 用 key 数组，渲染时再 t(key)，避免 hydration 问题
 const descriptionKeys = [
@@ -52,25 +52,50 @@ export default function ProfileContent() {
   const [descIndex, setDescIndex] = useState(0)
   const [gradientIndex, setGradientIndex] = useState(0) // 昵称背景渐变索引
   const [fade, setFade] = useState(true)
-  // 昵称背景渐变数组
+  // 添加引用以跟踪是否已装载
+  const isMounted = useRef(true)
+  
+  // 昵称背景渐变变化
   useEffect(() => {
+    // 确保只在组件挂载时设置定时器
     const timer = setInterval(() => {
       setGradientIndex(i => (i + 1) % gradientClasses.length)
     }, 2000)
-    return () => clearInterval(timer)
-  }, [])
+    
+    // 清理函数
+    return () => {
+      clearInterval(timer)
+      // 标记组件已卸载
+      isMounted.current = false
+    }
+  }, []) // 保持空依赖数组
 
+  // 描述文本变化
   useEffect(() => {
+    let fadeTimer: NodeJS.Timeout
+    
+    // 设置描述切换定时器
     const timer = setInterval(() => {
-      setFade(false)
-      setTimeout(() => {
-        setDescIndex((prev) => (prev + 1) % descriptionKeys.length)
-        setFade(true)
-      }, 400)
+      if (isMounted.current) {
+        setFade(false)
+        
+        // 在淡出后更新描述内容
+        fadeTimer = setTimeout(() => {
+          if (isMounted.current) {
+            setDescIndex((prev) => (prev + 1) % descriptionKeys.length)
+            setFade(true)
+          }
+        }, 400)
+      }
     }, 3500)
-    return () => clearInterval(timer)
-  }, [])
-
+    
+    // 清理函数
+    return () => {
+      clearInterval(timer)
+      clearTimeout(fadeTimer)
+    }
+  }, []) // 保持空依赖数组
+  
   return (
     <CardContent className="p-8 transition-colors">
       <div className="flex flex-col items-center text-center mb-6">
@@ -106,7 +131,6 @@ export default function ProfileContent() {
           </h1>
         </div>
 
-        {/* <p className="text-slate-500 dark:text-slate-300 font-medium mb-2">{t("profile.subname")}</p> */}
         <div className="flex items-center text-slate-500 dark:text-slate-400 text-sm mb-4">
           <MapPin className="w-4 h-4 mr-1" />
           <span>{t("profile.location")}</span>
