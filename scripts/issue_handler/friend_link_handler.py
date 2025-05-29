@@ -77,15 +77,12 @@ def parse_friend_link_data(issue_body: str, issue_number: int | None = None) -> 
 async def handle_friend_link_issue(ctx: ActionIssueContext) -> Err:
     """
     处理友链相关的 issue。
-
     Args:
         ctx (ActionIssueContext): 上下文对象，包含 issue 信息和 GitHub 客户端
-
     Returns:
         Err: 错误信息，如果没有错误则返回 None
     """
-    fl, errs = parse_friend_link_data(ctx.body, ctx.issue_number)
-    print(f"Parsed friend link data: {fl}, Errors: {errs}")
+    friend_link, errs = parse_friend_link_data(ctx.body, ctx.issue_number)
     if ctx.event_action == "opened":
         # 检查友链
         return await ctx.create_comment("感谢您提交友链申请！请确保您的网站符合我们的友链要求。我们会尽快审核您的申请。")

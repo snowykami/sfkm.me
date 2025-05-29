@@ -38,3 +38,4 @@ jobs:
           GITHUB_EVENT_ISSUE_BODY: ${{ github.event.issue.body }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_TOKEN: ${{ secrets.LITEYUKI_FLOW_TOKEN }}
+          GITHUB_USERNAME: liteyuki-flow

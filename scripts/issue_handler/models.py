@@ -11,10 +11,22 @@ class Issue(BaseModel):
     title: str
     body: str
     number: int
+    
+class Comment(BaseModel):
+    user: str
 
 class ClientInterface:
     def __init__(self, client: AsyncClient):
         self.client = client
+        
+    async def whoami(self) -> tuple[str | None, Err]:
+        """
+        获取当前用户信息。
+
+        Returns:
+            _type_: 返回用户名或 None
+        """
+        return None, NotImplementedError("This method should be implemented by subclasses")
     
     async def get_issue(self, owner: str, repo: str, issue_number: int) -> tuple[Issue | None, Err]:
         """
@@ -37,6 +49,24 @@ class ClientInterface:
             issue (Issue): 要设置的 issue 对象
         """
         return NotImplementedError("This method should be implemented by subclasses")
+    
+    async def get_comment(self, repo_owner: str, repo_name: str, comment_id: int) -> tuple[str | None, Err]:
+        """
+        获取 issue 评论。
+
+        Args:
+            comment_id (int): 评论 ID
+        """
+        raise NotImplementedError("This method should be implemented by subclasses")
+    
+    async def get_comments(self, repo_owner: str, repo_name: str, issue_number: int) -> tuple[list[str] | None, Err]:
+        """
+        获取 issue 评论列表。
+
+        Args:
+            issue_number (int): issue 编号
+        """
+        raise NotImplementedError("This method should be implemented by subclasses")
     
     async def create_comment(self, repo_owner: str, repo_name: str, issue_number: int, comment: str) -> Err:
         """
@@ -113,6 +143,42 @@ class GitHubClient(ClientInterface):
         if response.status_code != 200:
             return Exception(f"Failed to edit issue {issue_number} in {owner}/{repo}: {response.text}")
         return None
+    
+    async def get_comment(self, owner: str, repo: str, comment_id: int) -> tuple[str | None, Err]:
+        """
+        获取 issue 评论。
+
+        Args:
+            owner (str): 仓库所有者
+            repo (str): 仓库名称
+            comment_id (int): 评论 ID
+
+        Returns:
+            _type_: 返回评论内容或 None
+        """
+        response = await self.client.get(f"/repos/{owner}/{repo}/issues/comments/{comment_id}")
+        if response.status_code == 200:
+            data = response.json()
+            return data['body'], None
+        return None, Exception(f"Failed to fetch comment {comment_id} from {owner}/{repo}: {response.text}")
+    
+    async def get_comments(self, owner: str, repo: str, issue_number: int) -> tuple[list[str] | None, Err]:
+        """
+        获取 issue 评论列表。
+
+        Args:
+            owner (str): 仓库所有者
+            repo (str): 仓库名称
+            issue_number (int): issue 编号
+
+        Returns:
+            _type_: 返回评论内容列表或 None
+        """
+        response = await self.client.get(f"/repos/{owner}/{repo}/issues/{issue_number}/comments")
+        if response.status_code == 200:
+            data = response.json()
+            return [comment['body'] for comment in data], None
+        return None, Exception(f"Failed to fetch comments for issue {issue_number} in {owner}/{repo}: {response.text}")
         
     async def create_comment(self, owner: str, repo: str, issue_number: int, comment: str) -> Err:
         """
@@ -164,6 +230,19 @@ class GiteaClient(ClientInterface):
             headers={"Authorization": f"token {token}"}
         )
         super().__init__(client)
+        
+    async def whoami(self) -> tuple[str | None, Err]:
+        """
+        获取当前用户信息。
+
+        Returns:
+            _type_: 返回用户名或 None
+        """
+        response = await self.client.get("/user")
+        if response.status_code == 200:
+            data = response.json()
+            return data['login'], None
+        return None, Exception(f"Failed to fetch user info: {response.text}")
         
     async def get_issue(self, owner: str, repo: str, issue_number: int) -> tuple[Issue | None, Err]:
         """
@@ -221,6 +300,39 @@ class ActionIssueContext:
         if not self.client:
             raise ValueError("Client is not initialized.")
         return await self.client.edit_issue(self.repo_owner, self.repo_name, self.issue_number, issue)
+    
+    async def whoami(self) -> tuple[str | None, Err]:
+        """
+        获取当前用户信息。
+
+        Returns:
+            _type_: 返回用户名或 None
+        """
+        if not self.client:
+            raise ValueError("Client is not initialized.")
+        return await self.client.whoami()
+    
+    async def get_comment(self, comment_id: int) -> tuple[str | None, Err]:
+        """
+        获取 issue 评论。
+
+        Args:
+            comment_id (int): 评论 ID
+        """
+        if not self.client:
+            raise ValueError("Client is not initialized.")
+        return await self.client.get_comment(self.repo_owner, self.repo_name, comment_id)
+    
+    async def get_comments(self) -> tuple[list[str] | None, Err]:
+        """
+        获取 issue 评论列表。
+
+        Returns:
+            _type_: 返回评论内容列表或 None
+        """
+        if not self.client:
+            raise ValueError("Client is not initialized.")
+        return await self.client.get_comments(self.repo_owner, self.repo_name, self.issue_number)
     
     async def create_comment(self, comment: str) -> Err:
         """
