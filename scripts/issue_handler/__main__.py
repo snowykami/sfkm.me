@@ -9,6 +9,8 @@ async def main():
         repository_name=os.getenv("GITHUB_REPOSITORY", ""),
         event_action=os.getenv("GITHUB_EVENT_ACTION", ""),
         client=GitHubClient(os.getenv("GITHUB_TOKEN", ""))
+        title=os.getenv("GITHUB_EVENT_ISSUE_TITLE", ""),
+        body=os.getenv("GITHUB_EVENT_ISSUE_BODY", "")
     )
     await handle_friend_link_issue(ctx)
 
