@@ -188,11 +188,14 @@ class ActionIssueContext:
     """
     Context for issue handling, containing the issue ID and the repository details.
     """
-    def __init__(self, issue_number: int, repository_name: str, event_action: str, client: ClientInterface):
+    def __init__(self, client: ClientInterface, issue_number: int, repository_name: str, event_action: str, title: str = "", body: str = ""):
         self.issue_number = issue_number
         self.repo_owner, self.repo_name = repository_name.split('/')
         self.event_action = event_action
         self.client = client
+        
+        self.title = title
+        self.body = body
             
     def __repr__(self):
         return f"ActionIssueContext(issue_number={self.issue_number}, repo_owner={self.repo_owner}, repo_name={self.repo_name}, event_action={self.event_action})"
