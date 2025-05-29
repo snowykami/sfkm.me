@@ -1,13 +1,15 @@
+import asyncio
 import os
+from models import ActionIssueContext
 
-from github import Github
-from issue_context import IssueContext
-
-if __name__ == "__main__":
-    ctx = IssueContext(
+async def main():
+    ctx = ActionIssueContext(
         issue_number=int(os.getenv("GITHUB_EVENT_ISSUE_NUMBER", "0")),
         repository_name=os.getenv("GITHUB_REPOSITORY", ""),
-        event_action=os.getenv("GITHUB_EVENT_ACTION", "")
+        event_action=os.getenv("GITHUB_EVENT_ACTION", ""),
+        github_token=os.getenv("GITHUB_TOKEN", "")
     )
-    
     print(ctx)
+
+if __name__ == "__main__":
+    asyncio.run(main())

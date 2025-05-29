@@ -1,0 +1,44 @@
+name: Update readme screenshot
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: has-git-operations
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update-screenshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright and screenshot
+        run: |
+          npm install --save-dev playwright
+          npx playwright install --with-deps
+          node scripts/screenshot.js
+
+      - name: Commit new preview screenshot
+        run: |
+          git config --global user.name 'liteyuki-flow'
+          git config --global user.email 'liteyuki-flow@liteyuki.org'
+          
+          git checkout -- package.json
+          git checkout -- package-lock.json
+
+          git add images/preview-*.png
+          git commit -m "chore: update preview screenshot [skip ci]" || echo "No changes"
+          git push
+

@@ -5,9 +5,6 @@ on:
     branches:
       - main
 
-permissions:
-  contents: write
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -27,22 +24,4 @@ jobs:
 
       - name: Deploy to server
         run: npx -p "@getmeli/cli" meli upload out --url "https://dash.apage.dev" --site "e8b39e8e-2a87-4866-9580-c2323317b4c0" --token "${{ secrets.PAGE_TOKEN }}" --branch "main"
-
-      - name: Install Playwright and screenshot
-        run: |
-          npm install --save-dev playwright
-          npx playwright install --with-deps
-          node scripts/screenshot.js
-
-      - name: Commit new preview screenshot
-        run: |
-          git config --global user.name 'liteyuki-flow'
-          git config --global user.email 'liteyuki-flow@liteyuki.org'
-          
-          git checkout -- package.json
-          git checkout -- package-lock.json
-
-          git add images/preview-*.png
-          git commit -m "chore: update preview screenshot [skip ci]" || echo "No changes"
-          git push
 
