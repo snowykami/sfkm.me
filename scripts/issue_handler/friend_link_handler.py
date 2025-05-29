@@ -1,4 +1,4 @@
-from scripts.issue_handler.models import ActionIssueContext, Err
+from models import ActionIssueContext, Err
 
 
 async def handle_friend_link_issue(ctx: ActionIssueContext) -> Err:
