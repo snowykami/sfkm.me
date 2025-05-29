@@ -198,6 +198,9 @@ class ActionIssueContext:
                 self.client = GitHubClient(github_token)
             else:
                 raise ValueError("Unsupported repository type or client not provided.")
+            
+    def __repr__(self):
+        return f"ActionIssueContext(issue_number={self.issue_number}, repo_owner={self.repo_owner}, repo_name={self.repo_name}, event_action={self.event_action})"
                 
     async def get_issue(self) -> tuple[Issue | None, Err]:
         """
