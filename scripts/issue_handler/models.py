@@ -188,7 +188,7 @@ class ActionIssueContext:
     """
     Context for issue handling, containing the issue ID and the repository details.
     """
-    def __init__(self, issue_number: int, repository_name: str, event_action: str, github_token: str, client: ClientInterface | None = None):
+    def __init__(self, issue_number: int, repository_name: str, event_action: str, github_token: str = "", client: ClientInterface | None = None):
         self.issue_number = issue_number
         self.repo_owner, self.repo_name = repository_name.split('/')
         self.event_action = event_action
