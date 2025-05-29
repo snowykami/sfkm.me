@@ -188,16 +188,11 @@ class ActionIssueContext:
     """
     Context for issue handling, containing the issue ID and the repository details.
     """
-    def __init__(self, issue_number: int, repository_name: str, event_action: str, github_token: str = "", client: ClientInterface | None = None):
+    def __init__(self, issue_number: int, repository_name: str, event_action: str, client: ClientInterface):
         self.issue_number = issue_number
         self.repo_owner, self.repo_name = repository_name.split('/')
         self.event_action = event_action
         self.client = client
-        if client is None:
-            if 'github' in repository_name.lower():
-                self.client = GitHubClient(github_token)
-            else:
-                raise ValueError("Unsupported repository type or client not provided.")
             
     def __repr__(self):
         return f"ActionIssueContext(issue_number={self.issue_number}, repo_owner={self.repo_owner}, repo_name={self.repo_name}, event_action={self.event_action})"

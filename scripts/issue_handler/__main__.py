@@ -1,6 +1,7 @@
 import asyncio
 import os
 from models import ActionIssueContext, GitHubClient
+from friend_link_handler import handle_friend_link_issue
 
 async def main():
     ctx = ActionIssueContext(
@@ -9,7 +10,7 @@ async def main():
         event_action=os.getenv("GITHUB_EVENT_ACTION", ""),
         client=GitHubClient(os.getenv("GITHUB_TOKEN", ""))
     )
-    print(ctx)
+    await handle_friend_link_issue(ctx)
 
 if __name__ == "__main__":
     asyncio.run(main())
