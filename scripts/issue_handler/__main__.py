@@ -8,7 +8,7 @@ async def main():
         issue_number=int(os.getenv("GITHUB_EVENT_ISSUE_NUMBER", "0")),
         repository_name=os.getenv("GITHUB_REPOSITORY", ""),
         event_action=os.getenv("GITHUB_EVENT_ACTION", ""),
-        client=GitHubClient(os.getenv("GITHUB_TOKEN", ""))
+        client=GitHubClient(os.getenv("GITHUB_TOKEN", "")),
         title=os.getenv("GITHUB_EVENT_ISSUE_TITLE", ""),
         body=os.getenv("GITHUB_EVENT_ISSUE_BODY", "")
     )

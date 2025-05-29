@@ -84,7 +84,7 @@ async def handle_friend_link_issue(ctx: ActionIssueContext) -> Err:
     Returns:
         Err: 错误信息，如果没有错误则返回 None
     """
-    fl, errs = parse_friend_link_data(ctx.issue.body, ctx.issue.number)
+    fl, errs = parse_friend_link_data(ctx.body, ctx.issue_number)
     print(f"Parsed friend link data: {fl}, Errors: {errs}")
     if ctx.event_action == "opened":
         # 检查友链
