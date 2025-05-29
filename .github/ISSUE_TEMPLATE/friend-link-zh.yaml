@@ -8,7 +8,7 @@ body:
     attributes:
       label: 名称
       description: 网站的名称
-      placeholder: 例如: 李田所的博客
+      placeholder: "例如: 李田所的博客"
     validations:
       required: true
 
@@ -17,7 +17,7 @@ body:
     attributes:
       label: 描述
       description: 网站的描述
-      placeholder: 例如: 李田所的个人博客，记录了他的学习和生活
+      placeholder: "例如: 李田所的个人博客，记录了他的学习和生活"
     validations:
       required: true
 
@@ -26,7 +26,7 @@ body:
     attributes:
       label: 链接
       description: 网站的链接 
-      placeholder: 例如: https://lts.blog
+      placeholder: "例如: https://lts.blog"
     validations:
       required: true
 
@@ -35,6 +35,6 @@ body:
     attributes:
       label: 头像链接
       description: 网站的头像链接
-      placeholder: 例如: https://lts.blog/avatar.png
+      placeholder: "例如: https://lts.blog/avatar.png"
     validations:
       required: true
