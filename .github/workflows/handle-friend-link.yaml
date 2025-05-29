@@ -1,8 +1,15 @@
-name: Process Friend Link Request
+name: Handle Friend Link Request
 
 on:
   issues:
     types: [opened, edited, labeled]
+
+concurrency:
+  group: has-git-operations
+  cancel-in-progress: false
+
+permissions:
+  contents: write
 
 jobs:
   process-friend-link:
@@ -28,3 +35,4 @@ jobs:
           GITHUB_EVENT_ISSUE_NUMBER: ${{ github.event.issue.number }}
           GITHUB_EVENT_ACTION: ${{ github.event.action }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
