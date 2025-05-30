@@ -140,8 +140,10 @@ async def fetch_webpage_content_with_playwright(url: str) -> tuple[LinkResponseI
             # 关闭浏览器
             await browser.close()
             
-            # 计算响应时间（毫秒）
-            ping = int((time.time() - start_time) * 1000)
+            # 计算响应时间（毫秒）使用httpx,head请求
+            async with httpx.AsyncClient() as client:
+                response = await client.head(url, timeout=30.0)
+                ping = int(response.elapsed.total_seconds() * 1000) if response.status_code == 200 else None
             
             return LinkResponseInfo(
                 title=title,
