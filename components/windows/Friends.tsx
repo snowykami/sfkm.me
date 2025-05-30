@@ -157,7 +157,7 @@ export default function FriendsContent() {
                     className="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 transition-colors h-8 px-3"
                     asChild
                 >
-                    <a href="https://github.com/snowykami/sfkm.me/issues" target="_blank" rel="noopener noreferrer">
+                    <a href="https://github.com/snowykami/sfkm.me/issues/new?labels=friend-link&template=apply-friend-link-zh.yaml&title=友链申请: 你的站点名称" target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-4 h-4 mr-2" />
                         {t('friends.apply')}
                     </a>
