@@ -38,3 +38,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.LITEYUKI_FLOW_TOKEN }}
           FRIEND_LINKS_FILE: data/friends.json
           I18N_FILE: data/i18n.json
+
+          AI_API_ENDPOINT: "https://models.github.ai/inference/chat/completions"
+          AI_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+          AI_MODEL: "gpt-3.5-turbo"
