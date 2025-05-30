@@ -20,6 +20,10 @@ jobs:
     container:
       image: playwright/chromium
     steps:
+      - name: Install node
+        run: |
+          apt -get update && apt-get install -y nodejs npm
+
       - name: Checkout code
         uses: actions/checkout@v4
 
