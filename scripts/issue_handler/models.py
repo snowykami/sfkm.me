@@ -1,5 +1,6 @@
 import json
 import os
+import base64
 from typing import Literal, Type, TYPE_CHECKING
 from pydantic import BaseModel
 from httpx import AsyncClient
@@ -397,7 +398,8 @@ class GitHubClient(ClientInterface):
         )
         if response.status_code == 200:
             data = response.json()
-            return data["content"], None
+            # 从base64转换    
+            return base64.b64decode(data["content"]).decode("utf-8"), None
         return None, Exception(
             f"Failed to fetch file {file_path} from {repo_owner}/{repo_name}: {response.text}"
         )
@@ -419,7 +421,7 @@ class GitHubClient(ClientInterface):
         """
         response = await self.client.put(
             f"/repos/{repo_owner}/{repo_name}/contents/{file_path}",
-            json={"message": message, "content": content},
+            json={"message": message, "content": base64.b64encode(content.encode("utf-8")).decode("utf-8")}
         )
         if response.status_code != 200:
             return Exception(
@@ -721,12 +723,14 @@ class IssueContext:
         # 检查是否已经存在相同的友链,有则更新
         for existing_link in friend_link_data:
             if existing_link.get("issue_number", -1) == friend_link.issue_number:
+                print(f"更新友链: {friend_link.name}({friend_link.link})")
                 existing_link["name"] = friend_link.name
                 existing_link["link"] = friend_link.link
                 existing_link["description"] = friend_link.description
                 existing_link["avatar"] = friend_link.avatar
                 break
         else:
+            print(f"添加友链: {friend_link.name}({friend_link.link})")
             friend_link_data.append({
                 "issue_number": friend_link.issue_number,
                 "name": friend_link.name,
