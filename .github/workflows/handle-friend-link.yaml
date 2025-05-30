@@ -40,5 +40,5 @@ jobs:
           I18N_FILE: data/i18n.json
 
           AI_API_ENDPOINT: "https://models.github.ai/inference/chat/completions"
-          AI_API_KEY: ${{ secrets.GITHUB_TOKEN }}
-          AI_MODEL: "openai/gpt-4.1"
+          AI_API_KEY: ${{ secrets.LITEYUKI_FLOW_TOKEN }}
+          AI_MODEL: "openai/gpt-4.1-nano"
