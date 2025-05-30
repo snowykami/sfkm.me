@@ -710,7 +710,7 @@ class IssueContext:
         """
         if not self.client:
             return ValueError("Client is not initialized.")
-        friend_link_file_content, err = await self.fetch_file(os.getenv("FRIEND_LINK_FILE", "data/friend_links.json"))
+        friend_link_file_content, err = await self.fetch_file(os.getenv("FRIEND_LINK_FILE", "data/friends.json"))
         if err or friend_link_file_content is None:
             return err
         
@@ -736,7 +736,7 @@ class IssueContext:
             })
         
         new_content = json.dumps(friend_link_data, indent=4)
-        err = await self.edit_file(os.getenv("FRIEND_LINK_FILE", "data/friend_links.json"), new_content, f"friend: add friend {friend_link.name}({friend_link.link})")
+        err = await self.edit_file(os.getenv("FRIEND_LINK_FILE", "data/friends.json"), new_content, f"friend: add friend {friend_link.name}({friend_link.link})")
         if err:
             return err
         return None
