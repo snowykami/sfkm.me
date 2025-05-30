@@ -15,8 +15,8 @@ async def main():
         repository_name=repository_name,
         event_name=event_name,
         event_action=event_action,
-        issue_number=int(issue_number),
-        comment_id=int(issue_comment_id),
+        issue_number=int(issue_number) if issue_number.isdigit() else 0,
+        comment_id=int(issue_comment_id) if issue_comment_id.isdigit() else 0,
     )
     await handle_friend_link_issue(ctx)
 
