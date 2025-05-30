@@ -149,6 +149,57 @@ class ClientInterface:
             new_comment (str): 新的评论内容
         """
         raise NotImplementedError("This method should be implemented by subclasses")
+    async def get_labels(
+        self, repo_owner: str, repo_name: str, issue_number: int
+    ) -> tuple[list[str], Err]:
+        """
+        获取 issue 的标签列表。
+
+        Args:
+            repo_owner (str): 仓库所有者
+            repo_name (str): 仓库名称
+            issue_number (int): issue 编号
+
+        Returns:
+            _type_: 返回标签列表或 None
+        """
+        return [], NotImplementedError(
+            "This method should be implemented by subclasses"
+    )
+    
+    async def add_label(
+        self, repo_owner: str, repo_name: str, issue_number: int, label: str
+    ) -> Err:
+        """
+        添加标签到 issue。
+
+        Args:
+            repo_owner (str): 仓库所有者
+            repo_name (str): 仓库名称
+            issue_number (int): issue 编号
+            label (str): 标签名称
+
+        Returns:
+            Err: 返回错误或 None
+        """
+        return NotImplementedError("This method should be implemented by subclasses")
+
+    async def remove_label(
+        self, repo_owner: str, repo_name: str, issue_number: int, label: str
+    ) -> Err:
+        """
+        从 issue 中移除标签。
+
+        Args:
+            repo_owner (str): 仓库所有者
+            repo_name (str): 仓库名称
+            issue_number (int): issue 编号
+            label (str): 标签名称
+
+        Returns:
+            Err: 返回错误或 None
+        """
+        return NotImplementedError("This method should be implemented by subclasses")
 
     async def fetch_file(
         self, repo_owner: str, repo_name: str, file_path: str
@@ -169,7 +220,12 @@ class ClientInterface:
         )
 
     async def edit_file(
-        self, repo_owner: str, repo_name: str, file_path: str, content: str, message: str = "Update file"
+        self,
+        repo_owner: str,
+        repo_name: str,
+        file_path: str,
+        content: str,
+        message: str = "Update file",
     ) -> Err:
         """
         编辑指定仓库的文件内容。
@@ -197,7 +253,7 @@ class GitHubClient(ClientInterface):
             headers={"Authorization": f"token {token}"},
         )
         super().__init__(client)
-        
+
     async def whoami(self) -> tuple[str | None, Err]:
         """
         获取当前用户信息。
@@ -379,6 +435,79 @@ class GitHubClient(ClientInterface):
             )
         return None
 
+    async def get_labels(
+        self, repo_owner: str, repo_name: str, issue_number: int
+    ) -> tuple[list[str], Err]:
+        """
+        获取 issue 的标签列表。
+
+        Args:
+            repo_owner (str): 仓库所有者
+            repo_name (str): 仓库名称
+            issue_number (int): issue 编号
+
+        Returns:
+            _type_: 返回标签列表或 None
+        """
+        response = await self.client.get(
+            f"/repos/{repo_owner}/{repo_name}/issues/{issue_number}/labels"
+        )
+        if response.status_code == 200:
+            data = response.json()
+            return [label["name"] for label in data], None
+        return [], Exception(
+            f"Failed to fetch labels for issue {issue_number} in {repo_owner}/{repo_name}: {response.text}"
+        )
+    
+    async def add_label(
+        self, repo_owner: str, repo_name: str, issue_number: int, label: str
+    ) -> Err:
+        """
+        添加标签到 issue。
+
+        Args:
+            repo_owner (str): 仓库所有者
+            repo_name (str): 仓库名称
+            issue_number (int): issue 编号
+            label (str): 标签名称
+
+        Returns:
+            Err: 返回错误或 None
+        """
+        response = await self.client.post(
+            f"/repos/{repo_owner}/{repo_name}/issues/{issue_number}/labels",
+            json=[label],
+        )
+        if response.status_code != 200:
+            return Exception(
+                f"Failed to add label {label} to issue {issue_number} in {repo_owner}/{repo_name}: {response.text}"
+            )
+        return None
+    
+    async def remove_label(
+        self, repo_owner: str, repo_name: str, issue_number: int, label: str
+    ) -> Err:
+        """
+        从 issue 中移除标签。
+
+        Args:
+            repo_owner (str): 仓库所有者
+            repo_name (str): 仓库名称
+            issue_number (int): issue 编号
+            label (str): 标签名称
+
+        Returns:
+            Err: 返回错误或 None
+        """
+        response = await self.client.delete(
+            f"/repos/{repo_owner}/{repo_name}/issues/{issue_number}/labels/{label}"
+        )
+        if response.status_code != 200:
+            return Exception(
+                f"Failed to remove label {label} from issue {issue_number} in {repo_owner}/{repo_name}: {response.text}"
+            )
+        return None
+
     async def fetch_file(
         self, repo_owner: str, repo_name: str, file_path: str
     ) -> tuple[str | None, Err]:
@@ -398,15 +527,20 @@ class GitHubClient(ClientInterface):
         )
         if response.status_code == 200:
             data = response.json()
-            # 从base64转换    
+            # 从base64转换
             return base64.b64decode(data["content"]).decode("utf-8"), None
         return None, Exception(
             f"Failed to fetch file {file_path} from {repo_owner}/{repo_name}: {response.text}"
         )
 
     async def edit_file(
-        self, repo_owner: str, repo_name: str, file_path: str, content: str, message: str = "Update file"
-        )-> Err:
+        self,
+        repo_owner: str,
+        repo_name: str,
+        file_path: str,
+        content: str,
+        message: str = "Update file",
+    ) -> Err:
         """
         编辑指定仓库的文件内容。
 
@@ -424,36 +558,33 @@ class GitHubClient(ClientInterface):
         current_file_response = await self.client.get(
             f"/repos/{repo_owner}/{repo_name}/contents/{file_path}"
         )
-        
+
         if current_file_response.status_code != 200:
             return Exception(
                 f"Failed to get current file {file_path} in {repo_owner}/{repo_name}: {current_file_response.text}"
             )
-        
+
         file_data = current_file_response.json()
         file_sha = file_data["sha"]
-        
+
         # 将内容编码为 base64 字符串
         content_bytes = content.encode("utf-8")
         base64_bytes = base64.b64encode(content_bytes)
         base64_string = base64_bytes.decode("utf-8")
-        
+
         # 提交更新
         response = await self.client.put(
             f"/repos/{repo_owner}/{repo_name}/contents/{file_path}",
-            json={
-                "message": message,
-                "content": base64_string,
-                "sha": file_sha
-            }
+            json={"message": message, "content": base64_string, "sha": file_sha},
         )
-        
+
         if response.status_code != 200:
             return Exception(
                 f"Failed to edit file {file_path} in {repo_owner}/{repo_name}: {response.text}"
             )
-        
+
         return None
+
 
 class GiteaClient(ClientInterface):
     """
@@ -568,9 +699,7 @@ class IssueContext:
 
         whoami, err = await client.whoami()
         if err or not whoami:
-            raise ValueError(
-                f"Failed to fetch user info: {err}"
-            )
+            raise ValueError(f"Failed to fetch user info: {err}")
 
         comment = None
         if event_action == "issue_comment":
@@ -711,7 +840,9 @@ class IssueContext:
             return None, ValueError("Client is not initialized.")
         return await self.client.fetch_file(self.repo.owner, self.repo.name, file_path)
 
-    async def edit_file(self, file_path: str, content: str, message: str = "Update file") -> Err:
+    async def edit_file(
+        self, file_path: str, content: str, message: str = "Update file"
+    ) -> Err:
         """
         编辑指定仓库的文件内容。
 
@@ -728,6 +859,54 @@ class IssueContext:
             self.repo.owner, self.repo.name, file_path, content, message
         )
 
+    async def add_label(
+        self, label: str
+    ) -> Err:
+        """
+        添加标签到 issue。
+        Args:
+            label (str): 标签名称
+        """
+        if not self.client:
+            return ValueError("Client is not initialized.")
+        # 先检查标签是否已经存在
+        labels, err = await self.client.get_labels(
+            self.repo.owner, self.repo.name, self.issue.number
+        )
+        if err:
+            return err
+        if label in labels:
+            print(f"标签 {label} 已经存在于 issue {self.issue.number} 中。")
+            return None
+        print(f"添加标签 {label} 到 issue {self.issue.number} 中。")
+        return await self.client.add_label(
+            self.repo.owner, self.repo.name, self.issue.number, label
+        )
+        
+    async def remove_label(
+        self, label: str
+    ) -> Err:
+        """
+        从 issue 中移除标签。
+        Args:
+            label (str): 标签名称
+        """
+        if not self.client:
+            return ValueError("Client is not initialized.")
+        # 先检查标签是否存在
+        labels, err = await self.client.get_labels(
+            self.repo.owner, self.repo.name, self.issue.number
+        )
+        if err:
+            return err
+        if label not in labels:
+            print(f"标签 {label} 不存在于 issue {self.issue.number} 中。")
+            return None
+        print(f"从 issue {self.issue.number} 中移除标签 {label}。")
+        return await self.client.remove_label(
+            self.repo.owner, self.repo.name, self.issue.number, label
+        )
+
     async def upsert_friend_link(self, friend_link: "FriendLink") -> Err:
         """
         添加友链。
@@ -737,14 +916,16 @@ class IssueContext:
         """
         if not self.client:
             return ValueError("Client is not initialized.")
-        friend_link_file_content, err = await self.fetch_file(os.getenv("FRIEND_LINK_FILE", "data/friends.json"))
+        friend_link_file_content, err = await self.fetch_file(
+            os.getenv("FRIEND_LINK_FILE", "data/friends.json")
+        )
         if err or friend_link_file_content is None:
             return err
-        
+
         friend_link_data = json.loads(friend_link_file_content)
         if not isinstance(friend_link_data, list):
             return ValueError("Friend link data is not a list.")
-        
+
         # 检查是否已经存在相同的友链,有则更新
         for existing_link in friend_link_data:
             if existing_link.get("issue_number", -1) == friend_link.issue_number:
@@ -756,15 +937,21 @@ class IssueContext:
                 break
         else:
             print(f"添加友链: {friend_link.name}({friend_link.link})")
-            friend_link_data.append({
-                "issue_number": friend_link.issue_number,
-                "name": friend_link.name,
-                "link": str(friend_link.link),
-                "description": friend_link.description,
-                "avatar": str(friend_link.avatar),
-            })
+            friend_link_data.append(
+                {
+                    "issue_number": friend_link.issue_number,
+                    "name": friend_link.name,
+                    "link": str(friend_link.link),
+                    "description": friend_link.description,
+                    "avatar": str(friend_link.avatar),
+                }
+            )
         new_content = json.dumps(friend_link_data, indent=4)
-        err = await self.edit_file(os.getenv("FRIEND_LINK_FILE", "data/friends.json"), new_content, f"friend: add friend {friend_link.name}({friend_link.link})")
+        err = await self.edit_file(
+            os.getenv("FRIEND_LINK_FILE", "data/friends.json"),
+            new_content,
+            f"friend: add friend {friend_link.name}({friend_link.link})",
+        )
         if err:
             return err
         return None
