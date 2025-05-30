@@ -5,6 +5,7 @@ import os
 import httpx
 
 from markdown_parser import parse_markdown_to_structured_data
+from browser import fetch_webpage_content_with_playwright
 from pydantic import BaseModel, HttpUrl, field_validator
 from models import IssueContext, Err
 from bs4 import BeautifulSoup
@@ -84,47 +85,6 @@ def parse_friend_link_data(
     return parse_markdown_to_structured_data(
         markdown_text=issue_body, schema_mapping=schema, model_class=FriendLink
     )
-
-
-async def fetch_webpage_content(url: str) -> tuple[LinkResponseInfo | None, Err]:
-    """
-    获取网页内容并提取标题和描述
-
-    Args:
-        url (str): 网页 URL
-
-    Returns:
-        tuple[str, Err]: 返回 (网页内容, 错误信息)
-    """
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.get(url, follow_redirects=True)
-            response.raise_for_status()  # 检查请求是否成功
-
-            soup = BeautifulSoup(response.text, "html.parser")
-            title = (soup.title.string if soup.title else "") or "No Title Found"
-
-            try:
-                description = soup.find("meta", attrs={"name": "description"})
-                description_content = (
-                    description["content"]  # type: ignore
-                    if description and "content" in description.attrs  # type: ignore
-                    else ""
-                ) or "No Description Found"  # type: ignore
-            except Exception as _:
-                description_content = "No Description Found"
-
-            return LinkResponseInfo(
-                title=title,
-                description=description_content,
-                body=response.text,
-                ping=response.elapsed.microseconds // 1000,
-            ), None
-    except httpx.RequestError as err:
-        return None, err
-    except Exception as err:
-        return None, err
-
 
 async def ai_check_content(
     prompt: str, content: str, endpoint: str, key: str, model: str
@@ -318,7 +278,7 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
         await ctx.edit_one_comment(f"友链申请格式错误: {'\n'.join(errs)}")
         return ValueError(f"友链申请格式错误: {'\n'.join(errs)}")
 
-    friend_link_info, err = await fetch_webpage_content(str(friend_link.link))
+    friend_link_info, err = await fetch_webpage_content_with_playwright(str(friend_link.link))
     if err or not friend_link_info:
         await ctx.edit_one_comment(f"获取友链信息失败: {err}")
         return ValueError(f"获取网页内容失败: {err}")
