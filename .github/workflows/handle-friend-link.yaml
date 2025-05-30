@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Install node
         run: |
-          apt-get install -y nodejs npm
+          sudo apt-get install -y nodejs npm
 
       - name: Checkout code
         uses: actions/checkout@v4
