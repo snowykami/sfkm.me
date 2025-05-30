@@ -341,6 +341,11 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
     Returns:
         Err: 错误信息，如果没有错误则返回 None
     """
+    if ctx.event.name == "issue_comment" and ctx.comment and ctx.whoami == ctx.comment.user:
+        # 如果是BOT自己评论的，忽略
+        print("忽略 BOT 自己的评论")
+        return None
+    
     friend_link, errs = parse_friend_link_data(ctx.issue.body, ctx.issue.number)
     if errs or not friend_link:
         await ctx.edit_one_comment(f"友链申请格式错误: {'\n'.join(errs)}")
