@@ -406,7 +406,7 @@ class GitHubClient(ClientInterface):
 
     async def edit_file(
         self, repo_owner: str, repo_name: str, file_path: str, content: str, message: str = "Update file"
-    ) -> Err:
+        )-> Err:
         """
         编辑指定仓库的文件内容。
 
@@ -415,20 +415,45 @@ class GitHubClient(ClientInterface):
             repo_name (str): 仓库名称
             file_path (str): 文件路径
             content (str): 新的文件内容
+            message (str): 提交消息
 
         Returns:
-            _type_: 返回编辑结果或 None
+            Err: 返回错误或 None
         """
+        # 获取当前文件的 SHA
+        current_file_response = await self.client.get(
+            f"/repos/{repo_owner}/{repo_name}/contents/{file_path}"
+        )
+        
+        if current_file_response.status_code != 200:
+            return Exception(
+                f"Failed to get current file {file_path} in {repo_owner}/{repo_name}: {current_file_response.text}"
+            )
+        
+        file_data = current_file_response.json()
+        file_sha = file_data["sha"]
+        
+        # 将内容编码为 base64 字符串
+        content_bytes = content.encode("utf-8")
+        base64_bytes = base64.b64encode(content_bytes)
+        base64_string = base64_bytes.decode("utf-8")
+        
+        # 提交更新
         response = await self.client.put(
             f"/repos/{repo_owner}/{repo_name}/contents/{file_path}",
-            json={"message": message, "content": base64.b64encode(content.encode("utf-8")).decode("utf-8")}
+            json={
+                "message": message,
+                "content": base64_string,
+                "sha": file_sha
+            }
         )
+        
         if response.status_code != 200:
             return Exception(
                 f"Failed to edit file {file_path} in {repo_owner}/{repo_name}: {response.text}"
             )
+        
         return None
-
 
 class GiteaClient(ClientInterface):
     """
