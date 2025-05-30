@@ -18,7 +18,7 @@ jobs:
     if: contains(github.event.issue.labels.*.name, 'friend-link')
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.42.0-jammy
+      image: mcr.microsoft.com/playwright:v1.52.0-jammy
       options: --user root
     steps:
       - name: Check environment
