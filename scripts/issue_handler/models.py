@@ -168,7 +168,7 @@ class ClientInterface:
         )
 
     async def edit_file(
-        self, repo_owner: str, repo_name: str, file_path: str, content: str
+        self, repo_owner: str, repo_name: str, file_path: str, content: str, message: str = "Update file"
     ) -> Err:
         """
         编辑指定仓库的文件内容。
