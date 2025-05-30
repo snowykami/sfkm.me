@@ -927,8 +927,10 @@ class IssueContext:
             return ValueError("Friend link data is not a list.")
 
         # 检查是否已经存在相同的友链,有则更新
+        is_updated = False
         for existing_link in friend_link_data:
             if existing_link.get("issue_number", -1) == friend_link.issue_number:
+                is_updated = True
                 print(f"更新友链: {friend_link.name}({friend_link.link})")
                 existing_link["name"] = friend_link.name
                 existing_link["link"] = str(friend_link.link)
@@ -954,4 +956,9 @@ class IssueContext:
         )
         if err:
             return err
+        
+        if is_updated:
+            await self.edit_one_comment(
+                "信息已更新，页面稍后就会构建好~",
+            )
         return None
