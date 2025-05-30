@@ -192,7 +192,7 @@ export default function Component() {
       x: 250,
       y: 200,
       z: 996,
-      height: initialHeight, // 初始高度
+      height: 500, // 初始高度
       width: initialWidth, // 初始宽度
     },
   ])
