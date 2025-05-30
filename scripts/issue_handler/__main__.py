@@ -18,7 +18,14 @@ async def main():
         issue_number=int(issue_number) if issue_number.isdigit() else 0,
         comment_id=int(issue_comment_id) if issue_comment_id.isdigit() else 0,
     )
-    await handle_friend_link_issue(ctx)
+    err = await handle_friend_link_issue(ctx)
+    if err:
+        print(f"Error handling issue: {err}")
+        ctx.edit_one_comment(
+            f"出现错误：{err}",
+        )
+    else:
+        print("Issue handled successfully.")
 
 if __name__ == "__main__":
     asyncio.run(main())
