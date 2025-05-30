@@ -43,7 +43,7 @@ class Comment(BaseModel):
 
 
 class Event(BaseModel):
-    name: Literal["issue", "issue_comment"]
+    name: Literal["issues", "issue_comments"]
     action: Literal[
         "opened", "edited", "closed", "reopened", "deleted", "created", "updated"
     ]
@@ -498,7 +498,7 @@ class IssueContext:
         cls,
         client: ClientInterface,
         repository_name: str,
-        event_name: Literal["issue", "issue_comment"],
+        event_name: Literal["issues", "issue_comments"],
         event_action: Literal[
             "opened", "edited", "closed", "reopened", "deleted", "created", "updated"
         ],

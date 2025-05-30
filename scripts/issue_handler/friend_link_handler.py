@@ -394,7 +394,7 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
         await ctx.edit_one_comment(f"获取友链信息失败: {err}")
         return ValueError(f"获取网页内容失败: {err}")
 
-    if ctx.event.name == "issue":
+    if ctx.event.name == "issues":
         if ctx.event.action in ("opened", "edited"):
             ai_check_result = await check_content_with_ai(
                 ctx=ctx, content=clear_webpage_content(friend_link_info.body)
@@ -410,7 +410,7 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
                 await ctx.add_friend_link(friend_link)
         elif ctx.event.action == "closed":
             pass
-    elif ctx.event.name == "issue_comment":
+    elif ctx.event.name == "issue_comments":
         if ctx.event.action == "created":
             pass
         elif ctx.event.action == "edited":
