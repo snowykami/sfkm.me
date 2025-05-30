@@ -83,6 +83,8 @@ async def handle_friend_link_issue(ctx: ActionIssueContext) -> Err:
         Err: 错误信息，如果没有错误则返回 None
     """
     friend_link, errs = parse_friend_link_data(ctx.body, ctx.issue_number)
+    print(f"Parsed friend link: {friend_link}, Errors: {errs}")
+    print("EVENT", ctx.event_action, ctx.issue_number)
     if ctx.event_action == "opened":
         # 检查友链
         return await ctx.create_comment("感谢您提交友链申请！请确保您的网站符合我们的友链要求。我们会尽快审核您的申请。")
@@ -92,5 +94,7 @@ async def handle_friend_link_issue(ctx: ActionIssueContext) -> Err:
     elif ctx.event_action == "closed":
         # 创建友链
         return await ctx.create_comment("您的友链申请已被关闭。如果您有任何疑问，请联系我们。")
-    
+    elif ctx.event_action == "deleted":
+        # 删除友链
+        return await ctx.create_comment("您的友链申请已被删除。如果您有任何疑问，请联系我们。")
     return None  # 如果没有错误，返回 None

@@ -14,6 +14,8 @@ class Issue(BaseModel):
     
 class Comment(BaseModel):
     user: str
+    comment_id: int
+    body: str
 
 class ClientInterface:
     def __init__(self, client: AsyncClient):
@@ -50,7 +52,7 @@ class ClientInterface:
         """
         return NotImplementedError("This method should be implemented by subclasses")
     
-    async def get_comment(self, repo_owner: str, repo_name: str, comment_id: int) -> tuple[str | None, Err]:
+    async def get_comment(self, repo_owner: str, repo_name: str, comment_id: int) -> tuple[Comment | None, Err]:
         """
         获取 issue 评论。
 
@@ -59,7 +61,7 @@ class ClientInterface:
         """
         raise NotImplementedError("This method should be implemented by subclasses")
     
-    async def get_comments(self, repo_owner: str, repo_name: str, issue_number: int) -> tuple[list[str] | None, Err]:
+    async def get_comments(self, repo_owner: str, repo_name: str, issue_number: int) -> tuple[list[Comment], Err]:
         """
         获取 issue 评论列表。
 
@@ -144,7 +146,7 @@ class GitHubClient(ClientInterface):
             return Exception(f"Failed to edit issue {issue_number} in {owner}/{repo}: {response.text}")
         return None
     
-    async def get_comment(self, owner: str, repo: str, comment_id: int) -> tuple[str | None, Err]:
+    async def get_comment(self, owner: str, repo: str, comment_id: int) -> tuple[Comment | None, Err]:
         """
         获取 issue 评论。
 
@@ -159,10 +161,14 @@ class GitHubClient(ClientInterface):
         response = await self.client.get(f"/repos/{owner}/{repo}/issues/comments/{comment_id}")
         if response.status_code == 200:
             data = response.json()
-            return data['body'], None
+            return Comment(
+                user=data['user']['login'],
+                comment_id=data['id'],
+                body=data['body']
+            ), None
         return None, Exception(f"Failed to fetch comment {comment_id} from {owner}/{repo}: {response.text}")
     
-    async def get_comments(self, owner: str, repo: str, issue_number: int) -> tuple[list[str] | None, Err]:
+    async def get_comments(self, owner: str, repo: str, issue_number: int) -> tuple[list[Comment], Err]:
         """
         获取 issue 评论列表。
 
@@ -177,8 +183,14 @@ class GitHubClient(ClientInterface):
         response = await self.client.get(f"/repos/{owner}/{repo}/issues/{issue_number}/comments")
         if response.status_code == 200:
             data = response.json()
-            return [comment['body'] for comment in data], None
-        return None, Exception(f"Failed to fetch comments for issue {issue_number} in {owner}/{repo}: {response.text}")
+            return [
+                Comment(
+                    user=comment['user']['login'],
+                    comment_id=comment['id'],
+                    body=comment['body']
+                ) for comment in data
+            ], None
+        return [], Exception(f"Failed to fetch comments for issue {issue_number} in {owner}/{repo}: {response.text}")
         
     async def create_comment(self, owner: str, repo: str, issue_number: int, comment: str) -> Err:
         """
@@ -312,7 +324,7 @@ class ActionIssueContext:
             raise ValueError("Client is not initialized.")
         return await self.client.whoami()
     
-    async def get_comment(self, comment_id: int) -> tuple[str | None, Err]:
+    async def get_comment(self, comment_id: int) -> tuple[Comment | None, Err]:
         """
         获取 issue 评论。
 
@@ -323,7 +335,7 @@ class ActionIssueContext:
             raise ValueError("Client is not initialized.")
         return await self.client.get_comment(self.repo_owner, self.repo_name, comment_id)
     
-    async def get_comments(self) -> tuple[list[str] | None, Err]:
+    async def get_comments(self) -> tuple[list[Comment], Err]:
         """
         获取 issue 评论列表。
 
