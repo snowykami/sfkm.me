@@ -381,23 +381,11 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
                     return err
                 else:
                     await ctx.edit_one_comment("友链添加成功！页面稍后就会构建好哦~", add_line=True)
-                err = await ctx.remove_label("failed")
-                if err:
-                    await ctx.edit_one_comment(f"移除标签失败: {err}", add_line=True)
-                    return err
-                err = await ctx.add_label("passed")
-                if err:
-                    await ctx.edit_one_comment(f"添加标签失败: {err}", add_line=True)
+                if err := await ctx.set_passed():
                     return err
             else:
                 print("AI 检查不通过，等待审核")
-                err = await ctx.remove_label("passed")
-                if err:
-                    await ctx.edit_one_comment(f"移除标签失败: {err}", add_line=True)
-                    return err
-                err = await ctx.add_label("failed")
-                if err:
-                    await ctx.edit_one_comment(f"添加标签失败: {err}", add_line=True)
+                if err := await ctx.set_failed():
                     return err
         elif ctx.event.action == "closed":
             pass

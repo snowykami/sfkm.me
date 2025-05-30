@@ -149,6 +149,7 @@ class ClientInterface:
             new_comment (str): 新的评论内容
         """
         raise NotImplementedError("This method should be implemented by subclasses")
+
     async def get_labels(
         self, repo_owner: str, repo_name: str, issue_number: int
     ) -> tuple[list[str], Err]:
@@ -165,8 +166,8 @@ class ClientInterface:
         """
         return [], NotImplementedError(
             "This method should be implemented by subclasses"
-    )
-    
+        )
+
     async def add_label(
         self, repo_owner: str, repo_name: str, issue_number: int, label: str
     ) -> Err:
@@ -458,7 +459,7 @@ class GitHubClient(ClientInterface):
         return [], Exception(
             f"Failed to fetch labels for issue {issue_number} in {repo_owner}/{repo_name}: {response.text}"
         )
-    
+
     async def add_label(
         self, repo_owner: str, repo_name: str, issue_number: int, label: str
     ) -> Err:
@@ -483,7 +484,7 @@ class GitHubClient(ClientInterface):
                 f"Failed to add label {label} to issue {issue_number} in {repo_owner}/{repo_name}: {response.text}"
             )
         return None
-    
+
     async def remove_label(
         self, repo_owner: str, repo_name: str, issue_number: int, label: str
     ) -> Err:
@@ -828,7 +829,7 @@ class IssueContext:
             self.repo.owner, self.repo.name, comment_id, new_comment
         )
 
-    async def edit_one_comment(self, new_comment: str, add_line: bool=False) -> Err:
+    async def edit_one_comment(self, new_comment: str, add_line: bool = False) -> Err:
         """
         编辑当前 issue 的第一条或者唯一评论，如果存在的话，否则创建。
 
@@ -878,9 +879,7 @@ class IssueContext:
             self.repo.owner, self.repo.name, file_path, content, message
         )
 
-    async def add_label(
-        self, label: str
-    ) -> Err:
+    async def add_label(self, label: str) -> Err:
         """
         添加标签到 issue。
         Args:
@@ -901,10 +900,8 @@ class IssueContext:
         return await self.client.add_label(
             self.repo.owner, self.repo.name, self.issue.number, label
         )
-        
-    async def remove_label(
-        self, label: str
-    ) -> Err:
+
+    async def remove_label(self, label: str) -> Err:
         """
         从 issue 中移除标签。
         Args:
@@ -975,9 +972,50 @@ class IssueContext:
         )
         if err:
             return err
-        
+
         if is_updated:
             await self.edit_one_comment(
                 "信息已更新，页面稍后就会构建好~", add_line=True
             )
         return None
+
+    async def set_status(self, status: Literal["passed", "failed"]) -> Err:
+        """
+        设置 issue 的状态标签。
+
+        Args:
+            status (str): 状态标签，"passed" 或 "failed"
+        """
+        if not self.client:
+            return ValueError("Client is not initialized.")
+        if status == "passed":
+            await self.remove_label("failed")
+            return await self.add_label("passed")
+        elif status == "failed":
+            await self.remove_label("passed")
+            return await self.add_label("failed")
+        else:
+            return ValueError(f"Unknown status: {status}")
+
+    async def set_failed(self) -> Err:
+        """
+        设置 issue 为失败状态，并添加错误信息。
+
+        Args:
+            err (Err): 错误信息
+        """
+        if not self.client:
+            return ValueError("Client is not initialized.")
+        await self.set_status("failed")
+        return None
+
+    async def set_passed(self) -> Err:
+        """
+        设置 issue 为成功状态。
+
+        Returns:
+            Err: 返回错误或 None
+        """
+        if not self.client:
+            return ValueError("Client is not initialized.")
+        return await self.set_status("passed")
