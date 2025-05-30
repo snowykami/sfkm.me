@@ -405,10 +405,10 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
             )
             await ctx.edit_one_comment(
                 "我们已经检查完了你的链接，信息如下\n"
-                "### 站点标题\n\n{friend_link_info.title}\n"
-                "### 站点描述\n\n{friend_link_info.description}\n"
-                "### 响应时间\n\n{friend_link_info.ping} ms\n"
-                "### 站点链接\n\n{friend_link.link}\n"
+                f"### 站点标题\n\n{friend_link_info.title}\n"
+                f"### 站点描述\n\n{friend_link_info.description}\n"
+                f"### 响应时间\n\n{friend_link_info.ping} ms\n"
+                f"### 站点链接\n\n{friend_link.link}\n"
                 f"### AI审核详情\n\n{"通过" if ai_check_result.passed else "不通过"}\n{ai_check_result.reason}\n{ai_check_result.details}\n"
             )
             if ai_check_result.passed:
