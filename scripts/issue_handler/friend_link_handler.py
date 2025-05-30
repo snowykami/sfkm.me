@@ -416,7 +416,7 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
                 await ctx.add_friend_link(friend_link)
         elif ctx.event.action == "closed":
             pass
-    elif ctx.event.name == "issue_comments":
+    elif ctx.event.name == "issue_comment":
         if ctx.event.action == "created":
             pass
         elif ctx.event.action == "edited":
