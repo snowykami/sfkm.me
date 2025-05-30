@@ -784,6 +784,23 @@ class IssueContext:
             self.repo.owner, self.repo.name, self.issue.number
         )
 
+    async def get_one_comment(self) -> tuple[Comment | None, Err]:
+        """
+        获取当前 issue 当前用户的第一条或者唯一评论，如果存在的话。
+
+        Returns:
+            _type_: 返回评论内容或 None
+        """
+        if not self.client:
+            raise ValueError("Client is not initialized.")
+        comments, err = await self.get_comments()
+        if err:
+            return None, err
+        for comment in comments:
+            if comment.user == self.whoami:
+                return comment, None
+        return None, None
+
     async def create_comment(self, comment: str) -> Err:
         """
         创建 issue 评论。
@@ -811,7 +828,7 @@ class IssueContext:
             self.repo.owner, self.repo.name, comment_id, new_comment
         )
 
-    async def edit_one_comment(self, new_comment: str) -> Err:
+    async def edit_one_comment(self, new_comment: str, add_line: bool=False) -> Err:
         """
         编辑当前 issue 的第一条或者唯一评论，如果存在的话，否则创建。
 
@@ -823,6 +840,8 @@ class IssueContext:
             return err
         for comment in comments:
             if comment.user == self.whoami:
+                if add_line:
+                    new_comment = f"{comment.body}\n\n{new_comment}"
                 return await self.edit_comment(comment.comment_id, new_comment)
         return await self.create_comment(new_comment)
 
@@ -959,6 +978,6 @@ class IssueContext:
         
         if is_updated:
             await self.edit_one_comment(
-                "信息已更新，页面稍后就会构建好~",
+                "信息已更新，页面稍后就会构建好~", add_line=True
             )
         return None
