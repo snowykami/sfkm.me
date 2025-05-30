@@ -1,144 +1,151 @@
 [
-  {
-    "name": "friends.liteyukiIndexSite.name",
-    "link": "https://liteyuki.org/",
-    "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png",
-    "description": "friends.liteyukiIndexSite.description"
-  },
-  {
-    "name": "friends.redrockteam.name",
-    "link": "https://redrock.team/",
-    "avatar": "https://m.redrock.team/new-official-website-mobile/redRock.png",
-    "description": "friends.redrockteam.description"
-  },
-  {
-    "name": "friends.cysnies.name",
-    "link": "https://tcea.top/",
-    "avatar": "https://github.com/cysnies.png",
-    "description": "friends.cysnies.description",
-    "tag": "CDN",
-    "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
-  },
-  {
-    "name": "friends.aicorein.name",
-    "link": "https://www.glowmem.com/",
-    "avatar": "https://github.com/aicorein.png",
-    "description": "friends.aicorein.description"
-  },
-  {
-    "name": "friends.edream.name",
-    "link": "https://blog.edmc.cn/",
-    "avatar": "https://github.com/EDream.png",
-    "description": "friends.edream.description"
-  },
-  {
-    "name": "friends.Executor-Cheng.name",
-    "link": "https://dream.day/",
-    "avatar": "https://github.com/Executor-Cheng.png",
-    "description": "friends.Executor-Cheng.description"
-  },
-  {
-    "name": "friends.viki.name",
-    "link": "https://viki.moe/",
-    "avatar": "https://github.com/vikiboss.png",
-    "description": "friends.viki.description"
-  },
-  {
-    "name": "friends.naloveyuki.name",
-    "link": "https://blog.naloveyuki.top/",
-    "avatar": "https://blog.naloveyuki.top/themes/theme-Ideaflow/assets/img/default-avatar.png",
-    "description": "friends.naloveyuki.description",
-    "tag": "CDN",
-    "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
-  },
-  {
-    "name": "friends.churanneko.name",
-    "link": "https://blog.churanneko.com/",
-    "avatar": "https://blog.churanneko.com/upload/logo.jpg",
-    "description": "friends.churanneko.description",
-    "tag": "CDN",
-    "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
-  },
-  {
-    "name": "friends.三瓶可乐不过岗.name",
-    "link": "https://www.threkork.com/",
-    "avatar": "https://www.threkork.com/img/512.jpg",
-    "description": "friends.三瓶可乐不过岗.description"
-  },
-  {
-    "name": "friends.艾拉酱小屋.name",
-    "link": "https://www.isla.ltd",
-    "avatar": "https://www.isla.ltd/images/aila.png",
-    "description": "friends.艾拉酱小屋.description"
-  },
-  {
-    "name": "friends.小涵のGithub主页.name",
-    "link": "https://github.com/yuhan2680",
-    "avatar": "https://avatars.githubusercontent.com/u/89262123",
-    "description": "friends.小涵のGithub主页.description"
-  },
-  {
-    "name": "friends.daoge的github主页.name",
-    "link": "https://github.com/smartcmd",
-    "avatar": "https://avatars.githubusercontent.com/u/60499296?v=4",
-    "description": "friends.daoge的github主页.description"
-  },
-  {
-    "name": "friends.逝与逢博客.name",
-    "link": "https://blog.xin-hao.top",
-    "avatar": "https://blog.xin-hao.top/upload/b_bf00a83b77194dcecf5eb983b2c5ecec.jpg",
-    "description": "friends.逝与逢博客.description"
-  },
-  {
-    "name": "friends.Inkar Suki.name",
-    "link": "https://inkar-suki.codethink.cn/Inkar-Suki-Docs/",
-    "avatar": "https://inkar-suki.codethink.cn/Inkar-Suki-Docs/img/InkarSukiCopyright.png",
-    "description": "friends.Inkar Suki.description"
-  },
-  {
-    "name": "friends.一楼没太阳.name",
-    "link": "https://blog.ylmty.cc",
-    "avatar": "https://q1.qlogo.cn/g?b=qq&nk=24130801&s=100",
-    "description": "friends.一楼没太阳.description"
-  },
-  {
-    "name": "friends.eya46.name",
-    "link": "https://eya46.com",
-    "avatar": "https://github.com/eya46.png",
-    "description": "friends.eya46.description"
-  },
-  {
-    "name": "friends.笨蛋弥生的平行世界.name",
-    "link": "https://blog.kagurayayoi.top",
-    "avatar": "https://blog.kagurayayoi.top/favicon/cropped-icon.jpg",
-    "description": "friends.笨蛋弥生的平行世界.description"
-  },
-  {
-    "name": "friends.hch.name",
-    "link": "https://hch1212.github.io/",
-    "avatar": "https://tuchuang.hch1212.online/img/aila5.png",
-    "description": "friends.hch.description"
-  },
-  {
-    "name": "friends.轻雪社区.name",
-    "link": "https://lab.liteyuki.icu/",
-    "avatar": "https://cdn.liteyuki.icu/misskey/icon.svg",
-    "description": "friends.轻雪社区.description",
-    "tag": "CDN",
-    "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
-  },
-  {
-    "name": "friends.「氯离子实验室」门户网站.name",
-    "link": "https://nyacl.shimakaze.org",
-    "avatar": "https://nyacl.shimakaze.org/assets/images/avatar.webp",
-    "description": "friends.「氯离子实验室」门户网站.description",
-    "tag": "CDN",
-    "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
-  },
-  {
-    "name": "friends.Twisui喵～♡.name",
-    "link": "https://twis.uk",
-    "avatar": "https://github.com/twisuki.png",
-    "description": "friends.Twisui喵～♡.description"
-  }
+    {
+        "name": "friends.liteyukiIndexSite.name",
+        "link": "https://liteyuki.org/",
+        "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png",
+        "description": "friends.liteyukiIndexSite.description"
+    },
+    {
+        "name": "friends.redrockteam.name",
+        "link": "https://redrock.team/",
+        "avatar": "https://m.redrock.team/new-official-website-mobile/redRock.png",
+        "description": "friends.redrockteam.description"
+    },
+    {
+        "name": "friends.cysnies.name",
+        "link": "https://tcea.top/",
+        "avatar": "https://github.com/cysnies.png",
+        "description": "friends.cysnies.description",
+        "tag": "CDN",
+        "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
+    },
+    {
+        "name": "friends.aicorein.name",
+        "link": "https://www.glowmem.com/",
+        "avatar": "https://github.com/aicorein.png",
+        "description": "friends.aicorein.description"
+    },
+    {
+        "name": "friends.edream.name",
+        "link": "https://blog.edmc.cn/",
+        "avatar": "https://github.com/EDream.png",
+        "description": "friends.edream.description"
+    },
+    {
+        "name": "friends.Executor-Cheng.name",
+        "link": "https://dream.day/",
+        "avatar": "https://github.com/Executor-Cheng.png",
+        "description": "friends.Executor-Cheng.description"
+    },
+    {
+        "name": "friends.viki.name",
+        "link": "https://viki.moe/",
+        "avatar": "https://github.com/vikiboss.png",
+        "description": "friends.viki.description"
+    },
+    {
+        "name": "friends.naloveyuki.name",
+        "link": "https://blog.naloveyuki.top/",
+        "avatar": "https://blog.naloveyuki.top/themes/theme-Ideaflow/assets/img/default-avatar.png",
+        "description": "friends.naloveyuki.description",
+        "tag": "CDN",
+        "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
+    },
+    {
+        "name": "friends.churanneko.name",
+        "link": "https://blog.churanneko.com/",
+        "avatar": "https://blog.churanneko.com/upload/logo.jpg",
+        "description": "friends.churanneko.description",
+        "tag": "CDN",
+        "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
+    },
+    {
+        "name": "friends.\u4e09\u74f6\u53ef\u4e50\u4e0d\u8fc7\u5c97.name",
+        "link": "https://www.threkork.com/",
+        "avatar": "https://www.threkork.com/img/512.jpg",
+        "description": "friends.\u4e09\u74f6\u53ef\u4e50\u4e0d\u8fc7\u5c97.description"
+    },
+    {
+        "name": "friends.\u827e\u62c9\u9171\u5c0f\u5c4b.name",
+        "link": "https://www.isla.ltd",
+        "avatar": "https://www.isla.ltd/images/aila.png",
+        "description": "friends.\u827e\u62c9\u9171\u5c0f\u5c4b.description"
+    },
+    {
+        "name": "friends.\u5c0f\u6db5\u306eGithub\u4e3b\u9875.name",
+        "link": "https://github.com/yuhan2680",
+        "avatar": "https://avatars.githubusercontent.com/u/89262123",
+        "description": "friends.\u5c0f\u6db5\u306eGithub\u4e3b\u9875.description"
+    },
+    {
+        "name": "friends.daoge\u7684github\u4e3b\u9875.name",
+        "link": "https://github.com/smartcmd",
+        "avatar": "https://avatars.githubusercontent.com/u/60499296?v=4",
+        "description": "friends.daoge\u7684github\u4e3b\u9875.description"
+    },
+    {
+        "name": "friends.\u901d\u4e0e\u9022\u535a\u5ba2.name",
+        "link": "https://blog.xin-hao.top",
+        "avatar": "https://blog.xin-hao.top/upload/b_bf00a83b77194dcecf5eb983b2c5ecec.jpg",
+        "description": "friends.\u901d\u4e0e\u9022\u535a\u5ba2.description"
+    },
+    {
+        "name": "friends.Inkar Suki.name",
+        "link": "https://inkar-suki.codethink.cn/Inkar-Suki-Docs/",
+        "avatar": "https://inkar-suki.codethink.cn/Inkar-Suki-Docs/img/InkarSukiCopyright.png",
+        "description": "friends.Inkar Suki.description"
+    },
+    {
+        "name": "friends.\u4e00\u697c\u6ca1\u592a\u9633.name",
+        "link": "https://blog.ylmty.cc",
+        "avatar": "https://q1.qlogo.cn/g?b=qq&nk=24130801&s=100",
+        "description": "friends.\u4e00\u697c\u6ca1\u592a\u9633.description"
+    },
+    {
+        "name": "friends.eya46.name",
+        "link": "https://eya46.com",
+        "avatar": "https://github.com/eya46.png",
+        "description": "friends.eya46.description"
+    },
+    {
+        "name": "friends.\u7b28\u86cb\u5f25\u751f\u7684\u5e73\u884c\u4e16\u754c.name",
+        "link": "https://blog.kagurayayoi.top",
+        "avatar": "https://blog.kagurayayoi.top/favicon/cropped-icon.jpg",
+        "description": "friends.\u7b28\u86cb\u5f25\u751f\u7684\u5e73\u884c\u4e16\u754c.description"
+    },
+    {
+        "name": "friends.hch.name",
+        "link": "https://hch1212.github.io/",
+        "avatar": "https://tuchuang.hch1212.online/img/aila5.png",
+        "description": "friends.hch.description"
+    },
+    {
+        "name": "friends.\u8f7b\u96ea\u793e\u533a.name",
+        "link": "https://lab.liteyuki.icu/",
+        "avatar": "https://cdn.liteyuki.icu/misskey/icon.svg",
+        "description": "friends.\u8f7b\u96ea\u793e\u533a.description",
+        "tag": "CDN",
+        "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
+    },
+    {
+        "name": "friends.\u300c\u6c2f\u79bb\u5b50\u5b9e\u9a8c\u5ba4\u300d\u95e8\u6237\u7f51\u7ad9.name",
+        "link": "https://nyacl.shimakaze.org",
+        "avatar": "https://nyacl.shimakaze.org/assets/images/avatar.webp",
+        "description": "friends.\u300c\u6c2f\u79bb\u5b50\u5b9e\u9a8c\u5ba4\u300d\u95e8\u6237\u7f51\u7ad9.description",
+        "tag": "CDN",
+        "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
+    },
+    {
+        "name": "friends.Twisui\u55b5\uff5e\u2661.name",
+        "link": "https://twis.uk",
+        "avatar": "https://github.com/twisuki.png",
+        "description": "friends.Twisui\u55b5\uff5e\u2661.description"
+    },
+    {
+        "issue_number": null,
+        "name": "\u68a6\u6eaf\u2022\u955c\u5f71",
+        "link": "https://yumetsuki.moe/",
+        "description": "\u8fd9\u662f\u68a6\u6eaf\u00b7\u955c\u5f71\uff0c\u4f1a\u65f6\u4e0d\u65f6\u53d1\u4e00\u4e9b\u81ea\u5df1\u90fd\u6ca1\u773c\u770b\u7684\u6587\u7ae0",
+        "avatar": "https://img.r2.yumetsuki.moe/avatar.webp"
+    }
 ]
