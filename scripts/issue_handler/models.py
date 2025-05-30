@@ -196,6 +196,19 @@ class GitHubClient(ClientInterface):
             headers={"Authorization": f"token {token}"},
         )
         super().__init__(client)
+        
+    async def whoami(self) -> tuple[str | None, Err]:
+        """
+        获取当前用户信息。
+
+        Returns:
+            _type_: 返回用户名或 None
+        """
+        response = await self.client.get("/user")
+        if response.status_code == 200:
+            data = response.json()
+            return data["login"], None
+        return None, Exception(f"Failed to fetch user info: {response.text}")
 
     async def fetch_issue(
         self, owner: str, repo: str, issue_number: int
