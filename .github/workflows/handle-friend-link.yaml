@@ -21,16 +21,6 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.52.0-jammy
       options: --user root
     steps:
-      - name: Check environment
-        run: |
-          # 检查已安装的工具
-          echo "Node.js version:" && node -v
-          echo "npm version:" && npm -v
-          echo "Python version:" && python3 -v
-          
-          # 确认 apt-get 可用
-          apt-get update
-
       - name: Checkout code
         uses: actions/checkout@v4
 
