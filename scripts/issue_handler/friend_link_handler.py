@@ -54,6 +54,7 @@ class LinkResponseInfo(BaseModel):
     body: str
     ping: int | None = None  # 响应时间，单位毫秒
 
+
 class AICheckResponse(BaseModel):
     passed: bool = False
     reason: str = ""
@@ -114,7 +115,10 @@ async def fetch_webpage_content(url: str) -> tuple[LinkResponseInfo | None, Err]
                 description_content = "No Description Found"
 
             return LinkResponseInfo(
-                title=title, description=description_content, body=response.text, ping=response.elapsed.microseconds // 1000
+                title=title,
+                description=description_content,
+                body=response.text,
+                ping=response.elapsed.microseconds // 1000,
             ), None
     except httpx.RequestError as err:
         return None, err
@@ -399,12 +403,14 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
             ai_check_result = await check_content_with_ai(
                 ctx=ctx, content=clear_webpage_content(friend_link_info.body)
             )
-            await ctx.edit_one_comment(f"""我们已经检查完了你的链接，信息如下\n
-                                       ### 站点标题\n\n{friend_link_info.title}\n
-                                       ### 站点描述\n\n{friend_link_info.description}\n
-                                       ### 响应时间\n\n{friend_link_info.ping} ms\n
-                                       ### 站点链接\n\n{friend_link.link}\n
-                                       ### AI审核详情\n\n{"通过", ai_check_result.passed, "不通过"}\n{ai_check_result.reason}\n{ai_check_result.details}\n""")
+            await ctx.edit_one_comment(
+                "我们已经检查完了你的链接，信息如下\n"
+                "### 站点标题\n\n{friend_link_info.title}\n"
+                "### 站点描述\n\n{friend_link_info.description}\n"
+                "### 响应时间\n\n{friend_link_info.ping} ms\n"
+                "### 站点链接\n\n{friend_link.link}\n"
+                f"### AI审核详情\n\n{"通过" if ai_check_result.passed else "不通过"}\n{ai_check_result.reason}\n{ai_check_result.details}\n"
+            )
             if ai_check_result.passed:
                 friend_link.issue_number = ctx.issue.number
                 await ctx.add_friend_link(friend_link)

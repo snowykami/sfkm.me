@@ -41,4 +41,4 @@ jobs:
 
           AI_API_ENDPOINT: "https://models.github.ai/inference/chat/completions"
           AI_API_KEY: ${{ secrets.GITHUB_TOKEN }}
-          AI_MODEL: "OpenAI GPT-4o"
+          AI_MODEL: "openai/gpt-4.1"
