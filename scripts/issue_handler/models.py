@@ -521,10 +521,16 @@ class IssueContext:
         issue, err = await client.fetch_issue(
             repo_owner, repo_name, issue_number
         )  # Ensure the issue exists
+        if err or not issue:
+            raise ValueError(
+                f"Failed to fetch issue {issue_number} from {repo_owner}/{repo_name}: {err}"
+            )
 
         whoami, err = await client.whoami()
-        if err or not issue:
-            raise err if isinstance(err, BaseException) else Exception(str(err))
+        if err or not whoami:
+            raise ValueError(
+                f"Failed to fetch user info: {err}"
+            )
 
         comment = None
         if event_action == "issue_comment":
