@@ -362,7 +362,7 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
                 ctx=ctx, content=clear_webpage_content(friend_link_info.body)
             )
             await ctx.edit_one_comment(
-                "我们已经检查完了你的链接，信息如下\n"
+                f"我们已经检查完了你的链接，信息如下\n"
                 f"### 站点标题\n\n{friend_link_info.title}\n"
                 f"### 站点描述\n\n{friend_link_info.description}\n"
                 f"### 响应时间\n\n{friend_link_info.ping} ms\n"
@@ -370,8 +370,8 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
                 f"### AI审核详情\n\n{"通过" if ai_check_result.passed else "不通过"}\n{ai_check_result.reason}\n{ai_check_result.details}\n"
             )
             if ai_check_result.passed:
-                friend_link.issue_number = ctx.issue.number
-                await ctx.add_friend_link(friend_link)
+                print("AI 检查通过，添加友链")
+                await ctx.upsert_friend_link(friend_link)
         elif ctx.event.action == "closed":
             pass
     elif ctx.event.name == "issue_comment":

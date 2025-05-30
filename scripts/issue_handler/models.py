@@ -403,7 +403,7 @@ class GitHubClient(ClientInterface):
         )
 
     async def edit_file(
-        self, repo_owner: str, repo_name: str, file_path: str, content: str
+        self, repo_owner: str, repo_name: str, file_path: str, content: str, message: str = "Update file"
     ) -> Err:
         """
         编辑指定仓库的文件内容。
@@ -419,7 +419,7 @@ class GitHubClient(ClientInterface):
         """
         response = await self.client.put(
             f"/repos/{repo_owner}/{repo_name}/contents/{file_path}",
-            json={"message": "Update file", "content": content},
+            json={"message": message, "content": content},
         )
         if response.status_code != 200:
             return Exception(
@@ -684,7 +684,7 @@ class IssueContext:
             return None, ValueError("Client is not initialized.")
         return await self.client.fetch_file(self.repo.owner, self.repo.name, file_path)
 
-    async def edit_file(self, file_path: str, content: str) -> Err:
+    async def edit_file(self, file_path: str, content: str, message: str = "Update file") -> Err:
         """
         编辑指定仓库的文件内容。
 
@@ -698,10 +698,10 @@ class IssueContext:
         if not self.client:
             return ValueError("Client is not initialized.")
         return await self.client.edit_file(
-            self.repo.owner, self.repo.name, file_path, content
+            self.repo.owner, self.repo.name, file_path, content, message
         )
 
-    async def add_friend_link(self, friend_link: "FriendLink") -> Err:
+    async def upsert_friend_link(self, friend_link: "FriendLink") -> Err:
         """
         添加友链。
 
@@ -718,15 +718,25 @@ class IssueContext:
         if not isinstance(friend_link_data, list):
             return ValueError("Friend link data is not a list.")
         
-        friend_link_data.append({
-            "name": friend_link.name,
-            "link": friend_link.link,
-            "description": friend_link.description,
-            "avatar": friend_link.avatar,
-        })
+        # 检查是否已经存在相同的友链,有则更新
+        for existing_link in friend_link_data:
+            if existing_link.get("issue_number", -1) == friend_link.issue_number:
+                existing_link["name"] = friend_link.name
+                existing_link["link"] = friend_link.link
+                existing_link["description"] = friend_link.description
+                existing_link["avatar"] = friend_link.avatar
+                break
+        else:
+            friend_link_data.append({
+                "issue_number": friend_link.issue_number,
+                "name": friend_link.name,
+                "link": friend_link.link,
+                "description": friend_link.description,
+                "avatar": friend_link.avatar,
+            })
         
         new_content = json.dumps(friend_link_data, indent=4)
-        err = await self.edit_file(os.getenv("FRIEND_LINK_FILE", "data/friend_links.json"), new_content)
+        err = await self.edit_file(os.getenv("FRIEND_LINK_FILE", "data/friend_links.json"), new_content, f"friend: add friend {friend_link.name}({friend_link.link})")
         if err:
             return err
         return None
