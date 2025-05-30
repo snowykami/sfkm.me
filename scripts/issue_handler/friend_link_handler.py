@@ -230,6 +230,7 @@ async def ai_check_content(
                         pass
 
             # 如果无法解析 JSON，根据关键词分析响应
+            print(f"AI 响应内容: {ai_response}")
             if "无违规内容" in ai_response or "未发现违规" in ai_response:
                 return AICheckResponse(
                     passed=True,
