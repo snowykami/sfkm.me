@@ -4,7 +4,7 @@ from models import IssueContext, GitHubClient
 from friend_link_handler import handle_friend_link_issue
 
 async def main():
-    event_name = os.getenv("GITHUB_EVENT_NAME", "issue")
+    event_name = os.getenv("GITHUB_EVENT_NAME", "issues")
     event_action = os.getenv("GITHUB_EVENT_ACTION", "opened")
     issue_number = os.getenv("GITHUB_EVENT_ISSUE_NUMBER", "3")
     issue_comment_id = os.getenv("GITHUB_EVENT_COMMENT_ID", "0")
