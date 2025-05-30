@@ -23,6 +23,8 @@ async def main():
     if err:
         print(f"Error handling issue: {err}")
         ctx.edit_one_comment(f"出现错误：{err}", add_line=True)
+        ctx.remove_label("passed")
+        ctx.add_label("failed")
     else:
         print("Issue handled successfully.")
 
