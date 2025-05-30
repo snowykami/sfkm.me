@@ -725,20 +725,19 @@ class IssueContext:
             if existing_link.get("issue_number", -1) == friend_link.issue_number:
                 print(f"更新友链: {friend_link.name}({friend_link.link})")
                 existing_link["name"] = friend_link.name
-                existing_link["link"] = friend_link.link
+                existing_link["link"] = str(friend_link.link)
                 existing_link["description"] = friend_link.description
-                existing_link["avatar"] = friend_link.avatar
+                existing_link["avatar"] = str(friend_link.avatar)
                 break
         else:
             print(f"添加友链: {friend_link.name}({friend_link.link})")
             friend_link_data.append({
                 "issue_number": friend_link.issue_number,
                 "name": friend_link.name,
-                "link": friend_link.link,
+                "link": str(friend_link.link),
                 "description": friend_link.description,
-                "avatar": friend_link.avatar,
+                "avatar": str(friend_link.avatar),
             })
-        
         new_content = json.dumps(friend_link_data, indent=4)
         err = await self.edit_file(os.getenv("FRIEND_LINK_FILE", "data/friends.json"), new_content, f"friend: add friend {friend_link.name}({friend_link.link})")
         if err:
