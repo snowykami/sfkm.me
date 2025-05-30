@@ -957,14 +957,14 @@ class IssueContext:
             print(f"添加友链: {friend_link.name}({friend_link.link})")
             friend_link_data.append(
                 {
-                    "issue_number": friend_link.issue_number,
+                    "issue_number": self.issue.number,
                     "name": friend_link.name,
                     "link": str(friend_link.link),
                     "description": friend_link.description,
                     "avatar": str(friend_link.avatar),
                 }
             )
-        new_content = json.dumps(friend_link_data, indent=4)
+        new_content = json.dumps(friend_link_data, indent=4, ensure_ascii=False)
         err = await self.edit_file(
             os.getenv("FRIEND_LINK_FILE", "data/friends.json"),
             new_content,
