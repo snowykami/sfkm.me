@@ -17,10 +17,6 @@ jobs:
   handle-friend-link:
     if: contains(github.event.issue.labels.*.name, 'friend-link')
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      issues: write
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,10 +30,11 @@ jobs:
         run: |
           uv run ./scripts/issue_handler
         env: 
+          GITHUB_EVENT_COMMENT_ID: ${{ github.event.comment.id }}
           GITHUB_EVENT_ISSUE_NUMBER: ${{ github.event.issue.number }}
-          GITHUB_EVENT_ACTION: ${{ github.event.action }}
-          GITHUB_EVENT_ISSUE_TITLE: ${{ github.event.issue.title }}
-          GITHUB_EVENT_ISSUE_BODY: ${{ github.event.issue.body }}
+          GITHUB_EVENT_ACTION: ${{ github.event.action }}  # 
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_TOKEN: ${{ secrets.LITEYUKI_FLOW_TOKEN }}
-          GITHUB_USERNAME: liteyuki-flow
+          FRIEND_LINKS_FILE: data/friends.json
+          I18N_FILE: data/i18n.json
