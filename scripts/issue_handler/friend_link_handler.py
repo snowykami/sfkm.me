@@ -398,6 +398,8 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
     if err or not friend_link_info:
         await ctx.edit_one_comment(f"获取友链信息失败: {err}")
         return ValueError(f"获取网页内容失败: {err}")
+    
+    print("网站提取内容:", clear_webpage_content(friend_link_info.body))
 
     if ctx.event.name == "issues":
         if ctx.event.action in ("opened", "edited"):
