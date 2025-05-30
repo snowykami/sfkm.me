@@ -1,17 +1,5 @@
 [
     {
-        "name": "friends.liteyukiIndexSite.name",
-        "link": "https://liteyuki.org/",
-        "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png",
-        "description": "friends.liteyukiIndexSite.description"
-    },
-    {
-        "name": "friends.redrockteam.name",
-        "link": "https://redrock.team/",
-        "avatar": "https://m.redrock.team/new-official-website-mobile/redRock.png",
-        "description": "friends.redrockteam.description"
-    },
-    {
         "name": "friends.cysnies.name",
         "link": "https://tcea.top/",
         "avatar": "https://github.com/cysnies.png",
@@ -44,14 +32,6 @@
         "description": "friends.viki.description"
     },
     {
-        "name": "friends.naloveyuki.name",
-        "link": "https://blog.naloveyuki.top/",
-        "avatar": "https://blog.naloveyuki.top/themes/theme-Ideaflow/assets/img/default-avatar.png",
-        "description": "friends.naloveyuki.description",
-        "tag": "CDN",
-        "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
-    },
-    {
         "name": "friends.churanneko.name",
         "link": "https://blog.churanneko.com/",
         "avatar": "https://blog.churanneko.com/upload/logo.jpg",
@@ -72,22 +52,10 @@
         "description": "friends.艾拉酱小屋.description"
     },
     {
-        "name": "friends.小涵のGithub主页.name",
-        "link": "https://github.com/yuhan2680",
-        "avatar": "https://avatars.githubusercontent.com/u/89262123",
-        "description": "friends.小涵のGithub主页.description"
-    },
-    {
         "name": "friends.daoge的github主页.name",
         "link": "https://github.com/smartcmd",
         "avatar": "https://avatars.githubusercontent.com/u/60499296?v=4",
         "description": "friends.daoge的github主页.description"
-    },
-    {
-        "name": "friends.逝与逢博客.name",
-        "link": "https://blog.xin-hao.top",
-        "avatar": "https://blog.xin-hao.top/upload/b_bf00a83b77194dcecf5eb983b2c5ecec.jpg",
-        "description": "friends.逝与逢博客.description"
     },
     {
         "name": "friends.Inkar Suki.name",
@@ -134,12 +102,6 @@
         "description": "friends.「氯离子实验室」门户网站.description",
         "tag": "CDN",
         "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
-    },
-    {
-        "name": "friends.Twisui喵～♡.name",
-        "link": "https://twis.uk",
-        "avatar": "https://github.com/twisuki.png",
-        "description": "friends.Twisui喵～♡.description"
     },
     {
         "issue_number": 5,
