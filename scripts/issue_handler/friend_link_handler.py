@@ -381,6 +381,7 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
                     return err
                 else:
                     await ctx.edit_one_comment("友链添加成功！页面稍后就会构建好哦~", add_line=True)
+                    await ctx.close_issue()
                 if err := await ctx.set_passed():
                     return err
             else:
