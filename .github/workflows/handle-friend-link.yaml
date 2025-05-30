@@ -28,7 +28,7 @@ jobs:
 
       - name: Install playwright and run Python script
         run: |
-          uv pip install playwright
+          uv sync
           playwright install --with-deps
           uv run ./scripts/issue_handler
         env: 
