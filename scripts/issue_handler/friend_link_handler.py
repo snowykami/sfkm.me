@@ -178,8 +178,8 @@ async def ai_check_content(
 
     unavailable_result = AICheckResponse(
         passed=False,
-        reason="AI 内容检查服务不可用",
-        details="请检查 API 配置或尝试使用其他服务",
+        reason="AI服务错误",
+        details="请检查API配置或尝试使用其他服务，也有可能是网站内容本身触发了 AI 的敏感词过滤",
     )
     # 限制内容长度，防止超出 token 限制
     if len(content) > 8000:
