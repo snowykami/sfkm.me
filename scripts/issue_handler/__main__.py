@@ -22,9 +22,10 @@ async def main():
     err = await handle_friend_link_issue(ctx)
     if err:
         print(f"Error handling issue: {err}")
-        ctx.edit_one_comment(f"出现错误：{err}", add_line=True)
-        ctx.remove_label("passed")
-        ctx.add_label("failed")
+        if err := await ctx.edit_one_comment(f"出现错误：{err}", add_line=True):
+            print(f"Failed to edit comment: {err}")
+        if err := await ctx.set_failed():
+            print(f"Failed to set issue as failed: {err}")
     else:
         print("Issue handled successfully.")
 
