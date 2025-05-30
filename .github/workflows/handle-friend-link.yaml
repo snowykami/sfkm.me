@@ -29,7 +29,7 @@ jobs:
       - name: Install playwright and run Python script
         run: |
           uv sync
-          playwright install --with-deps
+          uv run playwright install --with-deps
           uv run ./scripts/issue_handler
         env: 
           GITHUB_EVENT_COMMENT_ID: ${{ github.event.comment.id }}
