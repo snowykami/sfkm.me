@@ -264,101 +264,25 @@ async def ai_check_content(
 
 
 def clear_webpage_content(html_content: str) -> str:
-    """
-    清理网页内容，去除所有标签和脚本，返回纯文本内容。
-
-    Args:
-        html_content (str): HTML 格式的网页内容
-
-    Returns:
-        str: 清理后的纯文本内容
-    """
+    """简化版的网页内容清理函数"""
     # 创建 BeautifulSoup 对象
     soup = BeautifulSoup(html_content, "html.parser")
-
-    # 移除所有脚本、样式、导航、页脚等非内容元素
-    for element in soup(
-        [
-            "script",
-            "style",
-            "nav",
-            "footer",
-            "header",
-            "aside",
-            "form",
-            "iframe",
-            "noscript",
-            "svg",
-            "canvas",
-        ]
-    ):
-        element.decompose()
-
-    # 移除所有隐藏元素
-    for hidden in soup.find_all(
-        style=lambda s: s and ("display:none" in s or "visibility:hidden" in s)
-    ):
-        hidden.decompose()
-
-    # 移除所有 class 或 id 包含以下关键词的元素
-    noise_patterns = [
-        "ad",
-        "banner",
-        "cookie",
-        "popup",
-        "modal",
-        "overlay",
-        "sidebar",
-        "widget",
-        "comment",
-        "social",
-        "related",
-        "share",
-        "menu",
-        "nav",
-    ]
-
-    for pattern in noise_patterns:
-        for element in soup.find_all(class_=lambda c: c and pattern in c.lower()):
+    
+    # 只移除基本的脚本和样式元素
+    for tag in ["script", "style", "iframe", "noscript"]:
+        for element in soup.find_all(tag):
             element.decompose()
-        for element in soup.find_all(id=lambda i: i and pattern in i.lower()):
-            element.decompose()
-
-    # 提取主要内容区域（如果存在）
-    main_content = None
-    content_tags = ["article", "main", "section", "div"]
-    content_classes = ["content", "article", "post", "entry", "main"]
-
-    for tag in content_tags:
-        for cls in content_classes:
-            elements = soup.find_all(tag, class_=lambda c: c and cls in c.lower())
-            if elements:
-                # 找到最长的内容元素作为主要内容
-                main_content = max(elements, key=lambda e: len(e.get_text()))
-                break
-        if main_content:
-            break
-
-    # 如果找到主要内容区域，只提取该区域
-    if main_content:
-        soup = main_content  # type: ignore
-
-    # 获取纯文本内容
+    
+    # 直接获取全部文本
     text_content = soup.get_text(separator="\n", strip=True)
-
-    # 清理文本内容
-    # 1. 删除多余空行
-    text_content = re.sub(r"\n\s*\n", "\n", text_content)
-    # 2. 删除多余空格
+    
+    # 基本的文本清理
+    # 删除多余空白
     text_content = re.sub(r"\s+", " ", text_content)
-    # 3. 清理行首空格
-    text_content = re.sub(r"^\s+", "", text_content, flags=re.MULTILINE)
-
-    # 将连续的换行符替换为单个换行符
+    # 删除多余换行
     text_content = re.sub(r"\n+", "\n", text_content)
-
+    
     return text_content.strip()
-
 
 async def check_content_with_ai(ctx: IssueContext, content: str) -> AICheckResponse:
     """
@@ -398,7 +322,7 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
     if err or not friend_link_info:
         await ctx.edit_one_comment(f"获取友链信息失败: {err}")
         return ValueError(f"获取网页内容失败: {err}")
-    
+    print("网站原始内容:", friend_link_info.body)
     print("网站提取内容:", clear_webpage_content(friend_link_info.body))
 
     if ctx.event.name == "issues":
