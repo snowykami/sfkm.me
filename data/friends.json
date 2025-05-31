@@ -108,5 +108,12 @@
         "link": "https://liteyuki.org/",
         "description": "轻雪工作室 LiteyukiStudio 是一个以开源为主的工作室",
         "avatar": "https://cdn.liteyuki.org/logos/studio.svg"
+    },
+    {
+        "issue_number": 8,
+        "name": "orwells的博客",
+        "link": "https://vercel.696898.xyz/",
+        "description": "想起啥就写啥的博客",
+        "avatar": "https://avatars.githubusercontent.com/u/145517647?v=4"
     }
 ]
