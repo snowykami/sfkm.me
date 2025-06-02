@@ -5,7 +5,7 @@ on:
     types: [labeled]
 
 concurrency:
-  group: has-git-operations
+  group: write-repo
   cancel-in-progress: false
 
 permissions:
