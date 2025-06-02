@@ -379,6 +379,7 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
                 await ctx.edit_one_comment(
                     "AI 检查通过", add_line=True
                 )
+                await ctx.set_updated()
             else:
                 print("AI 检查不通过，等待审核")
                 await ctx.set_failed()
