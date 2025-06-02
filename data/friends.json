@@ -144,5 +144,12 @@
         "link": "https://blog.naloveyuki.top/",
         "description": "一个用来保存洛柠文章的地方",
         "avatar": "https://cdn.liteyuki.org/logos/studio.png"
+    },
+    {
+        "issue_number": 3,
+        "name": "李田所博客aaa",
+        "link": "https://liteyuki.org/",
+        "description": "李田所博客",
+        "avatar": "https://liteyuki.org/favicon.ico"
     }
 ]
