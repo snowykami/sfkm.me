@@ -1,5 +1,7 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+这是一个个人主页，仿照macOS桌面制作，拥有窗口调度，全局命令注册，音乐，个人信息/项目/联系方式/友链展示等功能，拥有非常奇妙的交互体验非常多的bugs
+
 ## Preview
 
 light mode
