@@ -5,7 +5,6 @@ import { AppProps } from "../BaseApp";
 import { useDevice } from "@/contexts/DeviceContext";
 import { useWindowManager } from "@/contexts/WindowManagerContext";
 import { WindowState } from "@/contexts/WindowManagerContext";
-import MusicCommandRegister from './CommandRegister';
 import PlayerView from "./PlayerView";
 import MusicControls from "./MusicControls";
 
@@ -27,7 +26,6 @@ export default function Music({ windowId = WINDOW_ID }: AppProps) {
         <div className="flex flex-col h-full">
             <PlayerView wid={windowId} />
             <MusicControls isMobile={isMobile} />
-            <MusicCommandRegister />
         </div>
     );
 }
