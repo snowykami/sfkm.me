@@ -386,11 +386,16 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
                 if err := await ctx.set_failed():
                     return err
         elif ctx.event.action in ("labeled", "unlabeled"):
+            # 检查是否有deleted标签,为删除友链
+            if await ctx.has_label("deleted"):
+                await ctx.delete_friend_link(ctx.issue.number)
+                await ctx.edit_one_comment("友链已删除", add_line=True)
+                await ctx.close_issue()
             # 检查是否有passed标签,为人工审核
             passed, username, has_permission = await ctx.check_passed_with_permission()
             if passed:
                 if has_permission:
-                    print("友链申请已通过审核，添加友链")
+                    print(f"友链申请已通过{username}审核，添加友链")
                     err = await ctx.upsert_friend_link(friend_link)
                     if err:
                         await ctx.edit_one_comment(f"添加友链失败: {err}", add_line=True)
