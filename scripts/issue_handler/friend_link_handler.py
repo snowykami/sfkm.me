@@ -388,6 +388,7 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
         elif ctx.event.action == "labeled":
             # 检查是否有passed标签,为人工审核
             if await ctx.check_passed():
+                await ctx.set_passed()
                 await ctx.edit_one_comment("友链申请已通过审核，感谢您的耐心等待！", add_line=True)
                 return await ctx.upsert_friend_link(friend_link)
     elif ctx.event.name == "issue_comment":
