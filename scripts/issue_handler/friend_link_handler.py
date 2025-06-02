@@ -100,9 +100,6 @@ async def fetch_webpage_content_with_playwright(url: str) -> tuple[LinkResponseI
     """
     try:
         from playwright.async_api import async_playwright
-        import time
-        
-        start_time = time.time()
         
         async with async_playwright() as p:
             # 启动浏览器（使用无头模式）
@@ -388,8 +385,11 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
                 print("AI 检查不通过，等待审核")
                 if err := await ctx.set_failed():
                     return err
-        elif ctx.event.action == "closed":
-            pass
+        elif ctx.event.action == "labeled":
+            # 检查是否有passed标签,为人工审核
+            if await ctx.check_passed():
+                await ctx.edit_one_comment("友链申请已通过审核，感谢您的耐心等待！", add_line=True)
+                return await ctx.upsert_friend_link(friend_link)
     elif ctx.event.name == "issue_comment":
         if ctx.event.action == "created":
             pass

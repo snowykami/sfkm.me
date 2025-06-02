@@ -1,0 +1,44 @@
+@keyframes window-open {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes window-close {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(0.95) translateY(-10px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.7) translateY(-30px);
+  }
+}
+/* 你可以根据实际需求自定义动画 */
+@keyframes window-minimize {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.7) translateY(40px);
+  }
+}
+.animate-window-open {
+  animation: window-open 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.animate-window-close {
+  animation: window-close 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.animate-window-minimize {
+  animation: window-minimize 0.22s cubic-bezier(0.4, 2, 0.6, 1);
+}

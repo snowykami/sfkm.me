@@ -96,6 +96,14 @@
         "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
     },
     {
+        "name": "friends.「氯离子实验室」门户网站.name",
+        "link": "https://nyacl.shimakaze.org",
+        "avatar": "https://nyacl.shimakaze.org/assets/images/avatar.webp",
+        "description": "friends.「氯离子实验室」门户网站.description",
+        "tag": "CDN",
+        "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
+    },
+    {
         "issue_number": 5,
         "name": "梦溯•镜影",
         "link": "https://yumetsuki.moe/",
