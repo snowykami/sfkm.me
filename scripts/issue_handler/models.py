@@ -1071,8 +1071,10 @@ class IssueContext:
 
         # 检查是否已经存在相同的友链,有则更新
         is_updated = False
+        issue_number_to_check = friend_link.issue_number if hasattr(friend_link, 'issue_number') and friend_link.issue_number else self.issue.number
+
         for existing_link in friend_link_data:
-            if existing_link.get("issue_number", -1) == friend_link.issue_number:
+            if existing_link.get("issue_number", -1) == issue_number_to_check:
                 is_updated = True
                 print(f"更新友链: {friend_link.name}({friend_link.link})")
                 existing_link["name"] = friend_link.name
@@ -1084,7 +1086,7 @@ class IssueContext:
             print(f"添加友链: {friend_link.name}({friend_link.link})")
             friend_link_data.append(
                 {
-                    "issue_number": self.issue.number,
+                    "issue_number": issue_number_to_check,
                     "name": friend_link.name,
                     "link": str(friend_link.link),
                     "description": friend_link.description,
