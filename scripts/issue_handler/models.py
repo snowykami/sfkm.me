@@ -976,6 +976,27 @@ class IssueContext:
                     return has_passed, actor
         return has_passed, None
     
+    async def has_label(self, label: str) -> bool:
+        """
+        检查 issue 是否有指定的标签。
+
+        Args:
+            label (str): 标签名称
+
+        Returns:
+            bool: 如果 issue 有指定的标签，返回 True，否则返回 False
+        """
+        if not self.client:
+            raise ValueError("Client is not initialized.")
+        
+        labels, err = await self.client.get_labels(
+            self.repo.owner, self.repo.name, self.issue.number
+        )
+        if err:
+            raise err if isinstance(err, BaseException) else Exception(str(err))
+        
+        return label in labels
+    
     async def check_passed_with_permission(self) -> tuple[bool, str | None, bool]:
         """
         检查 issue 是否已通过，谁添加了标签，以及添加者是否有权限。
@@ -1084,6 +1105,41 @@ class IssueContext:
                 "信息已更新，页面稍后就会构建好~", add_line=True
             )
         return None
+
+    async def delete_friend_link(self, issue_number: int) -> Err:
+        """
+        删除友链。
+
+        Args:
+            issue_number (int): issue 编号
+        """
+        if not self.client:
+            return ValueError("Client is not initialized.")
+        friend_link_file_content, err = await self.fetch_file(
+            os.getenv("FRIEND_LINK_FILE", "data/friends.json")
+        )
+        if err or friend_link_file_content is None:
+            return err
+
+        friend_link_data = json.loads(friend_link_file_content)
+        if not isinstance(friend_link_data, list):
+            return ValueError("Friend link data is not a list.")
+
+        # 查找并删除对应的友链
+        new_friend_links = [
+            link for link in friend_link_data if link.get("issue_number") != issue_number
+        ]
+        if len(new_friend_links) == len(friend_link_data):
+            print(f"未找到 issue {issue_number} 的友链。")
+            return None
+        print(f"删除 issue {issue_number} 的友链。")
+        new_content = json.dumps(new_friend_links, indent=4, ensure_ascii=False)
+        err = await self.edit_file(
+            os.getenv("FRIEND_LINK_FILE", "data/friends.json"),
+            new_content,
+            f"friend: delete friend link for issue {issue_number}",
+        )
+        return err
 
     async def set_status(self, status: Literal["passed", "failed"]) -> Err:
         """
