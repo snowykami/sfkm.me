@@ -359,7 +359,9 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
             await ctx.edit_one_comment(f"获取友链信息失败: {err}")
             return ValueError(f"获取网页内容失败: {err}")
         print("网站提取内容:", clear_webpage_content(friend_link_info.body))
+        
         if ctx.event.action in ("opened", "edited"):
+            # open和edited事件仅审核友链信息
             ai_check_result = await check_content_with_ai(
                 ctx=ctx, content=clear_webpage_content(friend_link_info.body)
             )
@@ -373,26 +375,25 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
             )
             if ai_check_result.passed:
                 print("AI 检查通过，添加友链")
-                err = await ctx.upsert_friend_link(friend_link)
-                if err:
-                    await ctx.edit_one_comment(f"添加友链失败: {err}", add_line=True)
-                    return err
-                else:
-                    await ctx.edit_one_comment("友链添加成功！页面稍后就会构建好哦~", add_line=True)
-                    await ctx.close_issue()
-                if err := await ctx.set_passed():
-                    return err
+                await ctx.set_passed()
+                await ctx.edit_one_comment(
+                    "AI 检查通过", add_line=True
+                )
             else:
                 print("AI 检查不通过，等待审核")
-                if err := await ctx.set_failed():
-                    return err
+                await ctx.set_failed()
+                await ctx.edit_one_comment(
+                    "AI 检查不通过，请等待仓库所有者审核", add_line=True
+                )
+                
         elif ctx.event.action in ("labeled", "unlabeled"):
+            # labeled和unlabeled事件处理标签
             # 检查是否有deleted标签,为删除友链
             if await ctx.has_label("deleted"):
                 await ctx.delete_friend_link(ctx.issue.number)
                 await ctx.edit_one_comment("友链已删除", add_line=True)
                 await ctx.close_issue()
-            # 检查是否有passed标签,为人工审核
+            # 检查是否有passed标签,为人工或者AI审核过
             passed, username, has_permission = await ctx.check_passed_with_permission()
             if passed:
                 if has_permission:

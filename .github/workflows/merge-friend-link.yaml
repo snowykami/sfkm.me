@@ -1,0 +1,44 @@
+name: Merge Friend Link
+
+on:
+  issues:
+    types: [labeled]
+
+concurrency:
+  group: has-git-operations
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  handle-friend-link:
+    if: contains(github.event.issue.labels.*.name, 'friend-link') || contains(github.event.issue.labels.*.name, 'passed') || contains(github.event.issue.labels.*.name, 'failed')
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.52.0-jammy
+      options: --user root
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+
+      - name: Install playwright and run Python script
+        run: |
+          uv run ./scripts/issue_handler
+        env: 
+          GITHUB_EVENT_ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_EVENT_ACTION: ${{ github.event.action }}  # 
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.LITEYUKI_FLOW_TOKEN }}
+          FRIEND_LINKS_FILE: data/friends.json
+          I18N_FILE: data/i18n.json
+
+          AI_API_ENDPOINT: "https://models.github.ai/inference/chat/completions"
+          AI_API_KEY: ${{ secrets.LITEYUKI_FLOW_TOKEN }}
+          AI_MODEL: "openai/gpt-4.1-nano"
