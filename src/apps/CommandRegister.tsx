@@ -7,6 +7,7 @@ import { CommandArg } from "@/utils/commands";
 import { t } from "i18next";
 import config from "@/config";
 import { mediumWindowState } from ".";
+import MusicCommandRegister from './Music/CommandRegister';
 
 export default function TerminalCommandRegister() {
     const register = useTerminalCommand();
@@ -304,5 +305,10 @@ export default function TerminalCommandRegister() {
             return t("terminal.commands.win.unknown", { subCommand });
         }
     });
-    return null;
+    return (
+        <div>
+            <MusicCommandRegister />
+            {/* 其他命令注册可以放在这里 */}
+        </div>
+    )
 }
