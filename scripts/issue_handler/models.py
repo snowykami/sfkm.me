@@ -46,7 +46,15 @@ class Comment(BaseModel):
 class Event(BaseModel):
     name: Literal["issues", "issue_comment"]
     action: Literal[
-        "opened", "edited", "closed", "reopened", "deleted", "created", "updated"
+        "opened",
+        "edited",
+        "closed",
+        "reopened",
+        "deleted",
+        "created",
+        "updated",
+        "labeled",
+        "unlabeled",
     ]
 
 
@@ -922,22 +930,51 @@ class IssueContext:
         return await self.client.remove_label(
             self.repo.owner, self.repo.name, self.issue.number, label
         )
-        
-    async def check_passed(self) -> bool:
+
+
+    async def check_passed(self) -> tuple[bool, str | None]:
         """
-        检查 issue 是否已经通过。
+        检查 issue 是否已经通过，以及是谁添加的 passed 标签。
 
         Returns:
-            bool: 如果 issue 已经通过，返回 True，否则返回 False
+            tuple[bool, str | None]:
+                - 第一个元素：如果 issue 已经通过，返回 True，否则返回 False
+                - 第二个元素：添加标签的用户名，如果未找到则为 None
         """
         if not self.client:
             raise ValueError("Client is not initialized.")
+
+        # 先检查 issue 是否有 passed 标签
         labels, err = await self.client.get_labels(
             self.repo.owner, self.repo.name, self.issue.number
         )
         if err:
             raise err if isinstance(err, BaseException) else Exception(str(err))
-        return "passed" in labels
+
+        has_passed = "passed" in labels
+
+        if has_passed:
+            # 获取标签添加者
+            response = await self.client.client.get(
+                f"/repos/{self.repo.owner}/{self.repo.name}/issues/{self.issue.number}/timeline",
+                headers={"Accept": "application/vnd.github.v3+json"},
+            )
+
+            if response.status_code != 200:
+                print(f"获取 timeline 失败: {response.text}")
+                return has_passed, None
+
+            events = response.json()
+
+            # 查找最近的 labeled 事件，其中标签是 "passed"
+            for event in reversed(events):
+                if (
+                    event.get("event") == "labeled"
+                    and event.get("label", {}).get("name") == "passed"
+                ):
+                    actor = event.get("actor", {}).get("login")
+                    return has_passed, actor
+        return has_passed, None
 
     async def upsert_friend_link(self, friend_link: "FriendLink") -> Err:
         """
