@@ -48,7 +48,15 @@ const PlayerView = ({ wid }: { wid: string }) => {
                     </div>
                 </div>
                 {/* 歌词区（底部，可滚动） */}
-                <div className={`flex-1 min-h-0 overflow-y-auto ${isMobile ? 'mt-0' : 'mt-2'} ${isMobile ? 'mb-0' : 'mb-4'}`}>
+                <div className={`
+                    flex-1 
+                    min-h-0 
+                    overflow-y-auto 
+                    ${isMobile ? 'mt-0' : 'mt-2'} 
+                    ${isMobile ? 'mb-0' : 'mb-4'}
+                    overflow-x-hidden /* 添加水平溢出隐藏 */
+                    w-full /* 确保占满可用宽度 */
+                    `}>
                     <LyricScroller wid={wid} />
                 </div>
             </div>
