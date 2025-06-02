@@ -887,6 +887,27 @@ class IssueContext:
             self.repo.owner, self.repo.name, file_path, content, message
         )
 
+    async def set_updated(self):
+        """通过去除updated再添加updated标签来触发工作流
+        """
+        if not self.client:
+            raise ValueError("Client is not initialized.")
+        # 先检查标签是否存在
+        labels, err = await self.client.get_labels(
+            self.repo.owner, self.repo.name, self.issue.number
+        )
+        if err:
+            return err
+        if "updated" in labels:
+            print(f"移除标签 updated 从 issue {self.issue.number} 中。")
+            await self.client.remove_label(
+                self.repo.owner, self.repo.name, self.issue.number, "updated"
+            )
+        print(f"添加标签 updated 到 issue {self.issue.number} 中。")
+        return await self.client.add_label(
+            self.repo.owner, self.repo.name, self.issue.number, "updated"
+        )
+
     async def add_label(self, label: str) -> Err:
         """
         添加标签到 issue。
