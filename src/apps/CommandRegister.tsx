@@ -305,6 +305,20 @@ export default function TerminalCommandRegister() {
             return t("terminal.commands.win.unknown", { subCommand });
         }
     });
+
+    // kill 命令，关闭窗口
+    register({
+        name: "kill",
+        description: t("terminal.commands.kill.description"),
+        run: async (ctx: CommandArg) => {
+            const id = ctx.args[1];
+            if (!id) return t("terminal.commands.kill.noId");
+            const win = getWindowById(id);
+            if (!win) return t("terminal.commands.kill.notFound", { id });
+            closeWindow(win.id);
+            return t("terminal.commands.kill.killed", { id: win.id });
+        },
+    })
     return (
         <div>
             <MusicCommandRegister />

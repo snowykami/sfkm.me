@@ -20,6 +20,7 @@ const STORAGE_KEY = "musicplayer_state";
 const PLAYMODE_KEY = "musicplayer_playmode";
 const VOLUME_KEY = "musicplayer_volume";
 const MUTE_KEY = "musicplayer_muted";
+const DEFAULT_COVER_COLOR = "#6b7280"; // 灰色
 
 // 新的统一歌曲类型，包含加载状态
 export type TrackState =
@@ -53,6 +54,8 @@ interface MusicContextType {
     handleVolumeChange: (volume: number) => void;
     handleToggleMute: () => void;
     handleMusicCommand: (subCommand: string, args: string[]) => string;
+    getAlbumCoverColor: () => Promise<string>;
+
 }
 
 const MAX_RETRY = 3;
@@ -878,6 +881,87 @@ export function MusicProvider({ children }: MusicProviderProps) {
         };
     }, [currentSong, handlePlayPause, handlePrev, handleNext, audioRef]);
 
+    // 获取封面颜色
+    const getAlbumCoverColor = useCallback(async (): Promise<string> => {
+        if (!currentSong?.cover) {
+            return DEFAULT_COVER_COLOR;
+        }
+
+        try {
+            // 创建一个 Image 对象并加载封面
+            const img = new Image();
+            img.crossOrigin = "Anonymous"; // 处理跨域图片
+
+            // 等待图片加载完成
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+                img.src = currentSong.cover || "";
+            });
+
+            // 创建 canvas 分析图片颜色
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            if (!ctx) {
+                return DEFAULT_COVER_COLOR;
+            }
+
+            // 设置 canvas 大小
+            const size = Math.min(img.width, img.height, 100);
+            canvas.width = size;
+            canvas.height = size;
+
+            // 在 canvas 上绘制图片
+            ctx.drawImage(img, 0, 0, size, size);
+
+            // 获取图片数据
+            const imageData = ctx.getImageData(0, 0, size, size).data;
+
+            // 使用颜色桶进行量化
+            const colorMap = new Map<string, number>();
+
+            // 简化颜色 (减少颜色空间大小)
+            const simplify = (value: number) => Math.round(value / 24) * 24;
+
+            // 统计颜色频率
+            for (let i = 0; i < imageData.length; i += 4) {
+                // 忽略接近黑色和白色的点
+                const r = imageData[i];
+                const g = imageData[i + 1];
+                const b = imageData[i + 2];
+                const a = imageData[i + 3];
+
+                // 跳过透明和接近黑白的像素
+                if (a < 128 || (r > 240 && g > 240 && b > 240) || (r < 15 && g < 15 && b < 15)) {
+                    continue;
+                }
+
+                // 简化颜色并创建键
+                const key = `${simplify(r)},${simplify(g)},${simplify(b)}`;
+
+                // 增加该颜色的计数
+                colorMap.set(key, (colorMap.get(key) || 0) + 1);
+            }
+
+            // 找出出现最多的颜色
+            let maxCount = 0;
+            let dominantColor = DEFAULT_COVER_COLOR;
+
+            for (const [colorKey, count] of colorMap.entries()) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    const [r, g, b] = colorKey.split(',').map(Number);
+                    dominantColor = `rgb(${r}, ${g}, ${b})`;
+                }
+            }
+
+            return dominantColor;
+        } catch (error) {
+            console.error("Failed to get album cover color:", error);
+            return DEFAULT_COVER_COLOR;
+        }
+    }, [currentSong?.cover]);
+
     return (
         <MusicContext.Provider
             value={{
@@ -905,7 +989,8 @@ export function MusicProvider({ children }: MusicProviderProps) {
                 isMuted,
                 handleVolumeChange,
                 handleToggleMute,
-                handleMusicCommand
+                handleMusicCommand,
+                getAlbumCoverColor
             }}
         >
             {currentSong?.src ? (

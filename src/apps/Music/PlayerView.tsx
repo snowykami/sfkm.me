@@ -20,30 +20,33 @@ const PlayerView = ({ wid }: { wid: string }) => {
                 <Album wid={wid} />
             </div>
             {/* 右边：歌曲信息/歌词区域 1/2 */}
-            <div className="flex-1 p-4 flex flex-col min-h-0">
+            <div className="flex-1 p-4 flex flex-col min-h-0 max-w-full overflow-hidden">
                 {/* 歌曲信息区（顶部） */}
-                <div className={`mb-4 ${isMobile ? "mt-0" : "mt-2"}`}>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                        <Marquee>
+                <div className={`mb-4 ${isMobile ? "mt-0" : "mt-2"} max-w-full`}>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white mb-2 w-full overflow-hidden">
+                        <Marquee pauseBeforeRepeatSec={1.5} speedPxPerSec={40}>
                             {currentSong?.title || t('music.noplay')}
                         </Marquee>
                     </div>
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-300">
-                        <span className="flex items-center gap-1">
-                            <Disc className="w-4 h-4" /> {currentSong?.album || "--"}
+                    <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-300 overflow-hidden">
+                        <span className="flex items-center gap-1 min-w-0 overflow-hidden text-ellipsis">
+                            <Disc className="w-4 h-4 flex-shrink-0" />
+                            <span className="truncate">{currentSong?.album || "--"}</span>
                         </span>
-                        <span className="flex items-center gap-1">
-                            <User className="w-4 h-4" /> {currentSong?.artist || "--"}
+                        <span className="flex items-center gap-1 min-w-0 overflow-hidden text-ellipsis">
+                            <User className="w-4 h-4 flex-shrink-0" />
+                            <span className="truncate">{currentSong?.artist || "--"}</span>
                         </span>
                         <span
-                            className="flex items-center gap-1"
+                            className="flex items-center gap-1 min-w-0 overflow-hidden text-ellipsis cursor-pointer"
                             onClick={() => {
                                 if (currentSong?.songLink) {
                                     window.open(currentSong.songLink, '_blank');
                                 }
                             }}
                         >
-                            <ExternalLink className="w-4 h-4" /> {t("music.from." + currentSong?.from || "unknown")}
+                            <ExternalLink className="w-4 h-4 flex-shrink-0" />
+                            <span className="truncate">{t("music.from." + currentSong?.from || "unknown")}</span>
                         </span>
                     </div>
                 </div>
@@ -54,8 +57,8 @@ const PlayerView = ({ wid }: { wid: string }) => {
                     overflow-y-auto 
                     ${isMobile ? 'mt-0' : 'mt-2'} 
                     ${isMobile ? 'mb-0' : 'mb-4'}
-                    overflow-x-hidden /* 添加水平溢出隐藏 */
-                    w-full /* 确保占满可用宽度 */
+                    overflow-x-hidden
+                    w-full
                     `}>
                     <LyricScroller wid={wid} />
                 </div>

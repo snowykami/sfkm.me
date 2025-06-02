@@ -4,14 +4,40 @@ import { useWindowManager } from "@/contexts/WindowManagerContext";
 import type { BaseWindowProps } from "./BaseWindow";
 import { t } from "i18next";
 import BaseWindow from "./BaseWindow";
+import { Marquee } from "@/components/ui/Marquee";
 
-interface MacOSWindowColorScheme {
+export interface MacOSWindowColorScheme {
   bg?: string;
   bgDark?: string;
   border?: string;
   borderDark?: string;
   title?: string;
   titleDark?: string;
+  titleBarBg?: string; // 标题栏背景色
+  titleBarBgDark?: string; // 标题栏背景色（暗黑模式）
+  titleBarBorder?: string; // 标题栏边框色
+  titleBarBorderDark?: string; // 标题栏边框色（暗黑模式）
+  titleBarClassName?: string; // 标题栏自定义类名
+  shadow?: string; // 窗口阴影
+  // 新增：窗口背景图片
+  backgroundImage?: string;
+  // 新增：窗口自定义背景色（优先级高于bg/bgDark）
+  backgroundColor?: string;
+  backgroundColorDark?: string;
+  // 新增：背景混合模式
+  backgroundBlendMode?: string;
+  // 新增：背景不透明度
+  backgroundOpacity?: string;
+  // 新增：是否模糊背景
+  backdropBlur?: boolean;
+  showBorder?: boolean; // 是否显示边框
+
+  backgroundOverlay?: boolean; // 是否启用背景蒙版
+  overlayColor?: string; // 蒙版颜色
+  overlayColorDark?: string; // 暗模式蒙版颜色
+  overlayOpacity?: string; // 蒙版不透明度
+  overlayBlendMode?: string; // 蒙版混合模式
+  overlayGradient?: string; // 蒙版渐变设置
 }
 
 interface MacOSWindowProps extends Omit<BaseWindowProps, "children" | "title"> {
@@ -29,7 +55,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
   showClose = true,
   showMinimize = true,
   showMaximize = true,
-  colorScheme,
+  colorScheme: propColorScheme = {},
   ...baseProps
 }) => {
   const { windows, closeWindow, bringToFront, updateWindow } = useWindowManager();
@@ -46,8 +72,30 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
     borderDark: "dark:border-slate-700/30",
     title: "text-slate-700",
     titleDark: "dark:text-slate-300",
+    titleBarBg: "bg-slate-300/80",
+    titleBarBgDark: "dark:bg-slate-800/80",
+    titleBarBorder: "border-slate-300/60",
+    titleBarBorderDark: "dark:border-slate-800/50",
+    backgroundImage: "",
+    backgroundColor: "",
+    backgroundColorDark: "",
+    backgroundBlendMode: "normal",
+    backgroundOpacity: "1",
+    backdropBlur: true,
+    showBorder: true, // 默认显示边框
+    backgroundOverlay: false,
+    overlayColor: "bg-black/20",
+    overlayColorDark: "dark:bg-black/30",
+    overlayOpacity: "1",
+    overlayBlendMode: "normal",
+    overlayGradient: "",
   };
-  const scheme = { ...defaultScheme, ...colorScheme };
+
+  const scheme = {
+    ...defaultScheme,
+    ...win.colorScheme,
+    ...propColorScheme
+  };
 
   // 处理关闭窗口逻辑
   const handleClose = () => {
@@ -69,7 +117,37 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
     setTimeout(() => {
       updateWindow(id, { minimized: true, maximized: false });
       setMinimizing(false);
-    }, 220); // 动画时长与 CSS 保持一致
+    }, 220);
+  };
+
+  // 生成背景样式
+  const getBackgroundStyle = () => {
+    const style: React.CSSProperties = {};
+
+    // 设置背景图片 (如果有)
+    if (scheme.backgroundImage) {
+      style.backgroundImage = `url(${scheme.backgroundImage})`;
+      style.backgroundSize = 'cover';
+      style.backgroundPosition = 'center';
+      style.backgroundRepeat = 'no-repeat';
+    }
+
+    // 设置背景色 (如果有)
+    if (scheme.backgroundColor) {
+      style.backgroundColor = scheme.backgroundColor;
+    }
+
+    // 设置混合模式
+    if (scheme.backgroundBlendMode) {
+      style.backgroundBlendMode = scheme.backgroundBlendMode;
+    }
+
+    // 设置不透明度
+    if (scheme.backgroundOpacity && scheme.backgroundOpacity !== "1") {
+      style.opacity = parseFloat(scheme.backgroundOpacity);
+    }
+
+    return style;
   };
 
   return (
@@ -84,7 +162,6 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
       dragHandleClassName="window-drag-handle"
       draggable
       resizable
-      // 不再传递 zIndex，由 BaseWindow 统一处理
       onResizeStop={(_, __, ref, ___, pos) =>
         updateWindow(id, {
           size: {
@@ -99,77 +176,121 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
     >
       <div
         className={`
-          ${scheme.bg} ${scheme.bgDark}
-          backdrop-blur-md
-          shadow-xl
-          border ${scheme.border} ${scheme.borderDark}
-          overflow-hidden
-          flex flex-col
+          relative
           rounded-2xl
-          will-change-transform
-          transition-all duration-300
+          overflow-hidden
+          w-full h-full
           ${closing ? "animate-window-close" : minimizing ? "animate-window-minimize" : "animate-window-open"}
         `}
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-        }}
       >
-        {/* 标题栏 */}
+        {/* 背景层 - 背景图片或自定义背景色 */}
+        {(scheme.backgroundImage || scheme.backgroundColor || scheme.backgroundColorDark) && (
+          <div
+            className={`
+              absolute inset-0 z-0
+              ${scheme.backgroundColorDark || ''}
+            `}
+            style={getBackgroundStyle()}
+          />
+        )}
+
+        {/* 新增：背景蒙版层 */}
+        {scheme.backgroundOverlay && (
+          <div
+            className={`
+            absolute inset-0 z-1
+            ${scheme.overlayColor || defaultScheme.overlayColor}
+            ${scheme.overlayColorDark || defaultScheme.overlayColorDark}
+            transition-colors duration-300
+            ${scheme.overlayGradient || ''}
+          `}
+            style={{
+              opacity: scheme.overlayOpacity ? parseFloat(scheme.overlayOpacity) : 1,
+              mixBlendMode: (scheme.overlayBlendMode || 'normal') as React.CSSProperties['mixBlendMode'],
+            }}
+          />
+        )}
+
+        {/* 主窗口容器 */}
         <div
           className={`
-            window-drag-handle
-            bg-slate-300/80 dark:bg-slate-800/80
-            backdrop-blur-sm
-            border-b border-slate-300/60 dark:border-slate-800/50
-            px-4 py-3 flex items-center select-none relative
-            cursor-grab active:cursor-grabbing
+            ${scheme.bg} ${scheme.bgDark}
+            ${scheme.backdropBlur ? "backdrop-blur-md" : ""}
+            ${scheme.shadow || "shadow-xl"}
+            ${scheme.showBorder !== false ? `border ${scheme.border} ${scheme.borderDark}` : ""}
+            overflow-hidden
+            flex flex-col
+            rounded-2xl
+            will-change-transform
+            transition-all duration-300
+            relative z-10
+            w-full h-full
           `}
         >
-          <div className="window-controls flex items-center space-x-2">
-            {/* 关闭按钮 */}
-            {showClose && (
-              <div
-                className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center group relative"
-                onClick={handleClose}
-              >
-                <div className="w-1.5 h-0.5 bg-red-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rotate-45 absolute"></div>
-                <div className="w-1.5 h-0.5 bg-red-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200 -rotate-45 absolute"></div>
-              </div>
-            )}
-            {/* 最小化按钮 */}
-            {showMinimize && (
-              <div
-                className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center group relative"
-                onClick={handleMinimize}>
-                <div className="w-1.5 h-0.5 bg-yellow-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-              </div>
-            )}
-            {/* 最大化按钮 */}
-            {showMaximize && (
-              <div
-                className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center group relative"
-                onClick={handleMaximize}>
-                <div className="w-1.5 h-1.5 border border-green-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-              </div>
-            )}
+          {/* 标题栏 */}
+          <div
+            className={`
+              window-drag-handle
+              ${scheme.titleBarBg || defaultScheme.titleBarBg} 
+              ${scheme.titleBarBgDark || defaultScheme.titleBarBgDark}
+              backdrop-blur-sm
+              border-b ${scheme.titleBarBorder || defaultScheme.titleBarBorder} 
+              ${scheme.titleBarBorderDark || defaultScheme.titleBarBorderDark}
+              px-4 py-3 flex items-center select-none relative
+              cursor-grab active:cursor-grabbing
+              ${scheme.titleBarClassName || ''}
+            `}
+          >
+            <div className="window-controls flex items-center space-x-2">
+              {/* 关闭、最小化、最大化按钮代码保持不变 */}
+              {/* 关闭按钮 */}
+              {showClose && (
+                <div
+                  className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center group relative"
+                  onClick={handleClose}
+                >
+                  <div className="w-1.5 h-0.5 bg-red-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rotate-45 absolute"></div>
+                  <div className="w-1.5 h-0.5 bg-red-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200 -rotate-45 absolute"></div>
+                </div>
+              )}
+              {/* 最小化按钮 */}
+              {showMinimize && (
+                <div
+                  className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center group relative"
+                  onClick={handleMinimize}>
+                  <div className="w-1.5 h-0.5 bg-yellow-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                </div>
+              )}
+              {/* 最大化按钮 */}
+              {showMaximize && (
+                <div
+                  className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center group relative"
+                  onClick={handleMaximize}>
+                  <div className="w-1.5 h-1.5 border border-green-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                </div>
+              )}
+            </div>
+
+            {/* 绝对居中标题 */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[60%] w-auto pointer-events-none z-0 overflow-hidden">
+              <span className={`${scheme.title} ${scheme.titleDark} text-sm font-medium block`}>
+                <Marquee pauseBeforeRepeatSec={1.5} speedPxPerSec={40}>
+                  {t(win.title)}
+                </Marquee>
+              </span>
+            </div>
+            <div className="w-[60px]" />
           </div>
-          {/* 绝对居中标题 */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-max pointer-events-none z-0">
-            <span className={`${scheme.title} ${scheme.titleDark} text-sm font-medium`}>{t(win.title)}</span>
+
+          {/* 内容区域 */}
+          <div
+            className="overflow-y-auto custom-scrollbar flex-1 text-slate-800 dark:text-slate-200"
+            style={{
+              transition: "height 0.3s ease",
+            }}
+          >
+            {children}
           </div>
-          <div className="w-[60px]" />
-        </div>
-        {/* 内容区域 */}
-        <div
-          className="overflow-y-auto custom-scrollbar flex-1 text-slate-800 dark:text-slate-200"
-          style={{
-            transition: "height 0.3s ease",
-          }}
-        >
-          {children}
         </div>
       </div>
     </BaseWindow>

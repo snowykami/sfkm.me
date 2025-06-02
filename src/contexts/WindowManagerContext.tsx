@@ -1,5 +1,6 @@
 "use client"
 
+import { MacOSWindowColorScheme } from "@/components/windows/MacOSWindow";
 import React, { createContext, useContext, useState, ReactNode, useCallback, useEffect } from "react";
 
 
@@ -15,6 +16,7 @@ export interface WindowState {
   isEdgeHidden?: boolean; // 新增：窗口是否隐藏到边缘
   originalPositionBeforeEdgeHide?: { x: number; y: number }; // 新增：隐藏前的原始位置
   hiddenEdge?: 'top' | 'bottom' | 'left' | 'right'; // 新增：隐藏到哪个边缘
+  colorScheme?: MacOSWindowColorScheme;
 }
 
 interface WindowManagerContextProps {
@@ -30,6 +32,8 @@ interface WindowManagerContextProps {
 }
 
 const WindowManagerContext = createContext<WindowManagerContextProps | null>(null);
+
+
 
 export const useWindowManager = () => {
   const ctx = useContext(WindowManagerContext);

@@ -82,7 +82,7 @@ export default function LyricScroller({ wid }: { wid: string }) {
             ease-[cubic-bezier(.4,2,.6,1)]
             w-full /* 确保宽度受限 */
             ${idx === currentLrcLine
-                ? `text-blue-500 font-bold ${isMobile ? "text-1xl" : "text-1xl"} bg-blue-500/10 dark:bg-blue-400/10 opacity-100
+                ? `text-blue-500 font-bold ${isMobile ? "text-1xl" : "text-2xl"} bg-blue-500/10 dark:bg-blue-400/10 opacity-100
                  break-words whitespace-pre-wrap /* 允许活动歌词换行 */`
                 : `text-slate-800 dark:text-slate-200 font-normal text-1xl opacity-60 
                  overflow-hidden break-words whitespace-pre-wrap /* 允许非活动歌词也换行 */

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useMusic } from "@/contexts/MusicContext";
 import { t } from "i18next";
 import { ListMusic, Pause, Play, Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume2 } from "lucide-react";
@@ -51,6 +51,9 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
     const [showVolume, setShowVolume] = useState(false);
     const volumeBtnRef = useRef<HTMLButtonElement>(null);
     const volumePopupRef = useRef<HTMLDivElement>(null);
+
+    // 用于跟踪最后一次更新的播放列表
+    const lastSongsList = useRef<string>("");
 
     useEffect(() => {
         const audio = audioRef.current;
@@ -170,7 +173,7 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
     })();
 
     // 滚动到当前播放歌曲
-    const scrollToCurrentSong = () => {
+    const scrollToCurrentSong = useCallback(() => {
         if (!showPlaylist || !songsList || !currentSong) return;
 
         // 找到当前歌曲在列表中的索引
@@ -194,7 +197,7 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
                 behavior: 'smooth'
             });
         }
-    };
+    }, [currentSong, showPlaylist, songsList]);
 
     // 切换播放列表显示状态
     const handlePlaylistClick = () => {
@@ -204,6 +207,7 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
             // 重置用户滚动状态
             setUserScrolled(false);
 
+            // 获取歌曲列表，仅在打开播放列表时执行一次
             const all = getAllSongs();
             const songs = all.map(s =>
                 typeof (s as Promise<Song>).then === "function"
@@ -211,24 +215,57 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
                     : (s as Song)
             );
             setSongsList(songs);
+            
+            // 更新最后的播放列表数据
+            lastSongsList.current = JSON.stringify(songs);
+            
             // 等待列表渲染后滚动到当前歌曲
             setTimeout(scrollToCurrentSong, 100);
         }
     };
 
-    // 更新播放列表 fetch
+    // 更新播放列表 fetch - 优化为较低频率更新
     useEffect(() => {
         if (!showPlaylist) return;
-        const timer = setInterval(() => {
+        
+        // 首次加载已在 handlePlaylistClick 中完成，这里设置延迟更新
+        const initialTimer = setTimeout(() => {
             const all = getAllSongs();
             const songs = all.map(s =>
                 typeof (s as Promise<Song>).then === "function"
                     ? { ...LOADING_SONG }
                     : (s as Song)
             );
-            setSongsList(songs);
+            
+            // 仅当有变化时才更新
+            const songsJson = JSON.stringify(songs);
+            if (songsJson !== lastSongsList.current) {
+                setSongsList(songs);
+                lastSongsList.current = songsJson;
+            }
         }, 1000);
-        return () => clearInterval(timer);
+        
+        // 后续使用更低频率的更新
+        const intervalTimer = setInterval(() => {
+            const all = getAllSongs();
+            const songs = all.map(s =>
+                typeof (s as Promise<Song>).then === "function"
+                    ? { ...LOADING_SONG }
+                    : (s as Song)
+            );
+            
+            // 仅当有变化时才更新
+            const songsJson = JSON.stringify(songs);
+            if (songsJson !== lastSongsList.current) {
+                setSongsList(songs);
+                lastSongsList.current = songsJson;
+            }
+        }, 3000); // 降低更新频率到3秒一次
+        
+        return () => {
+            clearTimeout(initialTimer);
+            clearInterval(intervalTimer);
+        };
     }, [showPlaylist, getAllSongs]);
 
     // 仅在打开播放列表时执行一次滚动
@@ -236,7 +273,7 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
         if (showPlaylist && currentSong && !userScrolled) {
             setTimeout(scrollToCurrentSong, 100);
         }
-    }, [showPlaylist, currentSong]);
+    }, [showPlaylist, currentSong, userScrolled, scrollToCurrentSong]);
 
     // 播放列表点击事件，修正索引
     const handlePlaylistItemClick = (index: number) => {
@@ -248,7 +285,6 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
         // 真实 resolvedSongs 索引
         const resolvedIndex = index - n;
         handlePlaySong(resolvedIndex);
-
         // 点击后重置用户滚动状态
         setUserScrolled(false);
     };
@@ -263,6 +299,9 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
             handleVolumeChange(v);
         }
     };
+
+    // 记忆当前播放歌曲的索引，避免每次渲染都重新计算
+    const currentSongIndex = songsList ? songsList.findIndex(song => song.src === currentSong?.src) : -1;
 
     return (
         <div className="shrink-0 bg-gray-800/10 dark:bg-stone-300/10">
@@ -314,7 +353,7 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
             </div>
 
             {/* 控制区 */}
-            <div className="flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 border-t border-gray-300 dark:border-gray-700">
+            <div className="flex items-center px-4 py-2 bg-gray-100/40 dark:bg-gray-800/40 border-t border-gray-300 dark:border-gray-700">
                 {/* 左边：播放模式+时间 */}
                 <div className="flex flex-1 items-center justify-start gap-3">
                     <button
@@ -413,22 +452,35 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
                                 </div>
                             ) : (
                                 <ul>
-                                    {songsList.map((song, index) => (
-                                        <li
-                                            key={index}
-                                            ref={el => { playlistItemRefs.current[index] = el; }}
-                                            className={`p-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${currentSong?.src === song.src
-                                                ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
-                                                : 'text-gray-800 dark:text-gray-200'
+                                    {songsList.map((song, index) => {
+                                        const isCurrentSong = index === currentSongIndex;
+                                        const isLoading = isLoadingSong(song);
+                                        
+                                        return (
+                                            <li
+                                                key={index}
+                                                ref={el => { playlistItemRefs.current[index] = el; }}
+                                                className={`p-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                                                    isCurrentSong
+                                                    ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
+                                                    : 'text-gray-800 dark:text-gray-200'
                                                 }`}
-                                            onClick={() => handlePlaylistItemClick(index)}
-                                            style={!isLoadingSong(song) ? {} : { opacity: 0.5, pointerEvents: "none" }}
-                                        >
-                                            <Marquee>
-                                                {song.title || t('music.notitle')} - {song.artist || t('music.noartist')}
-                                            </Marquee>
-                                        </li>
-                                    ))}
+                                                onClick={() => handlePlaylistItemClick(index)}
+                                                style={!isLoading ? {} : { opacity: 0.5, pointerEvents: "none" }}
+                                            >
+                                                {/* 只对当前播放歌曲使用 Marquee */}
+                                                {isCurrentSong ? (
+                                                    <Marquee pauseBeforeRepeatSec={1.5} speedPxPerSec={40}>
+                                                        {song.title || t('music.notitle')} - {song.artist || t('music.noartist')}
+                                                    </Marquee>
+                                                ) : (
+                                                    <div className="truncate">
+                                                        {song.title || t('music.notitle')} - {song.artist || t('music.noartist')}
+                                                    </div>
+                                                )}
+                                            </li>
+                                        );
+                                    })}
                                 </ul>
                             )}
                         </div>
