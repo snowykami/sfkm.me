@@ -21,6 +21,12 @@ const PLAYMODE_KEY = "musicplayer_playmode";
 const VOLUME_KEY = "musicplayer_volume";
 const MUTE_KEY = "musicplayer_muted";
 
+// 新的统一歌曲类型，包含加载状态
+export type TrackState =
+    | { status: 'loading', originalIndex: number }              // 加载中
+    | { status: 'loaded', originalIndex: number, data: Song }   // 加载成功
+    | { status: 'error', originalIndex: number, retries: number }; // 加载失败
+
 interface MusicContextType {
     audioRef: React.RefObject<HTMLAudioElement | null>;
     isPlaying: boolean;
@@ -39,53 +45,18 @@ interface MusicContextType {
     handleEnded: () => void;
     onLrcLineChange: (cb: (line: number, text: string) => void) => () => void;
     getAllSongs: () => (Song | Promise<Song>)[];
-    resolvedSongs: Song[] | null;
+    resolvedSongs: Song[] | null; // 保持向后兼容
     isLoadingSongs: boolean;
     handlePlaySong: (index: number) => void;
     volume: number;
     isMuted: boolean;
     handleVolumeChange: (volume: number) => void;
     handleToggleMute: () => void;
-    // 新增：音乐命令处理接口
     handleMusicCommand: (subCommand: string, args: string[]) => string;
 }
 
-const initialSongs: SongOrPromise[] = config.musics;
-
-// 新增：全局维护的歌曲缓存（可为 Song 或 Promise<Song>）
-let cachedSongList: (Song | Promise<Song>)[] | null = null;
-
-const songRetryCount: Record<number, number> = {};
 const MAX_RETRY = 3;
 const RETRY_DELAY = 2000; // 2秒
-
-// 新增：后台静默替换 Promise 为 Song 的函数
-function backgroundResolveSongs() {
-    if (!cachedSongList) return;
-    cachedSongList.forEach((item, idx) => {
-        if (item instanceof Promise) {
-            item.then(song => {
-                if (cachedSongList && cachedSongList[idx] === item) {
-                    cachedSongList[idx] = song;
-                    songRetryCount[idx] = 0; // 成功后清零
-                }
-            }).catch(() => {
-                // 失败时重试
-                songRetryCount[idx] = (songRetryCount[idx] || 0) + 1;
-                if (songRetryCount[idx] <= MAX_RETRY) {
-                    setTimeout(() => {
-                        // 重新触发 Promise
-                        const original = initialSongs[idx];
-                        if (typeof original === "function") {
-                            cachedSongList![idx] = (original as () => Promise<Song>)();
-                            backgroundResolveSongs();
-                        }
-                    }, RETRY_DELAY);
-                }
-            });
-        }
-    });
-}
 
 function getInitialState(totalSongs: number) {
     if (typeof window !== "undefined") {
@@ -154,14 +125,24 @@ interface LrcLineChangeCallback {
 }
 
 export function MusicProvider({ children }: MusicProviderProps) {
-    const [resolvedSongs, setResolvedSongs] = useState<Song[] | null>(null);
+    // 使用统一的 tracks 数组替代 initialSongs 和 resolvedSongs
+    const [tracks, setTracks] = useState<TrackState[]>(() =>
+        config.musics.map((_, idx) => ({
+            status: 'loading',
+            originalIndex: idx
+        }))
+    );
+
     const [isLoadingSongs, setIsLoadingSongs] = useState<boolean>(true);
 
-    const [currentSongIndex, setCurrentSongIndex] = useState<number>(() => getInitialState(initialSongs.length).index);
-    const [pendingSeek, setPendingSeek] = useState<number | null>(() => {
-        const state = getInitialState(initialSongs.length);
-        return state.time > 0 ? state.time : null;
-    });
+    // 获取初始索引（基于原始索引）
+    const initialState = getInitialState(config.musics.length);
+    const [currentSongIndex, setCurrentSongIndex] = useState<number>(initialState.index);
+
+    // 其他状态保持不变
+    const [pendingSeek, setPendingSeek] = useState<number | null>(
+        initialState.time > 0 ? initialState.time : null
+    );
     const [playMode, setPlayMode] = useState<PlayMode>(getInitialPlayMode());
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [currentSong, setCurrentSong] = useState<Song | null>(null);
@@ -181,118 +162,238 @@ export function MusicProvider({ children }: MusicProviderProps) {
     const [volume, setVolume] = useState<number>(() => getInitialVolumeState().volume);
     const [isMuted, setIsMuted] = useState<boolean>(() => getInitialVolumeState().isMuted);
 
+    // 歌曲加载方法 - 返回一个 Promise 解析为 TrackState
+    const loadSong = useCallback(async (songOrPromise: SongOrPromise, originalIndex: number): Promise<TrackState> => {
+        try {
+            let song: Song;
+
+            if (typeof songOrPromise === "function") {
+                song = await (songOrPromise as () => Promise<Song>)();
+            } else if (songOrPromise instanceof Promise) {
+                song = await songOrPromise;
+            } else {
+                song = songOrPromise as Song;
+            }
+
+            return {
+                status: 'loaded',
+                originalIndex,
+                data: song
+            };
+        } catch (error) {
+            console.error(`Failed to load song at index ${originalIndex}:`, error);
+            return {
+                status: 'error',
+                originalIndex,
+                retries: 0
+            };
+        }
+    }, []);
+
+    // 重试加载失败的歌曲
+    const retrySong = useCallback((originalIndex: number, retries: number) => {
+        if (retries >= MAX_RETRY) return;
+
+        setTimeout(async () => {
+            try {
+                const songOrPromise = config.musics[originalIndex];
+                const result = await loadSong(songOrPromise, originalIndex);
+
+                setTracks(current => current.map(track =>
+                    track.originalIndex === originalIndex ? result : track
+                ));
+            } catch {
+                // 失败后增加重试次数
+                setTracks(current => current.map(track =>
+                    track.originalIndex === originalIndex
+                        ? { status: 'error', originalIndex, retries: retries + 1 }
+                        : track
+                ));
+            }
+        }, RETRY_DELAY);
+    }, [loadSong]);
+
+    // 在 track 状态变化后计算 resolvedSongs 数组（向后兼容）
+    const resolvedSongs = React.useMemo(() => {
+        const loaded = tracks
+            .filter((track): track is { status: 'loaded', originalIndex: number, data: Song } =>
+                track.status === 'loaded'
+            )
+            .map(track => track.data);
+
+        return loaded.length > 0 ? loaded : null;
+    }, [tracks]);
+
+    // 将原始索引转换为已加载歌曲的索引
+    const mapToLoadedIndex = useCallback((originalIndex: number): number => {
+        let loadedIndex = -1;
+
+        for (let i = 0; i < tracks.length; i++) {
+            const track = tracks[i];
+            if (track.status === 'loaded') {
+                loadedIndex++;
+                if (track.originalIndex === originalIndex) {
+                    return loadedIndex;
+                }
+            }
+        }
+
+        return -1;
+    }, [tracks]);
+
+    // 将已加载歌曲的索引转换为原始索引
+    const mapToOriginalIndex = useCallback((loadedIndex: number): number => {
+        let currentLoadedIndex = -1;
+
+        for (let i = 0; i < tracks.length; i++) {
+            const track = tracks[i];
+            if (track.status === 'loaded') {
+                currentLoadedIndex++;
+                if (currentLoadedIndex === loadedIndex) {
+                    return track.originalIndex;
+                }
+            }
+        }
+
+        return -1;
+    }, [tracks]);
+
+    // 初始化加载所有歌曲
+    // 修改初始化加载所有歌曲的逻辑
+    useEffect(() => {
+        let isCancelled = false;
+        setIsLoadingSongs(true);
+
+        // 获取当前歌曲索引（从 localStorage 或随机生成）
+        const currentOriginalIndex = currentSongIndex;
+        const currentSongOrPromise = config.musics[currentOriginalIndex];
+
+        // 首先单独加载当前歌曲（优先加载策略）
+        (async () => {
+            try {
+                console.log(`[Music] 优先加载当前歌曲: 索引 ${currentOriginalIndex}`);
+                const result = await loadSong(currentSongOrPromise, currentOriginalIndex);
+
+                // 如果组件已卸载，不继续处理
+                if (isCancelled) return;
+
+                if (result.status === 'loaded') {
+                    // 立即更新当前歌曲，不等待其他歌曲加载
+                    setCurrentSong(result.data);
+
+                    // 更新 tracks 中当前歌曲的状态
+                    setTracks(prev => prev.map(track =>
+                        track.originalIndex === currentOriginalIndex ? result : track
+                    ));
+
+                    console.log(`[Music] 当前歌曲加载成功: ${result.data.title}`);
+                } else {
+                    console.warn(`[Music] 当前歌曲加载失败, 将在后台队列中重试`);
+                    // 加载失败时，会在后续统一处理重试
+                }
+            } catch (error) {
+                console.error(`[Music] 当前歌曲加载出错:`, error);
+            }
+        })();
+
+        // 后台并行加载所有歌曲（跳过已加载的当前歌曲）
+        (async () => {
+            try {
+                // 创建所有歌曲的加载 Promise 数组
+                const loadPromises = config.musics.map((songOrPromise, idx) => {
+                    // 如果是当前歌曲，返回一个已解析的 Promise，避免重复加载
+                    if (idx === currentOriginalIndex) {
+                        return Promise.resolve(null); // 稍后过滤掉 null 值
+                    }
+                    return loadSong(songOrPromise, idx);
+                });
+
+                // 使用 Promise.all 并行加载所有歌曲
+                const results = await Promise.all(loadPromises);
+
+                // 如果组件已卸载，不继续处理
+                if (isCancelled) return;
+
+                // 过滤掉 null 值（跳过的当前歌曲）并合并到当前 tracks 中
+                const validResults = results.filter(Boolean) as TrackState[];
+
+                setTracks(prev => {
+                    // 创建新的 tracks 数组，保留当前状态，更新加载结果
+                    return prev.map(track => {
+                        // 查找是否有该索引的新加载结果
+                        const newTrack = validResults.find(t => t.originalIndex === track.originalIndex);
+                        return newTrack || track;
+                    });
+                });
+
+                // 设置加载完成
+                setIsLoadingSongs(false);
+
+                // 为加载失败的歌曲设置重试
+                validResults.forEach(result => {
+                    if (result.status === 'error') {
+                        retrySong(result.originalIndex, result.retries);
+                    }
+                });
+
+                console.log(`[Music] 所有歌曲加载完成，共 ${validResults.length} 首`);
+            } catch (error) {
+                console.error("[Music] 加载歌曲列表出错:", error);
+                if (!isCancelled) {
+                    setIsLoadingSongs(false);
+                }
+            }
+        })();
+
+        // 组件卸载时取消所有操作
+        return () => {
+            isCancelled = true;
+        };
+    }, [loadSong, retrySong, currentSongIndex]);
+
+    // 当 tracks 或 currentSongIndex 变化时更新当前歌曲
+    useEffect(() => {
+        if (tracks.length === 0) return;
+
+        // 找到当前原始索引对应的 track
+        const track = tracks.find(t => t.originalIndex === currentSongIndex);
+
+        if (track && track.status === 'loaded') {
+            setCurrentSong(track.data);
+        } else if (!isLoadingSongs && resolvedSongs && resolvedSongs.length > 0) {
+            // 如果当前索引的歌曲未加载，但有其他加载好的歌曲，则切换到第一首加载好的歌曲
+            const firstLoadedTrack = tracks.find(t => t.status === 'loaded');
+            if (firstLoadedTrack) {
+                setCurrentSongIndex(firstLoadedTrack.originalIndex);
+                setCurrentSong(firstLoadedTrack.data);
+            }
+        } else if (!isLoadingSongs && (!resolvedSongs || resolvedSongs.length === 0)) {
+            setCurrentSong(null);
+            setIsPlaying(false);
+        }
+    }, [currentSongIndex, tracks, isLoadingSongs, resolvedSongs]);
+
+    // 保持原始的 getAllSongs 接口以兼容现有代码
+    const getAllSongs = useCallback((): (Song | Promise<Song>)[] => {
+        // 将内部 tracks 转换为与原始接口兼容的格式
+        return tracks.map(track => {
+            if (track.status === 'loaded') {
+                return track.data;
+            } else {
+                // 对于未加载的歌曲，返回一个永远处于 pending 状态的 Promise
+                return new Promise<Song>(() => {
+                    // 这个 Promise 会在歌曲加载完成后在其他地方解析
+                });
+            }
+        });
+    }, [tracks]);
+
     function onLrcLineChange(cb: LrcLineChangeCallback): () => void {
         lrcLineChangeCbs.current.push(cb);
         return () => {
             lrcLineChangeCbs.current = lrcLineChangeCbs.current.filter(fn => fn !== cb);
         };
     }
-
-    // 优化后的 getAllSongs：立即返回当前缓存列表（Song 或 Promise），并后台解析
-    const getAllSongs = useCallback((): (Song | Promise<Song>)[] => {
-        if (!cachedSongList) {
-            cachedSongList = initialSongs.map(songOrPromise => {
-                if (typeof songOrPromise === "function") {
-                    try {
-                        return (songOrPromise as () => Promise<Song>)();
-                    } catch {
-                        return Promise.reject();
-                    }
-                }
-                return songOrPromise;
-            });
-            backgroundResolveSongs();
-        }
-        backgroundResolveSongs();
-        return cachedSongList;
-    }, []);
-
-    // 只用于首次加载全部已解析歌曲（不影响 getAllSongs 的即时返回）
-    useEffect(() => {
-        let cancelled = false;
-        async function loadSongs() {
-            setIsLoadingSongs(true);
-            try {
-                const all = getAllSongs();
-
-                // 1. 优先加载当前索引的歌曲
-                const currentItem = all[currentSongIndex];
-                let currentSongResolved: Song | null = null;
-
-                if (currentItem) {
-                    try {
-                        // 如果是 Promise，立即解析
-                        if (currentItem instanceof Promise) {
-                            currentSongResolved = await currentItem;
-                        } else {
-                            currentSongResolved = currentItem as Song;
-                        }
-
-                        // 立即设置当前歌曲，不等待其他歌曲
-                        if (currentSongResolved && !cancelled) {
-                            setCurrentSong(currentSongResolved);
-                            // 创建临时已解析歌曲列表，只包含当前歌曲
-                            const tempResolved = new Array(all.length);
-                            tempResolved[currentSongIndex] = currentSongResolved;
-                            setResolvedSongs(tempResolved.filter((s): s is Song => !!s));
-                        }
-                    } catch (error) {
-                        console.error("Failed to load current song:", error);
-                    }
-                }
-
-                // 2. 后台加载其余歌曲
-                if (!cancelled) {
-                    // 继续加载所有歌曲，但不阻塞UI
-                    Promise.all(
-                        all.map(async (s, idx) => {
-                            // 当前歌曲已加载，跳过
-                            if (idx === currentSongIndex && currentSongResolved) {
-                                return currentSongResolved;
-                            }
-
-                            if (s instanceof Promise) {
-                                try {
-                                    return await s;
-                                } catch {
-                                    return null;
-                                }
-                            }
-                            return s as Song;
-                        })
-                    ).then(allResults => {
-                        if (!cancelled) {
-                            setResolvedSongs(allResults.filter((s): s is Song => !!s));
-                            setIsLoadingSongs(false);
-                        }
-                    }).catch(error => {
-                        console.error("Failed to load all songs:", error);
-                        if (!cancelled) {
-                            setIsLoadingSongs(false);
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error("Error in loadSongs:", error);
-                if (!cancelled) {
-                    setIsLoadingSongs(false);
-                }
-            }
-        }
-        loadSongs();
-        return () => { cancelled = true; };
-    }, [getAllSongs, currentSongIndex]);
-
-    useEffect(() => {
-        if (resolvedSongs && resolvedSongs.length > 0) {
-            const safeIndex = Math.max(0, Math.min(currentSongIndex, resolvedSongs.length - 1));
-            const song = resolvedSongs[safeIndex];
-            setCurrentSong(song);
-        } else if (!isLoadingSongs && (!resolvedSongs || resolvedSongs.length === 0)) {
-            setCurrentSong(null);
-            setIsPlaying(false);
-        }
-    }, [currentSongIndex, resolvedSongs, isLoadingSongs]);
 
     // 修改 useEffect 以处理 lrc 为 Promise 的情况
     useEffect(() => {
@@ -411,6 +512,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
         setCoverRotate(0);
     }, [currentSong]);
 
+    // 存储播放进度到本地存储
     useEffect(() => {
         if (typeof window === "undefined") return;
         const saveState = () => {
@@ -418,7 +520,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
                 localStorage.setItem(
                     STORAGE_KEY,
                     JSON.stringify({
-                        index: currentSongIndex,
+                        index: currentSongIndex, // 存储原始索引
                         time: audioRef.current.currentTime,
                     })
                 );
@@ -439,7 +541,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
             }
             window.removeEventListener("beforeunload", saveState);
         };
-    }, [audioRef, currentSong?.src, currentSongIndex, currentSong]);
+    }, [audioRef, currentSong, currentSong?.src, currentSongIndex]);
 
     const handleLoadedMetadata = useCallback((): void => {
         if (pendingSeek != null && audioRef.current) {
@@ -471,17 +573,24 @@ export function MusicProvider({ children }: MusicProviderProps) {
         });
     }, [audioRef, lyricRef]);
 
+    // 修改的切换歌曲逻辑，使用原始索引
     const handleNext = useCallback((): void => {
-        console.log("handleNext called with playMode:", playMode, "currentSongIndex:", currentSongIndex);
         if (!resolvedSongs || resolvedSongs.length === 0) return;
-        let nextIndex: number;
+
+        // 获取当前歌曲的加载索引
+        const currentLoadedIndex = mapToLoadedIndex(currentSongIndex);
+        if (currentLoadedIndex === -1) return;
+
+        let nextLoadedIndex: number;
+
         if (playMode === "shuffle") {
-            nextIndex = Math.floor(Math.random() * resolvedSongs.length);
-            if (resolvedSongs.length > 1 && nextIndex === currentSongIndex) {
-                nextIndex = (nextIndex + 1) % resolvedSongs.length;
+            // 随机播放
+            nextLoadedIndex = Math.floor(Math.random() * resolvedSongs.length);
+            if (resolvedSongs.length > 1 && nextLoadedIndex === currentLoadedIndex) {
+                nextLoadedIndex = (nextLoadedIndex + 1) % resolvedSongs.length;
             }
         } else if (playMode === "repeat-one") {
-            nextIndex = (currentSongIndex === resolvedSongs.length - 1 ? 0 : currentSongIndex + 1);
+            // 单曲循环
             if (audioRef.current) {
                 audioRef.current.currentTime = 0;
                 audioRef.current.play().catch(() => { });
@@ -489,21 +598,35 @@ export function MusicProvider({ children }: MusicProviderProps) {
             }
             return;
         } else {
-            nextIndex = (currentSongIndex === resolvedSongs.length - 1 ? 0 : currentSongIndex + 1);
+            // 顺序播放
+            nextLoadedIndex = (currentLoadedIndex + 1) % resolvedSongs.length;
         }
-        setCurrentSongIndex(nextIndex);
-        setIsPlaying(true);
-    }, [playMode, currentSongIndex, resolvedSongs, audioRef, lyricRef]);
+
+        // 将加载索引转换回原始索引
+        const nextOriginalIndex = mapToOriginalIndex(nextLoadedIndex);
+        if (nextOriginalIndex !== -1) {
+            setCurrentSongIndex(nextOriginalIndex);
+            setIsPlaying(true);
+        }
+    }, [playMode, currentSongIndex, resolvedSongs, audioRef, lyricRef, mapToLoadedIndex, mapToOriginalIndex]);
 
     const handlePrev = useCallback((): void => {
         if (!resolvedSongs || resolvedSongs.length === 0) return;
-        let prevIndex: number;
+
+        // 获取当前歌曲的加载索引
+        const currentLoadedIndex = mapToLoadedIndex(currentSongIndex);
+        if (currentLoadedIndex === -1) return;
+
+        let prevLoadedIndex: number;
+
         if (playMode === "shuffle") {
-            prevIndex = Math.floor(Math.random() * resolvedSongs.length);
-            if (resolvedSongs.length > 1 && prevIndex === currentSongIndex) {
-                prevIndex = (prevIndex + 1) % resolvedSongs.length;
+            // 随机播放
+            prevLoadedIndex = Math.floor(Math.random() * resolvedSongs.length);
+            if (resolvedSongs.length > 1 && prevLoadedIndex === currentLoadedIndex) {
+                prevLoadedIndex = (prevLoadedIndex + 1) % resolvedSongs.length;
             }
         } else if (playMode === "repeat-one") {
+            // 单曲循环
             if (audioRef.current) {
                 audioRef.current.currentTime = 0;
                 audioRef.current.play().catch(() => { });
@@ -511,34 +634,55 @@ export function MusicProvider({ children }: MusicProviderProps) {
             }
             return;
         } else {
-            prevIndex = (currentSongIndex === 0 ? resolvedSongs.length - 1 : currentSongIndex - 1);
+            // 顺序播放
+            prevLoadedIndex = (currentLoadedIndex - 1 + resolvedSongs.length) % resolvedSongs.length;
         }
-        setCurrentSongIndex(prevIndex);
-        setIsPlaying(true);
-    }, [playMode, currentSongIndex, resolvedSongs, audioRef, lyricRef]);
+
+        // 将加载索引转换回原始索引
+        const prevOriginalIndex = mapToOriginalIndex(prevLoadedIndex);
+        if (prevOriginalIndex !== -1) {
+            setCurrentSongIndex(prevOriginalIndex);
+            setIsPlaying(true);
+        }
+    }, [playMode, currentSongIndex, resolvedSongs, audioRef, lyricRef, mapToLoadedIndex, mapToOriginalIndex]);
 
     const handleEnded = useCallback((): void => {
         if (!resolvedSongs || resolvedSongs.length === 0) {
             setIsPlaying(false);
             return;
         }
+
         if (playMode === "repeat-one") {
+            // 单曲循环
             audioRef.current?.play().catch(() => { });
             lyricRef.current?.play(0);
-        } else {
-            let nextIndex: number;
-            if (playMode === "shuffle") {
-                nextIndex = Math.floor(Math.random() * resolvedSongs.length);
-                if (resolvedSongs.length > 1 && nextIndex === currentSongIndex) {
-                    nextIndex = (nextIndex + 1) % resolvedSongs.length;
-                }
-            } else {
-                nextIndex = (currentSongIndex === resolvedSongs.length - 1 ? 0 : currentSongIndex + 1);
+            return;
+        }
+
+        // 获取当前歌曲的加载索引
+        const currentLoadedIndex = mapToLoadedIndex(currentSongIndex);
+        if (currentLoadedIndex === -1) return;
+
+        let nextLoadedIndex: number;
+
+        if (playMode === "shuffle") {
+            // 随机播放
+            nextLoadedIndex = Math.floor(Math.random() * resolvedSongs.length);
+            if (resolvedSongs.length > 1 && nextLoadedIndex === currentLoadedIndex) {
+                nextLoadedIndex = (nextLoadedIndex + 1) % resolvedSongs.length;
             }
-            setCurrentSongIndex(nextIndex);
+        } else {
+            // 顺序播放
+            nextLoadedIndex = (currentLoadedIndex + 1) % resolvedSongs.length;
+        }
+
+        // 将加载索引转换回原始索引
+        const nextOriginalIndex = mapToOriginalIndex(nextLoadedIndex);
+        if (nextOriginalIndex !== -1) {
+            setCurrentSongIndex(nextOriginalIndex);
             setIsPlaying(true);
         }
-    }, [playMode, currentSongIndex, resolvedSongs, audioRef, lyricRef]);
+    }, [playMode, currentSongIndex, resolvedSongs, audioRef, lyricRef, mapToLoadedIndex, mapToOriginalIndex]);
 
     const handleSwitchPlayMode = useCallback((): void => {
         setPlayMode((mode: PlayMode) => {
@@ -553,17 +697,18 @@ export function MusicProvider({ children }: MusicProviderProps) {
         });
     }, []);
 
-    const handlePlaySong = useCallback((resolvedIndex: number): void => {
-        // 只允许切换到已加载的歌曲
-        if (resolvedSongs && resolvedIndex >= 0 && resolvedIndex < resolvedSongs.length) {
-            setCurrentSongIndex(resolvedIndex);
+    // 修改 handlePlaySong 方法，接受的是加载后的索引
+    const handlePlaySong = useCallback((loadedIndex: number): void => {
+        if (!resolvedSongs || loadedIndex < 0 || loadedIndex >= resolvedSongs.length) return;
+
+        // 将加载索引转换为原始索引
+        const originalIndex = mapToOriginalIndex(loadedIndex);
+        if (originalIndex !== -1) {
+            setCurrentSongIndex(originalIndex);
             setIsPlaying(true);
             setPendingSeek(0);
-        } else {
-            // 不切换
-            // console.warn("无法切换到指定索引的歌曲:", resolvedIndex, resolvedSongs);
         }
-    }, [resolvedSongs, setCurrentSongIndex, setIsPlaying, setPendingSeek]);
+    }, [resolvedSongs, mapToOriginalIndex]);
 
     const handleVolumeChange = useCallback((newVolume: number): void => {
         const safeVolume = Math.max(0, Math.min(100, newVolume));
@@ -577,7 +722,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
         setIsMuted(prev => !prev);
     }, []);
 
-    // 新增：处理音乐命令的函数
+    // 处理音乐命令
     const handleMusicCommand = useCallback((subCommand: string, args: string[]): string => {
         if (!subCommand) {
             if (currentSong) {
@@ -628,7 +773,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
             songList += `<tbody>\n`;
 
             resolvedSongs.forEach((song, idx) => {
-                const isPlaying = idx === currentSongIndex;
+                const isPlaying = mapToOriginalIndex(idx) === currentSongIndex;
                 songList += `<tr${isPlaying ? ' style="color: var(--color-primary);"' : ''}>\n`;
                 songList += `<td>${idx}</td>\n`;
                 songList += `<td>${song.title || t("terminal.commands.music.unknown")}</td>\n`;
@@ -640,21 +785,23 @@ export function MusicProvider({ children }: MusicProviderProps) {
             return songList;
         }
 
-        return t("terminal.commands.music.unknown", { 
-            subCommand, 
-            help: t("terminal.commands.music.help") 
+        return t("terminal.commands.music.unknown", {
+            subCommand,
+            help: t("terminal.commands.music.help")
         });
     }, [
-        currentSong, 
-        handleNext, 
-        handlePrev, 
-        handleEnded, 
-        handlePlayPause, 
-        handlePlaySong, 
-        resolvedSongs, 
-        currentSongIndex
+        currentSong,
+        handleNext,
+        handlePrev,
+        handleEnded,
+        handlePlayPause,
+        handlePlaySong,
+        resolvedSongs,
+        currentSongIndex,
+        mapToOriginalIndex
     ]);
 
+    // 音量控制
     useEffect(() => {
         const audio = audioRef.current;
         if (audio) {
@@ -669,6 +816,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
         }
     }, [volume, isMuted, audioRef]);
 
+    // 媒体会话集成
     useEffect(() => {
         if (typeof window === "undefined" || !("mediaSession" in navigator)) return;
         if (currentSong) {
@@ -757,7 +905,6 @@ export function MusicProvider({ children }: MusicProviderProps) {
                 isMuted,
                 handleVolumeChange,
                 handleToggleMute,
-                // 新增：暴露命令处理接口
                 handleMusicCommand
             }}
         >

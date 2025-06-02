@@ -3,6 +3,7 @@ import { Song } from "@/types/music"
 type AnySongSource = {
     type: string
     id: string
+    lrcmid?: string
     offset?: number
     lrc?: string
 }
@@ -116,9 +117,9 @@ export async function fetchSongFromQQMusic(mid: string, offset: number = 0, lyri
 
 export async function fetchSongFromData(data: AnySongSource): Promise<Song> {
     if (data.type === "ncm") {
-        return fetchSongFromNCM(data.id, data.offset, data.lrc)
+        return fetchSongFromNCM(data.id, data.offset, data.lrcmid)
     } else if (data.type == "qq") {
-        return fetchSongFromQQMusic(data.id, data.offset, data.lrc)
+        return fetchSongFromQQMusic(data.id, data.offset, data.lrcmid)
     }
     else {
         throw new Error(`Unsupported song type: ${data.type}`)

@@ -29,7 +29,7 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
     // 当前播放时间和总时长
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
-    
+
     // 记录用户是否手动滚动了播放列表
     const [userScrolled, setUserScrolled] = useState(false);
 
@@ -111,18 +111,32 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
     useEffect(() => {
         const playlistElement = playlistRef.current;
         if (!playlistElement || !showPlaylist) return;
-        
-        const handleScroll = () => {
-            // 用户手动滚动了播放列表
+
+        // 监听 wheel 事件（鼠标滚轮）
+        const handleWheel = () => {
             setUserScrolled(true);
         };
-        
-        playlistElement.addEventListener('wheel', handleScroll);
-        playlistElement.addEventListener('touchmove', handleScroll);
-        
+
+        // 监听 touchmove 事件（移动端滑动）
+        const handleTouchMove = () => {
+            setUserScrolled(true);
+        };
+
+        // 监听 scroll 事件（任何方式的滚动，包括滚动条拖动）
+        const handleScroll = () => {
+            setUserScrolled(true);
+        };
+
+        // 添加所有事件监听
+        playlistElement.addEventListener('wheel', handleWheel, { passive: true });
+        playlistElement.addEventListener('touchmove', handleTouchMove, { passive: true });
+        playlistElement.addEventListener('scroll', handleScroll, { passive: true });
+
+        // 清理事件监听
         return () => {
-            playlistElement.removeEventListener('wheel', handleScroll);
-            playlistElement.removeEventListener('touchmove', handleScroll);
+            playlistElement.removeEventListener('wheel', handleWheel);
+            playlistElement.removeEventListener('touchmove', handleTouchMove);
+            playlistElement.removeEventListener('scroll', handleScroll);
         };
     }, [showPlaylist]);
 
@@ -158,22 +172,22 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
     // 滚动到当前播放歌曲
     const scrollToCurrentSong = () => {
         if (!showPlaylist || !songsList || !currentSong) return;
-        
+
         // 找到当前歌曲在列表中的索引
         const currentIndex = songsList.findIndex(song => song.src === currentSong.src);
         if (currentIndex === -1) return;
-        
+
         // 获取对应的元素和容器
         const container = playlistRef.current;
         const target = playlistItemRefs.current[currentIndex];
-        
+
         if (container && target) {
             // 计算目标位置 (居中显示)
             const containerHeight = container.clientHeight;
             const targetTop = target.offsetTop;
             const targetHeight = target.clientHeight;
             const scrollTo = targetTop - (containerHeight / 2) + (targetHeight / 2);
-            
+
             // 使用平滑滚动
             container.scrollTo({
                 top: scrollTo,
@@ -189,7 +203,7 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
         if (nextShowState) {
             // 重置用户滚动状态
             setUserScrolled(false);
-            
+
             const all = getAllSongs();
             const songs = all.map(s =>
                 typeof (s as Promise<Song>).then === "function"
@@ -234,7 +248,7 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
         // 真实 resolvedSongs 索引
         const resolvedIndex = index - n;
         handlePlaySong(resolvedIndex);
-        
+
         // 点击后重置用户滚动状态
         setUserScrolled(false);
     };
