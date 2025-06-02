@@ -23,5 +23,5 @@ jobs:
           npm run build
 
       - name: Deploy to server
-        run: npx -p "@getmeli/cli" meli upload out --url "https://dash.apage.dev" --site "5962f229-1e15-46cd-9b18-1f04035efb61" --token "${{ secrets.PAGE_TOKEN }}" --branch "main"
+        run: npx -p "@getmeli/cli" meli upload out --url "https://dash.apage.dev" --site "e8b39e8e-2a87-4866-9580-c2323317b4c0" --token "${{ secrets.PAGE_TOKEN }}" --branch "main"
 
