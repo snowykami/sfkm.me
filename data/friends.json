@@ -144,5 +144,12 @@
         "link": "https://git.liteyuki.org/",
         "description": "Gitea自托管工作区",
         "avatar": "https://git.liteyuki.org/favicon.ico"
+    },
+    {
+        "issue_number": 13,
+        "name": "Magipoke 官网",
+        "link": "https://app.redrock.team/#/",
+        "description": "Magipoke是一个涵盖了校园生活方方面面的APP",
+        "avatar": "https://app.redrock.team/#/"
     }
 ]
