@@ -4,7 +4,7 @@ import ProjectsApp from "@/apps/Projects";
 import SkillsApp from "@/apps/Skills";
 import ContactApp from "@/apps/Contacts";
 import FriendsApp from "@/apps/Friends";
-import MusicApp, { WINDOW_ID as musicWindowId } from "@/apps/Music";
+import MusicApp, { WINDOW_ID as musicWindowId, musicWindowState } from "@/apps/Music";
 import Browser from "./Browser";
 import Terminal from "./Terminal";
 import { AppProps } from "./BaseApp";
@@ -72,7 +72,7 @@ export const apps: AppMeta[] = [
   },
   {
     id: musicWindowId, icon: <Music className={iconClassName} />, label: "music.title", entry: MusicApp,
-    windowState: mediumWindowState, showInDock: true
+    windowState: musicWindowState, showInDock: true
   },
   {
     id: "terminal", icon: <SquareChevronRight className={iconClassName} />, label: "terminal.title", entry: Terminal,

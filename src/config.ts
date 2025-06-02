@@ -350,6 +350,12 @@ const config: Config = {
                             description: "显示可用命令列表",
                             usage: "使用 <code>help [command]</code> 查看特定命令的帮助信息",
                         },
+                        kill: {
+                            description: "kill <window-id>结束页面上的窗口",
+                            noId: "请提供窗口 ID",
+                            notFound: "未找到 ID 为 {{id}} 的窗口",
+                            killed: "已结束窗口 {{id}}",
+                        },
                         node: {
                             description: "进入 Node.js 交互模式或执行单行语句",
                             exit: "退出 Node.js 交互模式",
@@ -575,6 +581,12 @@ const config: Config = {
                             description: "Display a list of available commands",
                             usage: "Use <code>help [command]</code> to view help for a specific command",
                         },
+                        kill: {
+                            description: "kill <window-id> to close a window on the page",
+                            noId: "Please provide a window ID",
+                            notFound: "No window found with ID {{id}}",
+                            killed: "Closed window with ID {{id}}",
+                        },
                         node: {
                             description: "Enter Node.js interactive mode or execute a single line of code",
                             exit: "Exit Node.js interactive mode",
@@ -794,6 +806,12 @@ const config: Config = {
                         help: {
                             description: "利用可能なコマンドのリストを表示",
                             usage: "<code>help [command]</code> を使用して特定のコマンドのヘルプを表示",
+                        },
+                        kill: {
+                            description: "kill <window-id>でページ上のウィンドウを閉じる",
+                            noId: "ウィンドウ ID を指定してください",
+                            notFound: "ID {{id}} のウィンドウが見つかりません",
+                            killed: "ウィンドウ {{id}} を閉じました",
                         },
                         node: {
                             description: "Node.js インタラクティブモードに入るか、単一行のコードを実行",
