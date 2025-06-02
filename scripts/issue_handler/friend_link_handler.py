@@ -385,7 +385,7 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
                 print("AI 检查不通过，等待审核")
                 if err := await ctx.set_failed():
                     return err
-        elif ctx.event.action == "labeled":
+        elif ctx.event.action in ("labeled", "unlabeled"):
             # 检查是否有passed标签,为人工审核
             if await ctx.check_passed():
                 await ctx.set_passed()
