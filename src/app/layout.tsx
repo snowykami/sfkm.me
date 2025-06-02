@@ -37,6 +37,9 @@ export const metadata: Metadata = {
   title: config.meta.title,
   description: config.meta.description,
   keywords: config.meta.keywords,
+  icons: {
+    icon: config.meta.favicon,
+  },
 };
 
 export default function RootLayout({
@@ -46,9 +49,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang={getLang()}>
-      <head>
-        <link rel="icon" href="https://q.qlogo.cn/g?b=qq&nk=2751454815&s=640" />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
