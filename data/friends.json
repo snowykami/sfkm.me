@@ -116,5 +116,33 @@
         "link": "https://liteyuki.org/",
         "description": "轻雪工作室 LiteyukiStudio 是一个以开源为主的工作室",
         "avatar": "https://cdn.liteyuki.org/logos/studio.svg"
+    },
+    {
+        "issue_number": 8,
+        "name": "orwells的博客",
+        "link": "https://vercel.696898.xyz/",
+        "description": "想起啥就写啥的博客",
+        "avatar": "https://avatars.githubusercontent.com/u/145517647?v=4"
+    },
+    {
+        "issue_number": 8,
+        "name": "orwells的博客",
+        "link": "https://vercel.696898.xyz/",
+        "description": "想起啥就写啥的博客",
+        "avatar": "https://avatars.githubusercontent.com/u/145517647?v=4"
+    },
+    {
+        "issue_number": 11,
+        "name": "Liteyuki CDN",
+        "link": "https://cdn.liteyuki.org/",
+        "description": "轻雪资源分发中心",
+        "avatar": "https://cdn.liteyuki.org/"
+    },
+    {
+        "issue_number": 10,
+        "name": "洛柠的博客",
+        "link": "https://blog.naloveyuki.top/",
+        "description": "一个用来保存洛柠文章的地方",
+        "avatar": "https://cdn.liteyuki.org/logos/studio.png"
     }
 ]
