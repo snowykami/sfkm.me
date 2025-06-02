@@ -975,7 +975,60 @@ class IssueContext:
                     actor = event.get("actor", {}).get("login")
                     return has_passed, actor
         return has_passed, None
+    
+    async def check_passed_with_permission(self) -> tuple[bool, str | None, bool]:
+        """
+        检查 issue 是否已通过，谁添加了标签，以及添加者是否有权限。
 
+        Returns:
+            tuple[bool, str | None, bool]:
+                - 第一个元素：如果 issue 已通过，返回 True，否则返回 False
+                - 第二个元素：添加标签的用户名，如果未找到则为 None
+                - 第三个元素：添加者是否有权限
+        """
+        has_passed, labeler = await self.check_passed()
+        
+        if has_passed and labeler:
+            # 检查添加标签的用户是否有权限
+            has_permission, err = await self.is_owner_or_maintainer(labeler)
+            if err:
+                print(f"检查用户权限时出错: {err}")
+                return has_passed, labeler, False
+            
+            return has_passed, labeler, has_permission
+        
+        return has_passed, labeler, False
+
+    async def is_owner_or_maintainer(self, user_login: str | None = None) -> tuple[bool, Err]:
+        """
+        检查给定用户是否为仓库所有者或维护者（有写权限）。
+        如果未提供用户名，则检查当前用户。
+
+        Args:
+            user_login (str, optional): 用户登录名。默认为 None，表示检查当前用户。
+
+        Returns:
+            tuple[bool, Err]: 
+                - 第一个元素：如果用户是所有者或维护者，返回 True，否则返回 False
+                - 第二个元素：如果发生错误，返回错误对象，否则返回 None
+        """
+        if not self.client:
+            return False, ValueError("Client is not initialized.")
+        login = user_login or self.whoami
+        if not login:
+            return False, ValueError("User login not provided and whoami not set.")
+        # 获取用户在仓库中的权限
+        response = await self.client.client.get(
+            f"/repos/{self.repo.owner}/{self.repo.name}/collaborators/{login}/permission"
+        )
+        if response.status_code != 200:
+            return False, Exception(f"Failed to get user permission: {response.text}")
+        data = response.json()
+        permission = data.get("permission")
+        # 检查用户是否有管理员或写入权限
+        # GitHub API 返回的权限级别: "admin", "write", "read", "none"
+        return permission in ["admin", "write"], None
+    
     async def upsert_friend_link(self, friend_link: "FriendLink") -> Err:
         """
         添加友链。
