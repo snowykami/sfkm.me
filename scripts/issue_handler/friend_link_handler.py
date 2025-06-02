@@ -352,12 +352,13 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
         await ctx.edit_one_comment(f"友链申请格式错误: {'\n'.join(errs)}")
         return ValueError(f"友链申请格式错误: {'\n'.join(errs)}")
 
-    friend_link_info, err = await fetch_webpage_content_with_playwright(str(friend_link.link))
-    if err or not friend_link_info:
-        await ctx.edit_one_comment(f"获取友链信息失败: {err}")
-        return ValueError(f"获取网页内容失败: {err}")
-    print("网站提取内容:", clear_webpage_content(friend_link_info.body))
+    
     if ctx.event.name == "issues":
+        friend_link_info, err = await fetch_webpage_content_with_playwright(str(friend_link.link))
+        if err or not friend_link_info:
+            await ctx.edit_one_comment(f"获取友链信息失败: {err}")
+            return ValueError(f"获取网页内容失败: {err}")
+        print("网站提取内容:", clear_webpage_content(friend_link_info.body))
         if ctx.event.action in ("opened", "edited"):
             ai_check_result = await check_content_with_ai(
                 ctx=ctx, content=clear_webpage_content(friend_link_info.body)
