@@ -6,7 +6,7 @@ async function screenshotWithTheme(theme, filename) {
   const page = await browser.newPage()
   await page.setViewportSize({ width: 1920, height: 1080 })
   await page.emulateMedia({ colorScheme: theme }) // 指定主题
-  await page.goto('https://sfkm.me', { waitUntil: 'networkidle' })
+  await page.goto('https://sfkm.me/#music', { waitUntil: 'networkidle' })
   const screenshotPath = path.resolve(filename)
   await page.screenshot({ path: screenshotPath, fullPage: true })
   await browser.close()
