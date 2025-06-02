@@ -20,6 +20,7 @@ interface Config {
         authors: string[]
         description: string
         keywords: string[]
+        favicon?: string // 网站图标链接
     }
     profile: {
         descriptions: string[] // 个人简介描述数组
@@ -42,7 +43,8 @@ const config: Config = {
         title: "Snowykami OS",
         authors: ["Snowykami"],
         description: "Welcome to Snowykami OS, powered by Next.js and Tailwind CSS.",
-        keywords: ["Next.js", "Tailwind CSS", "Snowykami OS", "Web Development"]
+        keywords: ["Next.js", "Tailwind CSS", "Snowykami OS", "Web Development"],
+        favicon: "https://q.qlogo.cn/g?b=qq&nk=2751454815&s=640"
     },
     profile: {
         descriptions: [
