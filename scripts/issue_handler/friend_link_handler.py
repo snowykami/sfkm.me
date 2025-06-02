@@ -387,10 +387,22 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
                     return err
         elif ctx.event.action in ("labeled", "unlabeled"):
             # 检查是否有passed标签,为人工审核
-            if await ctx.check_passed():
-                await ctx.set_passed()
-                await ctx.edit_one_comment("友链申请已通过审核，感谢您的耐心等待！", add_line=True)
-                return await ctx.upsert_friend_link(friend_link)
+            passed, username, has_permission = await ctx.check_passed_with_permission()
+            if passed:
+                if has_permission:
+                    print("友链申请已通过审核，添加友链")
+                    err = await ctx.upsert_friend_link(friend_link)
+                    if err:
+                        await ctx.edit_one_comment(f"添加友链失败: {err}", add_line=True)
+                        return err
+                    else:
+                        await ctx.edit_one_comment("友链添加成功！页面稍后就会构建好哦~", add_line=True)
+                        await ctx.close_issue()
+                else:
+                    print(f"用户 {username} 没有权限添加友链")
+                    await ctx.edit_one_comment(
+                        f"用户 {username} 没有权限添加友链，请联系仓库所有者审核", add_line=True
+                    )
     elif ctx.event.name == "issue_comment":
         if ctx.event.action == "created":
             pass
