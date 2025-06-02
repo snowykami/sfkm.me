@@ -922,6 +922,22 @@ class IssueContext:
         return await self.client.remove_label(
             self.repo.owner, self.repo.name, self.issue.number, label
         )
+        
+    async def check_passed(self) -> bool:
+        """
+        检查 issue 是否已经通过。
+
+        Returns:
+            bool: 如果 issue 已经通过，返回 True，否则返回 False
+        """
+        if not self.client:
+            raise ValueError("Client is not initialized.")
+        labels, err = await self.client.get_labels(
+            self.repo.owner, self.repo.name, self.issue.number
+        )
+        if err:
+            raise err if isinstance(err, BaseException) else Exception(str(err))
+        return "passed" in labels
 
     async def upsert_friend_link(self, friend_link: "FriendLink") -> Err:
         """

@@ -2,9 +2,7 @@ name: Handle Friend Link Request
 
 on:
   issues:
-    types: [opened, edited, labeled]
-  issue_comment:
-    types: [created, edited]
+    types: [opened, edited]
 
 concurrency:
   group: has-git-operations

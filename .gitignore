@@ -10,8 +10,6 @@
 !.yarn/releases
 !.yarn/versions
 
-deploy.sh
-
 # testing
 /coverage
 
@@ -42,7 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# python
-
-__pycache__/
-.venv/
+# deploy
+deploy.sh
