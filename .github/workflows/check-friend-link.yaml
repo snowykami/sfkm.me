@@ -1,19 +1,15 @@
-name: Handle Friend Link Request
+name: Check Friend Link
 
 on:
   issues:
-    types: [opened, edited, labeled]
-
-concurrency:
-  group: has-git-operations
-  cancel-in-progress: false
+    types: [opened, edited]
 
 permissions:
   contents: write
 
 jobs:
-  handle-friend-link:
-    if: contains(github.event.issue.labels.*.name, 'friend-link') || contains(github.event.issue.labels.*.name, 'passed') || contains(github.event.issue.labels.*.name, 'failed')
+  check-friend-link:
+    if: contains(github.event.issue.labels.*.name, 'friend-link')
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.52.0-jammy
@@ -31,7 +27,6 @@ jobs:
         run: |
           uv run ./scripts/issue_handler
         env: 
-          GITHUB_EVENT_COMMENT_ID: ${{ github.event.comment.id }}
           GITHUB_EVENT_ISSUE_NUMBER: ${{ github.event.issue.number }}
           GITHUB_EVENT_ACTION: ${{ github.event.action }}  # 
           GITHUB_EVENT_NAME: ${{ github.event_name }}
