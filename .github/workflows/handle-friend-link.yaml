@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   handle-friend-link:
-    if: contains(github.event.issue.labels.*.name, 'friend-link')
+    if: contains(github.event.issue.labels.*.name, 'friend-link', 'passed', 'closed')
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.52.0-jammy
