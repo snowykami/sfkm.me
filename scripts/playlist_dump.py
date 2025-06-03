@@ -262,7 +262,8 @@ async def fetch_songs_from_ncm(
                                 )
                         except Exception as e:
                             print(f"获取歌词出错: {mid} - {e}")
-
+                    if song_info.get("song") is None:
+                        continue
                     song = Song(
                         title=song_info.get("song", "Unknown"),
                         album=song_info.get("album", "Unknown Album"),
