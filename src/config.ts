@@ -263,6 +263,7 @@ const config: Config = {
                         qq: "QQ音乐",
                         liteyuki: "轻雪网盘",
                         unknown: "未知来源",
+                        undefined: "未定义来源",
                     }
 
                 },
@@ -500,6 +501,7 @@ const config: Config = {
                         qq: "QQ Music",
                         liteyuki: "Liteyuki Drive",
                         unknown: "Unknown Source",
+                        undefined: "Undefined Source",
                     }
                 },
                 profile: {
@@ -733,6 +735,7 @@ const config: Config = {
                         qq: "QQ Music",
                         liteyuki: "Liteyuki Drive",
                         unknown: "不明なソース",
+                        undefined: "未定義のソース",
                     }
                 },
                 profile: {
