@@ -46,7 +46,7 @@ const PlayerView = ({ wid }: { wid: string }) => {
                             }}
                         >
                             <ExternalLink className="w-4 h-4 flex-shrink-0" />
-                            <span className="truncate">{t("music.from." + currentSong?.from || "unknown")}</span>
+                            <span className="truncate">{t("music.from." + currentSong?.source || "unknown")}</span>
                         </span>
                     </div>
                 </div>

@@ -6,8 +6,7 @@ export interface Song {
     lrc?: string | Promise<string>
     cover?: string
     offset?: number
-    from?: string // 来源标识符，例如 "ncm" 或 "qq"
-
+    source?: string // 来源标识符，例如 "ncm" 或 "qq"
     albumLink?: string // 专辑链接
     artistLink?: string // 艺术家链接
     songLink?: string // 歌曲链接
