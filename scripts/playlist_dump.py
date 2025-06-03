@@ -189,8 +189,9 @@ async def fetch_songs_from_ncm(
     mids: list[str],
     offset_map: dict[str, int] | None = None,
     lrcmid_map: dict[str, str] | None = None,
+    max_retries: int = 3,
 ) -> list[Song]:
-    """批量从网易云音乐获取歌曲信息"""
+    """批量从网易云音乐获取歌曲信息，支持重试机制"""
     if not mids:
         return []
 
@@ -200,79 +201,106 @@ async def fetch_songs_from_ncm(
     print(f"Fetching {len(mids)} songs from NCM")
     mids_str = ",".join(mids)
 
-    async with httpx.AsyncClient(timeout=60.0) as client:
+    retries = 0
+    last_error = None
+    
+    while retries <= max_retries:
         try:
-            song_response = await client.get(
-                f"https://music.api.liteyuki.org/music/?action=netease&module=get_url&mids={mids_str}"
-            )
-            song_response.raise_for_status()
-            song_data = song_response.json()
-
-            if not song_data.get("data"):
-                print(f"获取歌曲信息失败: 数据为空 - {song_data}, {mids}")
-                return []
-
-            songs = []
-
-            # 创建任务列表获取歌词
-            lyric_tasks = {}
-            for mid in mids:
-                lyric_mid = lrcmid_map.get(mid, mid)
-                lyric_tasks[mid] = asyncio.create_task(fetch_lyric_from_ncm(lyric_mid))
-
-            # 创建歌曲对象列表
-            for song_info in song_data["data"]:
-                mid = str(song_info.get("mid", ""))
-                if not mid or mid not in mids:
-                    continue
-
-                # 检查是否有有效的音频源链接
-                src = song_info.get("url", "").replace("http://", "https://")
-                if not src:
-                    print(
-                        f"跳过没有音频源的歌曲: {song_info.get('song', 'Unknown')} (ID: {mid})"
-                    )
-                    continue
-
-                # 等待对应的歌词任务完成
-                if mid in lyric_tasks:
-                    if mid in lyric_tasks:
-                        lrc = await lyric_tasks[mid]
-                        if lrc == "":
-                            print(
-                                f"可能是纯音乐: {song_info.get('song', 'Unknown')} - {song_info.get('singer', 'Unknown Artist')} (ID: {mid})"
-                            )
-                    else:
-                        lrc = ""
-                else:
-                    lrc = ""
-
-                song = Song(
-                    title=song_info.get("song", "Unknown"),
-                    album=song_info.get("album", "Unknown Album"),
-                    artist=song_info.get("singer", "Unknown Artist"),
-                    src=src,
-                    lrc=lrc,
-                    cover=song_info.get("cover", ""),
-                    source="ncm",  # type: ignore
-                    songLink=song_info.get("link", ""),  # type: ignore
-                    offset=offset_map.get(mid, 0),
-                    id=mid,
+            async with httpx.AsyncClient(
+                timeout=60.0,
+                headers={
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36"
+                },
+            ) as client:
+                song_response = await client.get(
+                    f"https://music.api.liteyuki.org/music/?action=netease&module=get_url&mids={mids_str}"
                 )
-                songs.append(song)
+                song_response.raise_for_status()
+                song_data = song_response.json()
 
-            return songs
+                if not song_data.get("data"):
+                    if retries < max_retries:
+                        retries += 1
+                        wait_time = 1 * (2**retries)  # 指数退避策略
+                        print(f"获取歌曲信息失败: 数据为空，第{retries}次重试 (等待{wait_time}秒)")
+                        await asyncio.sleep(wait_time)
+                        continue
+                    else:
+                        print(f"获取歌曲信息失败: 数据为空 - {song_data}, {mids}")
+                        return []
+
+                songs = []
+
+                # 创建任务列表获取歌词
+                lyric_tasks = {}
+                for mid in mids:
+                    lyric_mid = lrcmid_map.get(mid, mid)
+                    lyric_tasks[mid] = asyncio.create_task(fetch_lyric_from_ncm(lyric_mid))
+
+                # 创建歌曲对象列表
+                for song_info in song_data["data"]:
+                    mid = str(song_info.get("mid", ""))
+                    if not mid or mid not in mids:
+                        continue
+
+                    # 检查是否有有效的音频源链接
+                    src = song_info.get("url", "").replace("http://", "https://")
+                    if not src:
+                        print(
+                            f"跳过没有音频源的歌曲: {song_info.get('song', 'Unknown')} (ID: {mid})"
+                        )
+                        continue
+
+                    # 等待对应的歌词任务完成
+                    lrc = ""
+                    if mid in lyric_tasks:
+                        try:
+                            lrc = await lyric_tasks[mid]
+                            if lrc == "":
+                                print(
+                                    f"可能是纯音乐: {song_info.get('song', 'Unknown')} - {song_info.get('singer', 'Unknown Artist')} (ID: {mid})"
+                                )
+                        except Exception as e:
+                            print(f"获取歌词出错: {mid} - {e}")
+
+                    song = Song(
+                        title=song_info.get("song", "Unknown"),
+                        album=song_info.get("album", "Unknown Album"),
+                        artist=song_info.get("singer", "Unknown Artist"),
+                        src=src,
+                        lrc=lrc,
+                        cover=song_info.get("cover", ""),
+                        source="ncm",
+                        songLink=song_info.get("link", ""),
+                        offset=offset_map.get(mid, 0),
+                        id=mid,
+                    )
+                    songs.append(song)
+
+                return songs
+                
         except Exception as e:
-            print(f"批量获取网易云音乐歌曲信息出错: {e}")
-            return []
+            last_error = e
+            if retries < max_retries:
+                retries += 1
+                wait_time = 1 * (2**retries)  # 指数退避策略
+                print(f"批量获取网易云音乐歌曲信息出错，第{retries}次重试 (等待{wait_time}秒): {e}")
+                await asyncio.sleep(wait_time)
+            else:
+                print(f"批量获取网易云音乐歌曲信息出错，已达最大重试次数: {e}")
+                return []
+    
+    print(f"批量获取网易云音乐歌曲信息失败: {last_error}")
+    return []
 
 
 async def fetch_songs_from_qqmusic(
     mids: list[str],
     offset_map: dict[str, int] | None = None,
     lrcmid_map: dict[str, str] | None = None,
+    max_retries: int = 3,
 ) -> list[Song]:
-    """批量从QQ音乐获取歌曲信息"""
+    """批量从QQ音乐获取歌曲信息，支持重试机制"""
     if not mids:
         return []
 
@@ -282,71 +310,97 @@ async def fetch_songs_from_qqmusic(
     print(f"Fetching {len(mids)} songs from QQ Music")
     mids_str = ",".join(mids)
 
-    async with httpx.AsyncClient(timeout=60.0) as client:
+    retries = 0
+    last_error = None
+    
+    while retries <= max_retries:
         try:
-            song_response = await client.get(
-                f"https://music.api.liteyuki.org/music/?action=qq&module=get_url&mids={mids_str}"
-            )
-            song_response.raise_for_status()
-            song_data = song_response.json()
-
-            if not song_data.get("data"):
-                print(f"获取歌曲信息失败: 数据为空 - {song_data}")
-                return []
-
-            songs = []
-
-            # 创建任务列表获取歌词
-            lyric_tasks = {}
-            for mid in mids:
-                lyric_mid = lrcmid_map.get(mid, mid)
-                lyric_tasks[mid] = asyncio.create_task(fetch_lyric_from_qq(lyric_mid))
-
-            # 创建歌曲对象列表
-            for song_info in song_data["data"]:
-                mid = str(song_info.get("mid", ""))
-                if not mid or mid not in mids:
-                    continue
-
-                # 检查是否有有效的音频源链接
-                src = song_info.get("url", "").replace("http://", "https://")
-                if not src:
-                    print(
-                        f"跳过没有音频源的歌曲: {song_info.get('song', 'Unknown')} (ID: {mid})"
-                    )
-                    continue
-
-                # 等待对应的歌词任务完成
-                if mid in lyric_tasks:
-                    if mid in lyric_tasks:
-                        lrc = await lyric_tasks[mid]
-                        if lrc == "":
-                            print(
-                                f"可能是纯音乐: {song_info.get('song', 'Unknown')} - {song_info.get('singer', 'Unknown Artist')} (ID: {mid})"
-                            )
-                    else:
-                        lrc = ""
-                else:
-                    lrc = ""
-
-                song = Song(
-                    id=mid,
-                    title=song_info.get("song", "Unknown"),
-                    album=song_info.get("album", "Unknown Album"),
-                    artist=song_info.get("singer", "Unknown Artist"),
-                    src=src,
-                    lrc=lrc,
-                    cover=song_info.get("cover", ""),
-                    source="qq",  # type: ignore
-                    songLink=song_info.get("link", ""),
-                    offset=offset_map.get(mid, 0),
+            async with httpx.AsyncClient(
+                timeout=60.0,
+                headers={
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36"
+                },
+            ) as client:
+                song_response = await client.get(
+                    f"https://music.api.liteyuki.org/music/?action=qq&module=get_url&mids={mids_str}"
                 )
-                songs.append(song)
+                song_response.raise_for_status()
+                song_data = song_response.json()
 
-            return songs
+                if not song_data.get("data"):
+                    if retries < max_retries:
+                        retries += 1
+                        wait_time = 1 * (2**retries)  # 指数退避策略
+                        print(f"获取QQ音乐歌曲信息失败: 数据为空，第{retries}次重试 (等待{wait_time}秒)")
+                        await asyncio.sleep(wait_time)
+                        continue
+                    else:
+                        print(f"获取QQ音乐歌曲信息失败: 数据为空 - {song_data}")
+                        return []
+
+                songs = []
+
+                # 创建任务列表获取歌词
+                lyric_tasks = {}
+                for mid in mids:
+                    lyric_mid = lrcmid_map.get(mid, mid)
+                    lyric_tasks[mid] = asyncio.create_task(fetch_lyric_from_qq(lyric_mid))
+
+                # 创建歌曲对象列表
+                for song_info in song_data["data"]:
+                    mid = str(song_info.get("mid", ""))
+                    if not mid or mid not in mids:
+                        continue
+
+                    # 检查是否有有效的音频源链接
+                    src = song_info.get("url", "").replace("http://", "https://")
+                    if not src:
+                        print(
+                            f"跳过没有音频源的歌曲: {song_info.get('song', 'Unknown')} (ID: {mid})"
+                        )
+                        continue
+
+                    # 等待对应的歌词任务完成
+                    lrc = ""
+                    if mid in lyric_tasks:
+                        try:
+                            lrc = await lyric_tasks[mid]
+                            if lrc == "":
+                                print(
+                                    f"可能是纯音乐: {song_info.get('song', 'Unknown')} - {song_info.get('singer', 'Unknown Artist')} (ID: {mid})"
+                                )
+                        except Exception as e:
+                            print(f"获取QQ音乐歌词出错: {mid} - {e}")
+
+                    song = Song(
+                        id=mid,
+                        title=song_info.get("song", "Unknown"),
+                        album=song_info.get("album", "Unknown Album"),
+                        artist=song_info.get("singer", "Unknown Artist"),
+                        src=src,
+                        lrc=lrc,
+                        cover=song_info.get("cover", ""),
+                        source="qq",
+                        songLink=song_info.get("link", ""),
+                        offset=offset_map.get(mid, 0),
+                    )
+                    songs.append(song)
+
+                return songs
+                
         except Exception as e:
-            print(f"批量获取QQ音乐歌曲信息出错: {e}")
-            return []
+            last_error = e
+            if retries < max_retries:
+                retries += 1
+                wait_time = 1 * (2**retries)  # 指数退避策略
+                print(f"批量获取QQ音乐歌曲信息出错，第{retries}次重试 (等待{wait_time}秒): {e}")
+                await asyncio.sleep(wait_time)
+            else:
+                print(f"批量获取QQ音乐歌曲信息出错，已达最大重试次数: {e}")
+                return []
+    
+    print(f"批量获取QQ音乐歌曲信息失败: {last_error}")
+    return []
 
 
 async def process_chunk(
@@ -419,6 +473,8 @@ async def process_chunk(
             print(f"未知类型的结果: {type(result)}，已跳过")
 
     return songs
+
+
 async def download(force: bool = False, new_playlist: bool = False):
     """下载所有歌曲信息，支持并发处理"""
     start_time = time.time()
