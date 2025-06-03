@@ -55,9 +55,12 @@ interface MusicContextType {
     handleToggleMute: () => void;
     handleMusicCommand: (subCommand: string, args: string[]) => string;
     getAlbumCoverColor: () => Promise<string>;
+<<<<<<< HEAD
     currentTime: number;
     duration: number;
 
+=======
+>>>>>>> 27086556a291c816f8bbc663113316a78a256163
 }
 
 const MAX_RETRY = 3;
@@ -140,6 +143,10 @@ export function MusicProvider({ children }: MusicProviderProps) {
 
     const [isLoadingSongs, setIsLoadingSongs] = useState<boolean>(true);
 
+    // 添加新的状态来跟踪当前歌曲的实际 URL
+    const [currentSongUrl, setCurrentSongUrl] = useState<string>("");
+    const [currentLyricText, setCurrentLyricText] = useState<string>("");
+
     // 获取初始索引（基于原始索引）
     const initialState = getInitialState(config.musics.length);
     const [currentSongIndex, setCurrentSongIndex] = useState<number>(initialState.index);
@@ -166,7 +173,11 @@ export function MusicProvider({ children }: MusicProviderProps) {
     const lrcLineChangeCbs = useRef<LrcLineChangeCallback[]>([]);
     const [volume, setVolume] = useState<number>(() => getInitialVolumeState().volume);
     const [isMuted, setIsMuted] = useState<boolean>(() => getInitialVolumeState().isMuted);
+<<<<<<< HEAD
     const [resolvedSrc, setResolvedSrc] = useState<string | null>(null);
+=======
+    const prevUrlRef = useRef<string>("");
+>>>>>>> 27086556a291c816f8bbc663113316a78a256163
 
 
     useEffect(() => {
@@ -191,9 +202,14 @@ export function MusicProvider({ children }: MusicProviderProps) {
                 song = songOrPromise as Song;
             }
 
+<<<<<<< HEAD
             // 注意：这里我们不预加载 src 函数，只在播放时解析
             // 如果 src 是函数，保持原样不执行
 
+=======
+            // 注意：此时我们不立即解析 src 和 lrc，而是保留它们的 Promise 状态
+            // 只有当歌曲被选中播放时才会解析
+>>>>>>> 27086556a291c816f8bbc663113316a78a256163
             return {
                 status: 'loaded',
                 originalIndex,
@@ -206,6 +222,53 @@ export function MusicProvider({ children }: MusicProviderProps) {
                 originalIndex,
                 retries: 0
             };
+        }
+    }, []);
+
+    // 添加函数来解析歌曲的 URL
+    const resolveSongUrl = useCallback(async (song: Song): Promise<string> => {
+        console.log("正在解析歌曲URL:", song.title, "src类型:", typeof song.src);
+        if (!song.src) {
+            console.log("歌曲没有src属性");
+            return "";
+        }
+
+        try {
+            // 检查是否需要懒加载
+            if ((song as any)._needLazyLoad && (song as any)._loadSrc) {
+                console.log(`触发懒加载: ${song.title}`);
+                (song as any)._loadSrc();
+            }
+
+            // 处理Promise
+            if (song.src instanceof Promise) {
+                console.log("src是Promise，正在等待解析...");
+                const url = await song.src;
+                console.log("Promise解析成功，得到URL:", url);
+                return url;
+            }
+
+            // 处理字符串
+            console.log("src是字符串，直接使用:", song.src);
+            return song.src as string;
+        } catch (error) {
+            console.error("解析歌曲URL失败:", error);
+            return "";
+        }
+    }, []);
+
+    // 添加函数来解析歌曲的歌词
+    const resolveSongLyric = useCallback(async (song: Song): Promise<string> => {
+        if (!song.lrc) return "";
+
+        try {
+            if (song.lrc instanceof Promise) {
+                return await song.lrc;
+            }
+            return song.lrc as string;
+        } catch (error) {
+            console.error("Failed to resolve song lyrics:", error);
+            return "";
         }
     }, []);
 
@@ -278,7 +341,6 @@ export function MusicProvider({ children }: MusicProviderProps) {
     }, [tracks]);
 
     // 初始化加载所有歌曲
-    // 修改初始化加载所有歌曲的逻辑
     useEffect(() => {
         let isCancelled = false;
         setIsLoadingSongs(true);
@@ -305,7 +367,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
                         track.originalIndex === currentOriginalIndex ? result : track
                     ));
 
-                    console.log(`[Music] 当前歌曲加载成功: ${result.data.title}`);
+                    console.log(`[Music] 当前歌曲加载成功: ${result.data.title} ${result.data.src}`);
                 } else {
                     console.warn(`[Music] 当前歌曲加载失败, 将在后台队列中重试`);
                     // 加载失败时，会在后续统一处理重试
@@ -392,6 +454,78 @@ export function MusicProvider({ children }: MusicProviderProps) {
         }
     }, [currentSongIndex, tracks, isLoadingSongs, resolvedSongs]);
 
+    // 歌曲切换时解析 URL
+    useEffect(() => {
+        if (!currentSong) {
+            setCurrentSongUrl("");
+            return;
+        }
+
+        // 先设置为加载中状态
+        setCurrentSongUrl("");
+
+        // 解析当前歌曲的 URL
+        (async () => {
+            try {
+                const url = await resolveSongUrl(currentSong);
+                setCurrentSongUrl(url);
+            } catch (error) {
+                console.error("Failed to resolve song URL:", error);
+                setCurrentSongUrl("");
+                // 可能需要尝试加载下一首歌曲
+                if (isPlaying) {
+                    handleNext();
+                }
+            }
+        })();
+    }, [currentSong, resolveSongUrl]);
+
+    // 当URL改变时，手动更新audio元素
+    useEffect(() => {
+        if (currentSongUrl && currentSongUrl !== prevUrlRef.current) {
+            prevUrlRef.current = currentSongUrl;
+            
+            if (audioRef.current) {
+                // 手动设置新URL
+                audioRef.current.src = currentSongUrl;
+                audioRef.current.load();
+                
+                // 如果需要播放，则触发播放
+                if (isPlaying) {
+                    audioRef.current.play().catch(error => {
+                        console.error("播放失败:", error);
+                        setIsPlaying(false);
+                    });
+                }
+                
+                // 手动触发进度更新事件
+                const progressEvent = new CustomEvent('progress-update', {
+                    detail: { 
+                        currentTime: audioRef.current.currentTime, 
+                        duration: audioRef.current.duration || 0 
+                    }
+                });
+                window.dispatchEvent(progressEvent);
+            }
+        }
+    }, [currentSongUrl, isPlaying]);
+
+    // 添加进度条同步函数
+    const syncProgress = useCallback(() => {
+        const audio = audioRef.current;
+        if (!audio) return;
+        
+        // 发送进度更新事件
+        const progressEvent = new CustomEvent('music-progress-update', {
+            detail: {
+                currentTime: audio.currentTime,
+                duration: audio.duration || 0,
+                percent: audio.duration ? (audio.currentTime / audio.duration) * 100 : 0
+            }
+        });
+        window.dispatchEvent(progressEvent);
+    }, []);
+
     // 保持原始的 getAllSongs 接口以兼容现有代码
     const getAllSongs = useCallback((): (Song | Promise<Song>)[] => {
         // 将内部 tracks 转换为与原始接口兼容的格式
@@ -433,21 +567,17 @@ export function MusicProvider({ children }: MusicProviderProps) {
             return;
         }
 
-        const handleLrc = async (lrcContent: string | Promise<string>) => {
-            if (lrcSessionRef.current !== thisSession) return;
-
-            let finalLrc: string;
+        // 解析歌词并处理
+        (async () => {
             try {
-                // 处理 lrc 可能是 Promise 的情况
-                if (lrcContent instanceof Promise) {
-                    finalLrc = await lrcContent;
-                } else {
-                    finalLrc = lrcContent as string;
-                }
+                const lrcContent = await resolveSongLyric(currentSong);
+                setCurrentLyricText(lrcContent); // 保存解析后的歌词文本
+
+                if (lrcSessionRef.current !== thisSession) return;
 
                 const parser = new Lyric({
-                    lyric: finalLrc,
-                    offset: currentSong?.offset ?? 0,
+                    lyric: lrcContent,
+                    offset: currentSong.offset ?? 0,
                     onPlay: (lineNum: number, text: string) => {
                         if (lrcSessionRef.current !== thisSession) return;
                         if (lineNum !== currentLrcLine) {
@@ -472,15 +602,13 @@ export function MusicProvider({ children }: MusicProviderProps) {
                 setLrcLines([]);
                 setCurrentLrcLine(0);
             }
-        };
-
-        handleLrc(currentSong.lrc);
+        })();
 
         return () => {
             lyricRef.current?.pause();
             lyricRef.current = null;
         };
-    }, [currentLrcLine, currentSong, isPlaying]);
+    }, [currentSong, isPlaying, currentLrcLine, resolveSongLyric]);
 
     useEffect(() => {
         if (currentLrc.trim() !== "") {
@@ -488,6 +616,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
         }
     }, [currentLrc]);
 
+<<<<<<< HEAD
     const [currentTime, setCurrentTime] = useState<number>(0);
     const [duration, setDuration] = useState<number>(0);
 
@@ -498,11 +627,25 @@ export function MusicProvider({ children }: MusicProviderProps) {
 
         const handleTimeUpdate = () => {
             setCurrentTime(audio.currentTime);
+=======
+    // 改进的时间更新处理，添加进度同步
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio) return;
+        
+        const handleTimeUpdate = () => {
+            // 同步进度条
+            syncProgress();
+            
+            // 歌词同步
+            if (!isPlaying) return;
+>>>>>>> 27086556a291c816f8bbc663113316a78a256163
             if (lyricRef.current && currentSong?.lrc) {
                 const offset = currentSong.offset ?? 0;
                 lyricRef.current.play(audio.currentTime * 1000 - offset);
             }
         };
+<<<<<<< HEAD
 
         const handleLoadedMetadata = () => {
             setDuration(audio.duration);
@@ -522,6 +665,38 @@ export function MusicProvider({ children }: MusicProviderProps) {
             audio.removeEventListener("durationchange", handleLoadedMetadata);
         };
     }, [resolvedSrc, currentSong?.lrc, currentSong?.offset]);
+=======
+        
+        audio.addEventListener("timeupdate", handleTimeUpdate);
+        
+        // 添加更多事件来确保进度更新
+        const seekedHandler = () => syncProgress();
+        const loadedHandler = () => syncProgress();
+        const playHandler = () => syncProgress();
+        const pauseHandler = () => syncProgress();
+        
+        audio.addEventListener("seeked", seekedHandler);
+        audio.addEventListener("loadedmetadata", loadedHandler);
+        audio.addEventListener("loadeddata", loadedHandler);
+        audio.addEventListener("canplay", loadedHandler);
+        audio.addEventListener("play", playHandler);
+        audio.addEventListener("pause", pauseHandler);
+        
+        // 使用定时器确保UI更新，即使timeupdate事件不触发
+        const progressInterval = setInterval(syncProgress, 250);
+        
+        return () => {
+            audio.removeEventListener("timeupdate", handleTimeUpdate);
+            audio.removeEventListener("seeked", seekedHandler);
+            audio.removeEventListener("loadedmetadata", loadedHandler);
+            audio.removeEventListener("loadeddata", loadedHandler);
+            audio.removeEventListener("canplay", loadedHandler);
+            audio.removeEventListener("play", playHandler);
+            audio.removeEventListener("pause", pauseHandler);
+            clearInterval(progressInterval);
+        };
+    }, [audioRef, currentSong?.lrc, currentSong?.offset, isPlaying, syncProgress]);
+>>>>>>> 27086556a291c816f8bbc663113316a78a256163
 
     const animate = useCallback((now: number) => {
         const delta = now - lastFrameTimeRef.current;
@@ -565,7 +740,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
             }
         };
         const audio = audioRef.current;
-        if (audio && currentSong?.src) {
+        if (audio && currentSongUrl) {
             audio.addEventListener("timeupdate", saveState);
             window.addEventListener("beforeunload", saveState);
             return () => {
@@ -579,17 +754,33 @@ export function MusicProvider({ children }: MusicProviderProps) {
             }
             window.removeEventListener("beforeunload", saveState);
         };
-    }, [audioRef, currentSong, currentSong?.src, currentSongIndex]);
+    }, [audioRef, currentSong, currentSongUrl, currentSongIndex]);
 
     const handleLoadedMetadata = useCallback((): void => {
-        if (pendingSeek != null && audioRef.current) {
-            audioRef.current.currentTime = pendingSeek;
+        const audio = audioRef.current;
+        if (!audio) return;
+        
+        // 恢复音量设置
+        audio.volume = isMuted ? 0 : volume / 100;
+        
+        // 恢复进度
+        if (pendingSeek != null) {
+            audio.currentTime = pendingSeek;
             setPendingSeek(null);
+            console.log(`已恢复播放进度: ${pendingSeek}秒`);
         }
-        if (isPlaying && audioRef.current) {
-            audioRef.current.play().catch(() => { });
+        
+        // 立即同步进度
+        syncProgress();
+        
+        // 如果需要播放，则开始播放
+        if (isPlaying) {
+            audio.play().catch((error) => {
+                console.error("播放失败:", error);
+                setIsPlaying(false);
+            });
         }
-    }, [pendingSeek, isPlaying, audioRef]);
+    }, [pendingSeek, isPlaying, volume, isMuted, syncProgress]);
 
     // 修改 handlePlayPause 以处理 src 解析状态
     const handlePlayPause = useCallback((): void => {
@@ -598,6 +789,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
             if (audio) {
                 audio.muted = false;
                 if (!prev) {
+<<<<<<< HEAD
                     if (resolvedSrc) { // 只有在 URL 已解析时尝试播放
                         audio.play().then(() => {
                             lyricRef.current?.play(audio.currentTime * 1000);
@@ -609,14 +801,32 @@ export function MusicProvider({ children }: MusicProviderProps) {
                         console.log("[Music] 等待 URL 解析完成...");
                         return true; // 仍然返回 true 表示意图是播放
                     }
+=======
+                    audio.play().then(() => {
+                        lyricRef.current?.play(audio.currentTime * 1000);
+                        
+                        // 播放开始时手动触发一次进度更新
+                        syncProgress();
+                        
+                    }).catch(() => {
+                        setIsPlaying(false);
+                    });
+>>>>>>> 27086556a291c816f8bbc663113316a78a256163
                 } else {
                     audio.pause();
                     lyricRef.current?.pause();
+                    
+                    // 暂停时也触发进度更新
+                    syncProgress();
                 }
             }
             return !prev;
         });
+<<<<<<< HEAD
     }, [audioRef, lyricRef, resolvedSrc]);
+=======
+    }, [audioRef, lyricRef, syncProgress]);
+>>>>>>> 27086556a291c816f8bbc663113316a78a256163
 
     // 修改的切换歌曲逻辑，使用原始索引
     const handleNext = useCallback((): void => {
@@ -761,10 +971,21 @@ export function MusicProvider({ children }: MusicProviderProps) {
         if (safeVolume > 0 && isMuted) {
             setIsMuted(false);
         }
+        
+        // 立即应用音量变化
+        if (audioRef.current) {
+            audioRef.current.volume = safeVolume / 100;
+        }
     }, [isMuted]);
 
     const handleToggleMute = useCallback((): void => {
-        setIsMuted(prev => !prev);
+        setIsMuted(prev => {
+            const newMuted = !prev;
+            if (audioRef.current) {
+                audioRef.current.muted = newMuted;
+            }
+            return newMuted;
+        });
     }, []);
 
     // 处理音乐命令
@@ -892,6 +1113,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
             const d = details as SeekToDetails;
             if (audioRef.current && typeof d.seekTime === "number") {
                 audioRef.current.currentTime = d.seekTime;
+                syncProgress(); // 立即同步进度
             }
         }) as MediaSessionActionHandler);
         navigator.mediaSession.setActionHandler("seekbackward", ((details: unknown) => {
@@ -900,6 +1122,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
             const seekOffset = d.seekOffset ?? 10;
             if (audioRef.current) {
                 audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - seekOffset);
+                syncProgress(); // 立即同步进度
             }
         }) as MediaSessionActionHandler);
         navigator.mediaSession.setActionHandler("seekforward", ((details: unknown) => {
@@ -908,6 +1131,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
             const seekOffset = d.seekOffset ?? 10;
             if (audioRef.current && isFinite(audioRef.current.duration)) {
                 audioRef.current.currentTime = Math.min(audioRef.current.duration, audioRef.current.currentTime + seekOffset);
+                syncProgress(); // 立即同步进度
             }
         }) as MediaSessionActionHandler);
 
@@ -921,7 +1145,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
             navigator.mediaSession.setActionHandler("seekbackward", null);
             navigator.mediaSession.setActionHandler("seekforward", null);
         };
-    }, [currentSong, handlePlayPause, handlePrev, handleNext, audioRef]);
+    }, [currentSong, handlePlayPause, handlePrev, handleNext, audioRef, syncProgress]);
 
     // 获取封面颜色
     const getAlbumCoverColor = useCallback(async (): Promise<string> => {
@@ -1132,6 +1356,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
                 duration,
             }}
         >
+<<<<<<< HEAD
             {currentSong && resolvedSrc ? (
                 <audio
                     ref={audioRef}
@@ -1148,6 +1373,22 @@ export function MusicProvider({ children }: MusicProviderProps) {
                     crossOrigin="anonymous"
                 />
             ) : null}
+=======
+            {/* 使用一个固定的audio元素，不根据URL变化重新创建 */}
+            <audio
+                ref={audioRef}
+                src={currentSongUrl}
+                onLoadedMetadata={handleLoadedMetadata}
+                onEnded={handleEnded}
+                onError={(e) => {
+                    console.error("Audio playback error:", e);
+                    // 播放错误时可以尝试下一首
+                    handleNext();
+                }}
+                preload="auto"
+                crossOrigin="anonymous"
+            />
+>>>>>>> 27086556a291c816f8bbc663113316a78a256163
             {children}
         </MusicContext.Provider>
     );
