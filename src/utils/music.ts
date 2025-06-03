@@ -138,8 +138,8 @@ export async function fetchSongFromData(data: AnySongSource): Promise<Song> {
  */
 async function fetchWithRetry<T>(
     fetchFn: () => Promise<T>,
-    maxRetries: number = 5,
-    retryDelay: number = 200 // 初始为0.2秒
+    maxRetries: number = 10,
+    retryDelay: number = 100 // 初始为0.2秒
 ): Promise<T> {
     let lastError: unknown;
 
