@@ -142,7 +142,14 @@
         "issue_number": 12,
         "name": "Liteyuki Gitea",
         "link": "https://git.liteyuki.org/",
-        "description": "Gitea自托管工作区",
+        "description": "工作室自托管Gitea工作区",
         "avatar": "https://git.liteyuki.org/favicon.ico"
+    },
+    {
+        "issue_number": 14,
+        "name": "轻雪通行证",
+        "link": "https://pass.liteyuki.org/login/liteyuki-user?orgChoiceMode=None",
+        "description": "轻雪账号统一认证服务",
+        "avatar": "https://cdn.liteyuki.org/logos/passport.svg"
     }
 ]
