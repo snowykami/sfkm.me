@@ -142,7 +142,7 @@
         "issue_number": 12,
         "name": "Liteyuki Gitea",
         "link": "https://git.liteyuki.org/",
-        "description": "Gitea自托管工作区",
+        "description": "工作室自托管Gitea工作区",
         "avatar": "https://git.liteyuki.org/favicon.ico"
     }
 ]
