@@ -10,7 +10,11 @@ import skillsJson from '@/data/skills.json'
 import { Song, SongOrPromise } from '@/types/music'
 import { BackgroundContext } from '@/types/background'
 import { ExternalLink, Github, HeadphonesIcon, Mail, MessageCircleMore, Tv, Twitter } from 'lucide-react'
+<<<<<<< HEAD
 import { fetchSongSrcFromNCM, fetchSongSrcFromQQ } from './utils/music'
+=======
+import { fetchSongFromNCM, fetchSongFromQQMusic, fetchSongSrcFromNCM } from './utils/music'
+>>>>>>> 27086556a291c816f8bbc663113316a78a256163
 
 interface Config {
     // 网站元数据，此处大部分数据都支持填写常量或者i18n化函数
@@ -132,11 +136,49 @@ const config: Config = {
     musics: [
         ...(musicData as Song[]).map((song) => {
             if (song.source === "ncm") {
+<<<<<<< HEAD
                 song.src = fetchSongSrcFromNCM(song.id);
             } else if (song.source === "qq") {
                 song.src = fetchSongSrcFromQQ(song.id);
             }
             return song
+=======
+                // 创建一个Promise，但不立即执行fetch请求
+                song.src = new Promise((resolve) => {
+                    // 存储resolve函数以便稍后使用
+                    (song as any)._resolveSrc = resolve;
+                    console.log(`准备懒加载网易云音乐: ${song.title} (ID: ${song.id})`);
+                });
+                // 添加一个标记表示需要懒加载
+                (song as any)._needLazyLoad = true;
+                (song as any)._loadSrc = () => {
+                    if (!(song as any)._loading) {
+                        (song as any)._loading = true;
+                        fetchSongSrcFromNCM(song.id).then(url => {
+                            console.log(`网易云音乐URL解析成功: ${song.title}`);
+                            (song as any)._resolveSrc(url);
+                        });
+                    }
+                };
+            } else if (song.source === "qq") {
+                // 类似的处理QQ音乐
+                song.src = new Promise((resolve) => {
+                    (song as any)._resolveSrc = resolve;
+                    console.log(`准备懒加载QQ音乐: ${song.title} (ID: ${song.id})`);
+                });
+                (song as any)._needLazyLoad = true;
+                (song as any)._loadSrc = () => {
+                    if (!(song as any)._loading) {
+                        (song as any)._loading = true;
+                        fetchSongFromQQMusic(song.id, song.offset).then(fetchedSong => {
+                            console.log(`QQ音乐URL解析成功: ${song.title}`);
+                            (song as any)._resolveSrc(fetchedSong.src);
+                        });
+                    }
+                };
+            }
+            return song;
+>>>>>>> 27086556a291c816f8bbc663113316a78a256163
         })
     ],
     background: async (ctx: BackgroundContext) => {
@@ -374,7 +416,7 @@ const config: Config = {
                     maximize: "最大化",
                     releaseToMaximize: "释放以最大化",
                 },
-                vscode:{
+                vscode: {
                     title: "微软大战代码"
                 },
                 // ...其它中文翻译
