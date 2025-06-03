@@ -17,6 +17,15 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+
+      - name: Sync musics
+        run: |
+          uv run ./scripts/playlist_dump.py
+
       - name: Install and build
         run: | 
           npm install
