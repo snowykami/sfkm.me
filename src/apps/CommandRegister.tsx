@@ -215,21 +215,24 @@ export default function TerminalCommandRegister() {
         run: async (ctx: CommandArg) => {
             const subCommand = ctx.args[1];
             if (["ls", "list"].includes(subCommand)) {
-                if (windows.length === 0) {
+                const filteredWindows = windows.filter(w => w.visible || ctx.flags.includes("a"));
+                console.log(windows)
+                if (filteredWindows.length === 0) {
                     return t("terminal.commands.win.noWindow");
                 }
+
                 // 使用 HTML 表格格式化输出
                 let tableHtml = `<table class="terminal-table" style="width: 100%; border-collapse: collapse;">
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align: left; padding-right: 1em;">ID</th>
-                                            <th style="text-align: left; padding-right: 1em;">${t("terminal.commands.win.title")}</th>
-                                            <th style="text-align: left; padding-right: 1em;">${t("terminal.commands.win.size")}</th>
-                                            <th style="text-align: left;">${t("terminal.commands.win.status")}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>`;
-                windows.forEach(win => {
+                    <thead>
+                      <tr>
+                        <th style="text-align: left; padding-right: 1em;">ID</th>
+                        <th style="text-align: left; padding-right: 1em;">${t("terminal.commands.win.title")}</th>
+                        <th style="text-align: left; padding-right: 1em;">${t("terminal.commands.win.size")}</th>
+                        <th style="text-align: left;">${t("terminal.commands.win.status")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>`;
+                filteredWindows.forEach(win => {
                     const status = [];
                     if (win.minimized) status.push(t("terminal.commands.win.statusminimized"));
                     if (win.maximized) status.push(t("terminal.commands.win.statusmaximized"));
@@ -243,6 +246,8 @@ export default function TerminalCommandRegister() {
                     tableHtml += `<tr>
                                     <td style="padding-right: 1em;">${win.id}</td>
                                     <td style="padding-right: 1em;">${t(cleanedTitle)}</td> 
+                                    <td style="padding-right: 1em;">${win.size?.width || "N/A"}x${win.size?.height || "N/A"}</td>
+                                    <td>${status.join(", ")}</td>
                                   </tr>`;
                 });
                 tableHtml += `</tbody></table>`;

@@ -88,7 +88,7 @@ export async function fetchSongFromNCM(mid: string, offset: number = 0, lyricmid
         // 延迟加载歌词 - 使用函数返回Promise
         lrc: fetchLyricFromNCM(lyricmid || mid),
         cover: songData.data[0].cover,
-        from: "ncm",
+        source: "ncm",
         songLink: songData.data[0].link || "",
         offset,
     }
@@ -110,7 +110,7 @@ export async function fetchSongFromQQMusic(mid: string, offset: number = 0, lyri
         lrc: fetchLyricFromQQ(lyricmid || mid),
         cover: songData.data[0].cover,
         songLink: songData.data[0].link || "",
-        from: "qq",
+        source: "qq",
         offset,
     }
 }

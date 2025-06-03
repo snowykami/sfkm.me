@@ -2,13 +2,12 @@ import { Contact, Friend, Project, Site, Skill, SkillBadge } from '@/types'
 
 // data
 import data from "@/data/i18n.json"
-import musicData from "@/data/music.json"
+import musicData from "@/data/musics.json"
 import contactsJson from '@/data/contacts.json'
 import friendsJson from '@/data/friends.json'
 import projectsJson from '@/data/projects.json'
 import skillsJson from '@/data/skills.json'
 import { SongOrPromise } from '@/types/music'
-import { fetchSongFromData, fetchSongFromNCM } from '@/utils/music'
 import { BackgroundContext } from '@/types/background'
 import { ExternalLink, Github, HeadphonesIcon, Mail, MessageCircleMore, Tv, Twitter } from 'lucide-react'
 
@@ -130,61 +129,7 @@ const config: Config = {
         ...(skillsJson as Skill[])
     ],
     musics: [
-        fetchSongFromNCM("2165386067", 1500), // 糖果色的梦 - Kirara
-        fetchSongFromNCM("1969519579", 0, "1996929972"), // 这么可爱真是抱歉
-        fetchSongFromNCM("2155423468", -6000), // 希望有羽毛和翅膀
-        fetchSongFromNCM("1944651767",),   // Antler - 鹿角
-        fetchSongFromNCM("1466019525"),   // 夜に駆ける(初音ミク ver.)
-        fetchSongFromNCM("2155422573"), // 使一颗心免于哀伤
-        fetchSongFromNCM("22821014"), // 活动小丑
-        fetchSongFromNCM("2657083161"), // 愛♡スクリ～ム！
-        fetchSongFromNCM("2138674818"), // 沐雨
-        fetchSongFromNCM("2616952326"),   // 夢で逢いましょう
-        fetchSongFromNCM("40915694"), // 心做し 鹿乃
-        fetchSongFromNCM("2051317320"), // 强风大背头
-        fetchSongFromNCM("512376191"), // 砂之行星
-        fetchSongFromNCM("1345485069"), // 冬之花
-        fetchSongFromNCM("16607987"), // trouble is a friend
-        fetchSongFromNCM("460528"), // 白金disco
-        fetchSongFromNCM("2100630469"), // 错位时空
-        fetchSongFromNCM("208902"), // 北国之春
-        fetchSongFromNCM("1945128093"), // 时钟悖论
-        fetchSongFromNCM("1501478611"), // ハロウィンナイトパーティ (feat. Hanon & Kotoha)
-        fetchSongFromNCM("1323760916"),   // 余命3日少女（翻自 プロペリン）
-        fetchSongFromNCM("2011912894"), // 天街花
-        fetchSongFromNCM("1375725396"), // cyber天使
-        fetchSongFromNCM("27180681"), // 柠檬树
-        fetchSongFromNCM("440208476"), // that girl
-        fetchSongFromNCM("16607964"), // the show
-        fetchSongFromNCM("580817"), // HAMELN
-        fetchSongFromNCM("1451998397"), // 恋爱吧 魔法少女 hanser
-        fetchSongFromNCM("1991282192"),   // Automaton Waltz - Plum - Melodic Artist
-        fetchSongFromNCM("29163452"),     // 君恋し - EasyPop / 巡音ルカ
-        fetchSongFromNCM("1906977699"),   // まっすぐ - 大原ゆい子
-        fetchSongFromNCM("1456393572"), // 枕边童话
-        fetchSongFromNCM("2010574726"), // 铁道唱歌
-        fetchSongFromNCM("441459"), // 悬崖上的金鱼公主
-        fetchSongFromNCM("519006"), // 拼好歌
-        fetchSongFromNCM("1910911958"), // 神女劈观
-        fetchSongFromNCM("1859245776"), // STAY
-        fetchSongFromNCM("2637558926"), // APT. rose
-        fetchSongFromNCM("1809242210"), // 有何不可红石音乐
-        fetchSongFromNCM("406716121"), // miku
-        fetchSongFromNCM("26349198"), // 何度も RAM WIRE
-        fetchSongFromNCM("472219448"),    // 心拍数#0822 - H△G
-        fetchSongFromNCM("1975923438", 1000), // 菟园
-        fetchSongFromNCM("1819778023"), // Classy Kitty
-        fetchSongFromNCM("2118709322",),   // 乙女的ストーキング - なるみや
-        fetchSongFromNCM("2100334024"),   // 轻涟 La vaguelette - HOYO-MiX
-        {
-            title: "卖洋芋",
-            src: "https://drive.liteyuki.org/f/A3IV/%E7%BD%91%E7%BB%9C%E6%AD%8C%E6%89%8B%20-%20%E5%8D%96%E6%B4%8B%E8%8A%8B_LQ.m4a",
-            artist: "网络歌手",
-            album: "网络歌手",
-            from: "liteyuki",
-            lrc: fetch("https://drive.liteyuki.org/f/W1tv/%E7%BD%91%E7%BB%9C%E6%AD%8C%E6%89%8B%20-%20%E5%8D%96%E6%B4%8B%E8%8A%8B_LQ.lrc").then(res => res.text()),
-        },
-        ...musicData.map(song => fetchSongFromData(song))
+        ...musicData
     ],
     background: async (ctx: BackgroundContext) => {
         console.log("Background context:", ctx);

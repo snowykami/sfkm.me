@@ -1,0 +1,13 @@
+{
+    "manual": true,
+    "name": "QQ音乐",
+    "type": "qq",
+    "playlist": {
+        "tracks": [
+            {   
+                "note": "神代梦华谭",
+                "id": "003ye0WD498IFw"
+            }
+        ]
+    }
+}
