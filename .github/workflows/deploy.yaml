@@ -24,7 +24,7 @@ jobs:
 
       - name: Sync musics
         run: |
-          uv run ./scripts/playlist_dump.py
+          uv run ./scripts/playlist_dump.py -f -n
 
       - name: Install and build
         run: | 
