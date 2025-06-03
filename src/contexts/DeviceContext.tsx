@@ -13,21 +13,34 @@ interface DeviceContextProps {
   toggleMode: () => void;
   lang: Lang;
   setLang: (lang: Lang) => void;
+  viewport: {
+    width: number,
+    height: number
+  }
 }
 
 const DeviceContext = createContext<DeviceContextProps>({
   isMobile: false,
   mode: "light",
-  setMode: () => {},
-  toggleMode: () => {},
+  setMode: () => { },
+  toggleMode: () => { },
   lang: "zh",
-  setLang: () => {},
+  setLang: () => { },
+  viewport: {
+    width: 0,
+    height: 0,
+  }
 });
 
 export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [mode, setModeState] = useState<Mode>("light");
   const [lang, setLangState] = useState<Lang>(getDefaultLang());
+  const [viewport, setViewport] = useState({
+    width: typeof window !== "undefined" ? window.innerWidth : 0,
+    height: typeof window !== "undefined" ? window.innerHeight : 0
+  });
+
 
   // 检查系统主题
   const getSystemTheme = () =>
@@ -40,6 +53,20 @@ export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    // 更新检测函数以同时更新视窗尺寸
+    const handleResize = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setIsMobile(width <= 768);
+      setViewport({ width, height });
+    };
+
+    handleResize(); // 初始化
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // 初始化主题
@@ -92,7 +119,7 @@ export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, []);
 
   return (
-    <DeviceContext.Provider value={{ isMobile, mode, setMode, toggleMode, lang, setLang }}>
+    <DeviceContext.Provider value={{ isMobile, mode, setMode, toggleMode, lang, setLang, viewport }}>
       {children}
     </DeviceContext.Provider>
   );
