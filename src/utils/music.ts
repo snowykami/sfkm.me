@@ -73,13 +73,13 @@ async function fetchLyricFromQQ(mid: string): Promise<string> {
     }
 }
 
+// 优化后的网易云音乐获取函数
 export async function fetchSongFromNCM(mid: string, offset: number = 0, lyricmid: string = ""): Promise<Song> {
-    console.log(`Fetching NCM song with mid: ${mid}, offset: ${offset}`);
-    try {
-        const songResponse = await fetch(`https://music.api.liteyuki.org/music/?action=netease&module=get_url&mids=${mid}`);
-        if (!songResponse.ok) throw new Error(`获取歌曲信息失败: HTTP ${songResponse.status}`);
+    console.log(`Fetching song with mid: ${mid}, offset: ${offset}`)
+    const songResponse = await fetch(`https://music.api.liteyuki.org/music/?action=netease&module=get_url&mids=${mid}`)
+    if (!songResponse.ok) throw new Error("获取歌曲信息失败")
+    const songData = await songResponse.json()
 
-<<<<<<< HEAD
     return {
         title: songData.data[0].song || "Unknown",
         album: songData.data[0].album || "Unknown Album",
@@ -92,65 +92,16 @@ export async function fetchSongFromNCM(mid: string, offset: number = 0, lyricmid
         songLink: songData.data[0].link || "",
         id: mid,
         offset,
-=======
-        const songData = await songResponse.json();
-        console.log("API返回的原始数据:", songData); // 添加调试日志
-
-        if (!songData.data || !songData.data[0] || !songData.data[0].url) {
-            console.error("API返回数据结构不正确:", songData);
-            throw new Error("获取歌曲URL失败: 数据结构不正确");
-        }
-        return {
-            id: mid,
-            title: songData.data[0].song || "Unknown",
-            album: songData.data[0].album || "Unknown Album",
-            artist: songData.data[0].singer || "Unknown Artist",
-            src: songData.data[0].url.replace("http://", "https://"),
-            cover: songData.data[0].cover,
-            source: "ncm",
-            songLink: songData.data[0].link || "",
-            offset,
-        };
-    } catch (error) {
-        console.error("获取网易云音乐出错:", error);
-        throw error; // 重新抛出错误以便上层处理
     }
 }
 
-export async function fetchSongSrcFromNCM(mid: string): Promise<string> {
-    console.log(`获取网易云音乐URL: ${mid}`);
-    try {
-        const response = await fetch(`https://music.api.liteyuki.org/music/?action=netease&module=get_url&mids=${mid}`);
-        if (!response.ok) {
-            throw new Error(`获取歌曲信息失败: HTTP ${response.status}`);
-        }
-        
-        const songData = await response.json();
-        console.log("API返回的原始数据:", songData);
-        
-        if (!songData.data || !songData.data[0] || !songData.data[0].url) {
-            console.error("API返回数据结构不正确:", songData);
-            throw new Error("获取歌曲URL失败: 数据结构不正确");
-        }
-        
-        // 直接返回URL，替换http为https
-        const url = songData.data[0].url.replace("http://", "https://");
-        console.log("解析得到的URL:", url);
-        return url;
-    } catch (error) {
-        console.error("获取网易云音乐URL出错:", error);
-        throw error;
->>>>>>> 27086556a291c816f8bbc663113316a78a256163
-    }
-}
-
+// 优化后的QQ音乐获取函数
 export async function fetchSongFromQQMusic(mid: string, offset: number = 0, lyricmid: string = ""): Promise<Song> {
-    console.log(`Fetching QQ song with mid: ${mid}, offset: ${offset}`);
-    try {
-        const songResponse = await fetch(`https://music.api.liteyuki.org/music/?action=qq&module=get_url&mids=${mid}`);
-        if (!songResponse.ok) throw new Error(`获取歌曲信息失败: HTTP ${songResponse.status}`);
+    console.log(`Fetching song with mid: ${mid}, offset: ${offset}`)
+    const songResponse = await fetch(`https://music.api.liteyuki.org/music/?action=qq&module=get_url&mids=${mid}`)
+    if (!songResponse.ok) throw new Error("获取歌曲信息失败")
+    const songData = await songResponse.json()
 
-<<<<<<< HEAD
     return {
         title: songData.data[0].song || "Unknown",
         album: songData.data[0].album || "Unknown Album",
@@ -167,32 +118,6 @@ export async function fetchSongFromQQMusic(mid: string, offset: number = 0, lyri
 }
 
 
-=======
-        const songData = await songResponse.json();
-        console.log("API返回的原始数据:", songData); // 添加调试日志
-
-        if (!songData.data || !songData.data[0] || !songData.data[0].url) {
-            console.error("API返回数据结构不正确:", songData);
-            throw new Error("获取歌曲URL失败: 数据结构不正确");
-        }
-
-        return {
-            id: mid,
-            title: songData.data[0].song || "Unknown",
-            album: songData.data[0].album || "Unknown Album",
-            artist: songData.data[0].singer || "Unknown Artist",
-            src: songData.data[0].url.replace("http://", "https://"),
-            cover: songData.data[0].cover,
-            songLink: songData.data[0].link || "",
-            source: "qq",
-            offset,
-        };
-    } catch (error) {
-        console.error("获取QQ音乐出错:", error);
-        throw error; // 重新抛出错误以便上层处理
-    }
-}
->>>>>>> 27086556a291c816f8bbc663113316a78a256163
 export async function fetchSongFromData(data: AnySongSource): Promise<Song> {
     if (data.type === "ncm") {
         return fetchSongFromNCM(data.id, data.offset, data.lrcmid)
