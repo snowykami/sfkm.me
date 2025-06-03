@@ -1,6 +1,6 @@
 export interface Song {
     title: string
-    src: string
+    src: string | Promise<string> | (() => Promise<string>)
     artist?: string
     album?: string
     lrc?: string | Promise<string>
@@ -10,6 +10,7 @@ export interface Song {
     albumLink?: string // 专辑链接
     artistLink?: string // 艺术家链接
     songLink?: string // 歌曲链接
+    id: string // 歌曲ID
     [key: string]: unknown // 允许其他属性
 }
 
