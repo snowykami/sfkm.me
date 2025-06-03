@@ -7,9 +7,10 @@ import contactsJson from '@/data/contacts.json'
 import friendsJson from '@/data/friends.json'
 import projectsJson from '@/data/projects.json'
 import skillsJson from '@/data/skills.json'
-import { SongOrPromise } from '@/types/music'
+import { Song, SongOrPromise } from '@/types/music'
 import { BackgroundContext } from '@/types/background'
 import { ExternalLink, Github, HeadphonesIcon, Mail, MessageCircleMore, Tv, Twitter } from 'lucide-react'
+import { fetchSongSrcFromNCM, fetchSongSrcFromQQ } from './utils/music'
 
 interface Config {
     // 网站元数据，此处大部分数据都支持填写常量或者i18n化函数
@@ -129,7 +130,14 @@ const config: Config = {
         ...(skillsJson as Skill[])
     ],
     musics: [
-        ...musicData
+        ...(musicData as Song[]).map((song) => {
+            if (song.source === "ncm") {
+                song.src = fetchSongSrcFromNCM(song.id);
+            } else if (song.source === "qq") {
+                song.src = fetchSongSrcFromQQ(song.id);
+            }
+            return song
+        })
     ],
     background: async (ctx: BackgroundContext) => {
         console.log("Background context:", ctx);

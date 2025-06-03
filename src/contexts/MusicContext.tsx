@@ -55,6 +55,8 @@ interface MusicContextType {
     handleToggleMute: () => void;
     handleMusicCommand: (subCommand: string, args: string[]) => string;
     getAlbumCoverColor: () => Promise<string>;
+    currentTime: number;
+    duration: number;
 
 }
 
@@ -164,8 +166,19 @@ export function MusicProvider({ children }: MusicProviderProps) {
     const lrcLineChangeCbs = useRef<LrcLineChangeCallback[]>([]);
     const [volume, setVolume] = useState<number>(() => getInitialVolumeState().volume);
     const [isMuted, setIsMuted] = useState<boolean>(() => getInitialVolumeState().isMuted);
+    const [resolvedSrc, setResolvedSrc] = useState<string | null>(null);
 
-    // 歌曲加载方法 - 返回一个 Promise 解析为 TrackState
+
+    useEffect(() => {
+        // 只要 currentSong 变了，立即暂停 audio，防止继续播旧歌
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+        }
+        setResolvedSrc(null); // 立即清空 src，audio 彻底静音
+    }, [currentSong]);
+
+    // 在 loadSong 回调中修改处理 song 的逻辑
     const loadSong = useCallback(async (songOrPromise: SongOrPromise, originalIndex: number): Promise<TrackState> => {
         try {
             let song: Song;
@@ -177,6 +190,9 @@ export function MusicProvider({ children }: MusicProviderProps) {
             } else {
                 song = songOrPromise as Song;
             }
+
+            // 注意：这里我们不预加载 src 函数，只在播放时解析
+            // 如果 src 是函数，保持原样不执行
 
             return {
                 status: 'loaded',
@@ -472,21 +488,40 @@ export function MusicProvider({ children }: MusicProviderProps) {
         }
     }, [currentLrc]);
 
+    const [currentTime, setCurrentTime] = useState<number>(0);
+    const [duration, setDuration] = useState<number>(0);
+
+    // 修改播放时间更新逻辑
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
+
         const handleTimeUpdate = () => {
-            if (!isPlaying) return;
+            setCurrentTime(audio.currentTime);
             if (lyricRef.current && currentSong?.lrc) {
                 const offset = currentSong.offset ?? 0;
                 lyricRef.current.play(audio.currentTime * 1000 - offset);
             }
         };
+
+        const handleLoadedMetadata = () => {
+            setDuration(audio.duration);
+        };
+
         audio.addEventListener("timeupdate", handleTimeUpdate);
+        audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+        audio.addEventListener("durationchange", handleLoadedMetadata);
+
+        // 初始化
+        setCurrentTime(audio.currentTime);
+        setDuration(audio.duration);
+
         return () => {
             audio.removeEventListener("timeupdate", handleTimeUpdate);
+            audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+            audio.removeEventListener("durationchange", handleLoadedMetadata);
         };
-    }, [audioRef, currentSong?.lrc, currentSong?.offset, isPlaying]);
+    }, [resolvedSrc, currentSong?.lrc, currentSong?.offset]);
 
     const animate = useCallback((now: number) => {
         const delta = now - lastFrameTimeRef.current;
@@ -556,17 +591,24 @@ export function MusicProvider({ children }: MusicProviderProps) {
         }
     }, [pendingSeek, isPlaying, audioRef]);
 
+    // 修改 handlePlayPause 以处理 src 解析状态
     const handlePlayPause = useCallback((): void => {
         setIsPlaying(prev => {
             const audio = audioRef.current;
             if (audio) {
                 audio.muted = false;
                 if (!prev) {
-                    audio.play().then(() => {
-                        lyricRef.current?.play(audio.currentTime * 1000);
-                    }).catch(() => {
-                        setIsPlaying(false);
-                    });
+                    if (resolvedSrc) { // 只有在 URL 已解析时尝试播放
+                        audio.play().then(() => {
+                            lyricRef.current?.play(audio.currentTime * 1000);
+                        }).catch(() => {
+                            setIsPlaying(false);
+                        });
+                    } else {
+                        // URL 尚未解析完成，保持播放状态但不实际播放
+                        console.log("[Music] 等待 URL 解析完成...");
+                        return true; // 仍然返回 true 表示意图是播放
+                    }
                 } else {
                     audio.pause();
                     lyricRef.current?.pause();
@@ -574,7 +616,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
             }
             return !prev;
         });
-    }, [audioRef, lyricRef]);
+    }, [audioRef, lyricRef, resolvedSrc]);
 
     // 修改的切换歌曲逻辑，使用原始索引
     const handleNext = useCallback((): void => {
@@ -962,6 +1004,101 @@ export function MusicProvider({ children }: MusicProviderProps) {
         }
     }, [currentSong?.cover]);
 
+    // 添加一个用于解析 src 的 useEffect
+    useEffect(() => {
+        let isMounted = true;
+
+        const resolveSrc = async () => {
+            if (!currentSong) {
+                setResolvedSrc(null);
+                return;
+            }
+
+            try {
+                let finalSrc: string;
+
+                if (typeof currentSong.src === 'function') {
+                    console.log(`[Music] 懒加载歌曲 URL: ${currentSong.title}`);
+                    finalSrc = await currentSong.src();
+
+                    // 验证 URL 有效性
+                    if (!finalSrc || typeof finalSrc !== 'string' || !finalSrc.startsWith('http')) {
+                        throw new Error(`无效的音频 URL: ${finalSrc}`);
+                    }
+                } else {
+                    finalSrc = currentSong.src as string;
+
+                    // 验证直接提供的 URL
+                    if (!finalSrc || typeof finalSrc !== 'string' || !finalSrc.startsWith('http')) {
+                        throw new Error(`无效的音频 URL: ${finalSrc}`);
+                    }
+                }
+
+                if (isMounted) {
+                    console.log(`[Music] URL 解析成功: ${finalSrc.substring(0, 50)}...`);
+                    setResolvedSrc(finalSrc);
+                }
+            } catch (error) {
+                console.error(`[Music] 无法加载歌曲 URL:`, error);
+                if (isMounted) {
+                    setResolvedSrc(null);
+                    // 加载失败时跳到下一首
+                    handleNext();
+                }
+            }
+        };
+
+        resolveSrc();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [currentSong, handleNext]);
+
+    // 修改 resolvedSrc 变化后的自动播放逻辑，增加延迟和错误处理
+    useEffect(() => {
+        if (!resolvedSrc || !isPlaying || !audioRef.current) return;
+
+        // 使用setTimeout给浏览器一点时间来处理新的src
+        const playTimer = setTimeout(() => {
+            if (!audioRef.current) return;
+
+            // 确保audio元素已加载
+            if (audioRef.current.readyState >= 2) {
+                audioRef.current.play()
+                    .catch(err => {
+                        console.error("[Music] 自动播放失败:", err);
+                        // 尝试再次播放一次（有时第一次会因为浏览器策略失败）
+                        setTimeout(() => {
+                            if (audioRef.current && resolvedSrc) {
+                                audioRef.current.play().catch(err => {
+                                    console.error("[Music] 第二次播放尝试也失败:", err);
+                                    setIsPlaying(false);
+                                });
+                            }
+                        }, 300);
+                    });
+            } else {
+                // 监听canplay事件
+                const canPlayHandler = () => {
+                    audioRef.current?.play().catch(err => {
+                        console.error("[Music] canplay事件后播放失败:", err);
+                        setIsPlaying(false);
+                    });
+                };
+
+                audioRef.current.addEventListener('canplay', canPlayHandler, { once: true });
+
+                // 清理函数
+                return () => {
+                    audioRef.current?.removeEventListener('canplay', canPlayHandler);
+                };
+            }
+        }, 100);
+
+        return () => clearTimeout(playTimer);
+    }, [resolvedSrc, isPlaying]);
+
     return (
         <MusicContext.Provider
             value={{
@@ -990,16 +1127,23 @@ export function MusicProvider({ children }: MusicProviderProps) {
                 handleVolumeChange,
                 handleToggleMute,
                 handleMusicCommand,
-                getAlbumCoverColor
+                getAlbumCoverColor,
+                currentTime,
+                duration,
             }}
         >
-            {currentSong?.src ? (
+            {currentSong && resolvedSrc ? (
                 <audio
                     ref={audioRef}
-                    src={currentSong.src}
-                    key={currentSongIndex}
+                    src={resolvedSrc}
+                    key={`${currentSongIndex}-${resolvedSrc}`}
                     onLoadedMetadata={handleLoadedMetadata}
                     onEnded={handleEnded}
+                    onError={(e) => {
+                        console.error("[Music] 音频加载错误:", e);
+                        // 在音频加载失败时尝试下一首
+                        setTimeout(() => handleNext(), 1000);
+                    }}
                     preload="auto"
                     crossOrigin="anonymous"
                 />
