@@ -90,6 +90,7 @@ export async function fetchSongFromNCM(mid: string, offset: number = 0, lyricmid
         cover: songData.data[0].cover,
         source: "ncm",
         songLink: songData.data[0].link || "",
+        id: mid,
         offset,
     }
 }
@@ -111,9 +112,11 @@ export async function fetchSongFromQQMusic(mid: string, offset: number = 0, lyri
         cover: songData.data[0].cover,
         songLink: songData.data[0].link || "",
         source: "qq",
+        id: mid,
         offset,
     }
 }
+
 
 export async function fetchSongFromData(data: AnySongSource): Promise<Song> {
     if (data.type === "ncm") {
@@ -124,4 +127,140 @@ export async function fetchSongFromData(data: AnySongSource): Promise<Song> {
     else {
         throw new Error(`Unsupported song type: ${data.type}`)
     }
+}
+
+/**
+ * 通用的带重试功能的请求函数
+ * @param fetchFn 执行请求的函数
+ * @param maxRetries 最大重试次数
+ * @param retryDelay 重试间隔(ms)
+ * @returns 返回请求结果
+ */
+async function fetchWithRetry<T>(
+    fetchFn: () => Promise<T>,
+    maxRetries: number = 3,
+    retryDelay: number = 1000
+): Promise<T> {
+    let lastError: unknown;
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        try {
+            // 第一次尝试或重试
+            return await fetchFn();
+        } catch (error) {
+            lastError = error;
+
+            // 如果已经达到最大重试次数，则不再重试
+            if (attempt === maxRetries) {
+                console.error(`达到最大重试次数(${maxRetries})，请求失败:`, error);
+                break;
+            }
+
+            // 打印重试信息
+            console.warn(`请求失败，${retryDelay / 1000}秒后进行第${attempt + 1}次重试...`, error);
+
+            // 等待一段时间后重试
+            await new Promise(resolve => setTimeout(resolve, retryDelay));
+
+            // 每次重试增加延迟时间，实现指数退避
+            retryDelay = Math.min(retryDelay * 1.5, 10000); // 最大不超过10秒
+        }
+    }
+
+    // 所有重试都失败了，抛出最后一个错误
+    throw lastError;
+}
+
+/**
+ * 创建一个带重试功能的懒加载网易云音乐 URL 的函数
+ * @param mid 音乐ID
+ * @returns 返回一个函数，调用该函数时才会请求实际的音乐URL
+ */
+export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
+    return async () => {
+        console.log(`[Music] 懒加载网易云音乐 URL: ${mid}`);
+
+        // 定义实际的请求函数
+        const fetchUrl = async (): Promise<string> => {
+            const response = await fetch(`https://music.api.liteyuki.org/music/?action=netease&module=get_url&mids=${mid}`);
+
+            if (!response.ok) {
+                throw new Error(`获取网易云音乐URL失败: HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (!data || !data.data || !data.data[0] || !data.data[0].url) {
+                console.error("API返回数据结构不符合预期:", data);
+                throw new Error('获取网易云音乐URL失败: 数据结构不完整');
+            }
+
+            // 确保使用 HTTPS URL
+            const url = data.data[0].url.replace("http://", "https://");
+
+            if (!url || typeof url !== 'string' || !url.startsWith('http')) {
+                console.error("API返回的URL无效:", url);
+                throw new Error(`无效的音频 URL: ${url}`);
+            }
+
+            return url;
+        };
+
+        try {
+            // 使用重试函数执行请求
+            const url = await fetchWithRetry(fetchUrl, 3, 1000);
+            console.log(`[Music] 网易云音乐URL加载成功: ${url.substring(0, 50)}...`);
+            return url;
+        } catch (error) {
+            console.error(`[Music] 获取网易云音乐URL失败(所有重试均失败):`, error);
+            throw error; // 重新抛出错误以便上层处理
+        }
+    };
+}
+
+/**
+ * 创建一个带重试功能的懒加载QQ音乐 URL 的函数
+ * @param mid 音乐ID
+ * @returns 返回一个函数，调用该函数时才会请求实际的音乐URL
+ */
+export function fetchSongSrcFromQQ(mid: string): () => Promise<string> {
+    return async () => {
+        console.log(`[Music] 懒加载QQ音乐 URL: ${mid}`);
+
+        // 定义实际的请求函数
+        const fetchUrl = async (): Promise<string> => {
+            const response = await fetch(`https://music.api.liteyuki.org/music/?action=qq&module=get_url&mids=${mid}`);
+
+            if (!response.ok) {
+                throw new Error(`获取QQ音乐URL失败: HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (!data || !data.data || !data.data[0] || !data.data[0].url) {
+                console.error("API返回数据结构不符合预期:", data);
+                throw new Error('获取QQ音乐URL失败: 数据结构不完整');
+            }
+
+            // 确保使用 HTTPS URL
+            const url = data.data[0].url.replace("http://", "https://");
+
+            if (!url || typeof url !== 'string' || !url.startsWith('http')) {
+                console.error("API返回的URL无效:", url);
+                throw new Error(`无效的音频 URL: ${url}`);
+            }
+
+            return url;
+        };
+
+        try {
+            // 使用重试函数执行请求
+            const url = await fetchWithRetry(fetchUrl, 3, 1000);
+            console.log(`[Music] QQ音乐URL加载成功: ${url.substring(0, 50)}...`);
+            return url;
+        } catch (error) {
+            console.error(`[Music] 获取QQ音乐URL失败(所有重试均失败):`, error);
+            throw error;
+        }
+    };
 }

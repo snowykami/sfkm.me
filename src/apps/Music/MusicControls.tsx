@@ -15,6 +15,7 @@ const LOADING_SONG: Song = {
     src: t('music.loading'),
     cover: t('music.loading'),
     lrc: t('music.loading'),
+    id: "loading-song",
 };
 
 function isLoadingSong(song: Song) {
@@ -25,10 +26,7 @@ interface MusicControlsProps {
     isMobile: boolean;
 }
 
-export default function MusicControls({ isMobile }: MusicControlsProps) {
-    // 当前播放时间和总时长
-    const [currentTime, setCurrentTime] = useState(0);
-    const [duration, setDuration] = useState(0);
+export default function MusicControls({ }: MusicControlsProps) {
 
     // 记录用户是否手动滚动了播放列表
     const [userScrolled, setUserScrolled] = useState(false);
@@ -37,7 +35,7 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
     const {
         audioRef, currentSong, isPlaying, playMode, handlePlayPause, handleNext, handlePrev,
         handleSwitchPlayMode, getAllSongs, handlePlaySong,
-        volume, isMuted, handleVolumeChange
+        volume, isMuted, handleVolumeChange, currentTime, duration
     } = useMusic();
 
     // 播放列表窗口状态
@@ -54,24 +52,6 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
 
     // 用于跟踪最后一次更新的播放列表
     const lastSongsList = useRef<string>("");
-
-    useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio) return;
-        const update = () => setCurrentTime(audio.currentTime);
-        const loaded = () => {
-            setDuration(audio.duration || 0);
-        };
-        if (isFinite(audio.duration) && audio.duration > 0) {
-            setDuration(audio.duration);
-        }
-        audio.addEventListener("timeupdate", update);
-        audio.addEventListener("loadedmetadata", loaded);
-        return () => {
-            audio.removeEventListener("timeupdate", update);
-            audio.removeEventListener("loadedmetadata", loaded);
-        };
-    }, [audioRef, currentSong?.src, isMobile]);
 
     // 处理点击外部关闭播放列表
     useEffect(() => {
@@ -155,7 +135,7 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
         const value = Number(e.target.value);
         if (audioRef.current) {
             audioRef.current.currentTime = value;
-            setCurrentTime(value);
+            // 不要 setCurrentTime(value);
         }
     };
 
@@ -215,10 +195,10 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
                     : (s as Song)
             );
             setSongsList(songs);
-            
+
             // 更新最后的播放列表数据
             lastSongsList.current = JSON.stringify(songs);
-            
+
             // 等待列表渲染后滚动到当前歌曲
             setTimeout(scrollToCurrentSong, 100);
         }
@@ -227,7 +207,7 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
     // 更新播放列表 fetch - 优化为较低频率更新
     useEffect(() => {
         if (!showPlaylist) return;
-        
+
         // 首次加载已在 handlePlaylistClick 中完成，这里设置延迟更新
         const initialTimer = setTimeout(() => {
             const all = getAllSongs();
@@ -236,7 +216,7 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
                     ? { ...LOADING_SONG }
                     : (s as Song)
             );
-            
+
             // 仅当有变化时才更新
             const songsJson = JSON.stringify(songs);
             if (songsJson !== lastSongsList.current) {
@@ -244,7 +224,7 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
                 lastSongsList.current = songsJson;
             }
         }, 1000);
-        
+
         // 后续使用更低频率的更新
         const intervalTimer = setInterval(() => {
             const all = getAllSongs();
@@ -253,7 +233,7 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
                     ? { ...LOADING_SONG }
                     : (s as Song)
             );
-            
+
             // 仅当有变化时才更新
             const songsJson = JSON.stringify(songs);
             if (songsJson !== lastSongsList.current) {
@@ -261,7 +241,7 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
                 lastSongsList.current = songsJson;
             }
         }, 3000); // 降低更新频率到3秒一次
-        
+
         return () => {
             clearTimeout(initialTimer);
             clearInterval(intervalTimer);
@@ -455,16 +435,15 @@ export default function MusicControls({ isMobile }: MusicControlsProps) {
                                     {songsList.map((song, index) => {
                                         const isCurrentSong = index === currentSongIndex;
                                         const isLoading = isLoadingSong(song);
-                                        
+
                                         return (
                                             <li
                                                 key={index}
                                                 ref={el => { playlistItemRefs.current[index] = el; }}
-                                                className={`p-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                                                    isCurrentSong
-                                                    ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
-                                                    : 'text-gray-800 dark:text-gray-200'
-                                                }`}
+                                                className={`p-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${isCurrentSong
+                                                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
+                                                        : 'text-gray-800 dark:text-gray-200'
+                                                    }`}
                                                 onClick={() => handlePlaylistItemClick(index)}
                                                 style={!isLoading ? {} : { opacity: 0.5, pointerEvents: "none" }}
                                             >
