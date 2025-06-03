@@ -217,6 +217,9 @@ const config: Config = {
                     x: "X",
                 },
                 greeting: "你好，世界！",
+                liteyukilab: {
+                    title: "轻雪社区",
+                },
                 marquee: {
                     sentence1: "试试拖拽和缩放窗口吧！",
                     sentence2: "桌面端推荐使用全屏模式哦",
@@ -417,6 +420,9 @@ const config: Config = {
                     maximize: "最大化",
                     releaseToMaximize: "释放以最大化",
                 },
+                vscode:{
+                    title: "微软大战代码"
+                },
                 // ...其它中文翻译
                 ...data["zh"]
             },
@@ -447,6 +453,9 @@ const config: Config = {
                     x: "X",
                 },
                 greeting: "Hello, world!",
+                liteyukilab: {
+                    title: "Liteyuki Lab",
+                },
                 marquee: {
                     sentence1: "Try dragging and resizing the windows!",
                     sentence2: "For a better experience, it's recommended to use fullscreen mode on desktop",
@@ -648,6 +657,9 @@ const config: Config = {
                     maximize: "Maximize",
                     releaseToMaximize: "Release to maximize",
                 },
+                vscode: {
+                    title: "Microsoft VS Code"
+                },
                 ...data["en"]
                 // ...其它英文翻译
             },
@@ -675,6 +687,9 @@ const config: Config = {
                     x: "X",
                 },
                 greeting: "こんにちは、世界！",
+                liteyukilab: {
+                    title: "Liteyuki Lab",
+                },
                 marquee: {
                     sentence1: "ウィンドウをドラッグ＆リサイズしてみてください！",
                     sentence2: "デスクトップではフルスクリーンモードを使用することをお勧めします",
@@ -873,6 +888,9 @@ const config: Config = {
                     minimize: "最小化",
                     maximize: "最大化",
                     releaseToMaximize: "最大化するにはリリースしてください",
+                },
+                vscode: {
+                    title: "Microsoft VS Code"
                 },
                 ...data["ja"]
                 // ...其它日文翻译

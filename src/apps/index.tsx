@@ -1,14 +1,15 @@
-import { User, Award, MessageCircle, PanelsTopLeft, Users, Music, Earth, SquareChevronRight } from "lucide-react";
+import { User, Award, MessageCircle, PanelsTopLeft, Users, Music, Earth, SquareChevronRight, Orbit, Code } from "lucide-react";
 import ProfileApp from "@/apps/Profile";
 import ProjectsApp from "@/apps/Projects";
 import SkillsApp from "@/apps/Skills";
 import ContactApp from "@/apps/Contacts";
 import FriendsApp from "@/apps/Friends";
 import MusicApp, { WINDOW_ID as musicWindowId, musicWindowState } from "@/apps/Music";
-import Browser from "./Browser";
 import Terminal from "./Terminal";
 import { AppProps } from "./BaseApp";
 import { WindowState } from "@/contexts/WindowManagerContext";
+import VSCode from "./VSCode";
+import LiteyukiLab from "./LiteyukiLab";
 
 export const phoneWindowState: Partial<WindowState> = {
   size: {
@@ -79,10 +80,10 @@ export const apps: AppMeta[] = [
     windowState: mediumWindowState, showInDock: true
   },
   {
-    id: "browser", icon: <Earth className={iconClassName} />, label: "browser.title", entry: Browser,
+    id: "liteyukilab", icon: <Orbit className={iconClassName} />, label: "liteyukilab.title", entry: LiteyukiLab,
     windowState: mediumWindowState, showInDock: true
   },
-  // {
-  //   id: "test-empty", icon: <SquareChevronRight className={iconClassName} />, label: "empty.title", entry: Monitor, showInDock: true
-  // }
+  {
+    id: "vscode", icon: <Code className={iconClassName} />, label: "vscode.title", entry: VSCode, windowState: mediumWindowState, showInDock: true
+  }
 ];

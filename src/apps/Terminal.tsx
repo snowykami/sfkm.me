@@ -233,7 +233,7 @@ export default function Terminal() {
 
     return (
         <div
-            className="bg-zinc-900 text-gray-200 font-mono h-full flex flex-col overflow-hidden select-text"
+            className="bg-zinc-900/80 text-gray-200 font-mono h-full flex flex-col overflow-hidden select-text"
             onClick={() => inputRef.current?.focus()}
         >
             <div
