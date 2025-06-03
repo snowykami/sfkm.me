@@ -65,7 +65,7 @@ export default function LyricScroller({ wid }: { wid: string }) {
     `}
     >
       {lrcLines.length === 0 ? (
-        <div className="text-center text-slate-400 dark:text-slate-500">{t("music.nolyric")}</div>
+        <div className="text-center text-slate-600 dark:text-slate-500">{t("music.nolyric")}</div>
       ) : (
         lrcLines.map((line, idx) => (
           <div

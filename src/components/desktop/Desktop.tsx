@@ -71,19 +71,10 @@ export function PCDesktop() {
         // 初次加载时检查哈希值
         handleHashChange();
         // 监听哈希变化
-        // window.addEventListener("hashchange", handleHashChange);
-        // return () => {
-        //     window.removeEventListener("hashchange", handleHashChange);
-        // };
     }, [openWindow]);
 
     const handleDesktopClick = (event: React.MouseEvent<HTMLDivElement>) => {
         const targetElement = event.target as HTMLElement;
-
-        // 如果点击事件源自窗口、顶栏或Dock内部，则不执行后续操作
-        // 确保 MacOSWindow 组件的根元素有 'macos-window' 类名
-        // 确保 TopBar 组件根元素有 'top-bar-component' 类名
-        // 确保 Dock 组件根元素或其容器有 'dock-component' 类名
         if (
             targetElement.closest('.base-window') ||
             targetElement.closest('.top-bar-component') ||
@@ -186,33 +177,56 @@ export function PCDesktop() {
             style={{
                 backgroundImage: background ? `url('${background}')` : undefined,
             }}
-            onClick={handleDesktopClick} // 将点击事件绑定到最外层 div
+            onClick={handleDesktopClick}
         >
-            {/* 确保 TopBar 组件根元素有 'top-bar-component' 类名 */}
             <TopBar className="z-10 top-bar-component" title="" />
             <div
                 className="window-area absolute left-0 right-0"
                 style={{
                     top: TOPBAR_HEIGHT,
-                    bottom: 0, // Dock 会覆盖此区域底部的一部分
+                    bottom: 0,
                     position: "absolute",
-                    zIndex: 1, // 窗口区域在 TopBar 之下，但在背景之上
-                    pointerEvents: "none", // 使 window-area 本身不捕获点击，允许点击穿透到最外层 div
+                    zIndex: 1,
+                    pointerEvents: "none",
                 }}
             >
-                {/* 这个内部 div 用于窗口的定位上下文，并重新启用指针事件 */}
                 <div style={{ width: "100%", height: "100%", position: "relative", pointerEvents: "auto" }}>
                     {windows.map(win =>
                         win.visible && !win.minimized ? (
                             (() => {
+                                // 修改: 优先使用 customRender 函数渲染临时窗口内容
+                                if (win.customRender) {
+                                    return (
+                                        <MacOSWindow
+                                            key={win.id}
+                                            id={win.id}
+                                            showClose={win.showClose}
+                                            showMinimize={win.showMinimize}
+                                            showMaximize={win.showMaximize}
+                                        >
+                                            {win.customRender()}
+                                        </MacOSWindow>
+                                    );
+                                }
+
+                                // 如果没有 customRender，则使用常规应用入口
                                 const app = apps.find(a => a.id === win.id);
                                 if (!app) return null;
                                 const Entry = app.entry;
+
+                                // 传递 appProps 到应用组件
                                 return (
-                                    // **重要**: 确保 MacOSWindow 组件的根 DOM 元素拥有 'macos-window' 类名。
-                                    // 并且在 MacOSWindow 的拖拽 mousedown 事件中调用 event.stopPropagation()。
-                                    <MacOSWindow key={win.id} id={win.id}>
-                                        <Entry windowId={win.id} />
+                                    <MacOSWindow
+                                        key={win.id}
+                                        id={win.id}
+                                        showClose={win.showClose}
+                                        showMinimize={win.showMinimize}
+                                        showMaximize={win.showMaximize}
+                                    >
+                                        <Entry
+                                            windowId={win.id}
+                                            {...(win.appProps || {})}
+                                        />
                                     </MacOSWindow>
                                 );
                             })()
@@ -221,15 +235,14 @@ export function PCDesktop() {
                 </div>
             </div>
 
-            {/* 确保 Dock 组件的容器 div 有 'dock-component' 类名 */}
             <div
                 className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-[99999] dock-component"
             >
                 <Dock
                     apps={apps}
                     windows={dockWindows}
-                    isMobile={isMobile} // isMobile 传递给 Dock
-                    mobileCurrentIndex={0} // 这些 props 根据你的 Dock 实现来确定
+                    isMobile={isMobile}
+                    mobileCurrentIndex={0}
                     handleMobileWindowSelect={() => { }}
                     focusWindow={focusWindow}
                     restoreWindow={restoreWindow}

@@ -6,6 +6,7 @@ import { t } from "i18next"
 import config from "@/config"
 
 export default function SkillsContent() {
+
   return (
     <CardContent className="p-6 transition-colors">
       <div className="space-y-4">
@@ -13,14 +14,13 @@ export default function SkillsContent() {
           <Award className="w-5 h-5 text-slate-500 dark:text-slate-400 mr-2" />
           <h2 className="text-lg font-semibold text-slate-800 dark:text-white">{t("skills.title")}</h2>
         </div>
-
         {config.skills.map((skill, index) => (
           <div key={index} className="space-y-2">
             <div className="flex justify-between items-center">
               <span className="text-slate-700 dark:text-slate-200 font-medium">{skill.name}</span>
               <div className="flex items-center space-x-2">
                 <Badge variant="outline" className="text-xs text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-600">
-                  {t("skills."+skill.category)}
+                  {t("skills." + skill.category)}
                 </Badge>
                 <span className="text-slate-500 dark:text-slate-400 text-sm">{skill.level}%</span>
               </div>
@@ -28,7 +28,6 @@ export default function SkillsContent() {
             <Progress value={skill.level} className="h-2 bg-slate-300 dark:bg-slate-700" />
           </div>
         ))}
-
         <div className="mt-6 p-4 bg-slate-100 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50">
           <h3 className="text-slate-700 dark:text-slate-200 font-medium mb-2">{t("skills.learning")}</h3>
           <div className="flex flex-wrap gap-2">
