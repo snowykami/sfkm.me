@@ -138,36 +138,31 @@ export async function fetchSongFromData(data: AnySongSource): Promise<Song> {
  */
 async function fetchWithRetry<T>(
     fetchFn: () => Promise<T>,
-    maxRetries: number = 3,
-    retryDelay: number = 1000
+    maxRetries: number = 5,
+    retryDelay: number = 200 // 初始为0.2秒
 ): Promise<T> {
     let lastError: unknown;
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
         try {
-            // 第一次尝试或重试
             return await fetchFn();
         } catch (error) {
             lastError = error;
 
-            // 如果已经达到最大重试次数，则不再重试
             if (attempt === maxRetries) {
                 console.error(`达到最大重试次数(${maxRetries})，请求失败:`, error);
                 break;
             }
 
-            // 打印重试信息
             console.warn(`请求失败，${retryDelay / 1000}秒后进行第${attempt + 1}次重试...`, error);
 
-            // 等待一段时间后重试
             await new Promise(resolve => setTimeout(resolve, retryDelay));
 
-            // 每次重试增加延迟时间，实现指数退避
-            retryDelay = Math.min(retryDelay * 1.5, 10000); // 最大不超过10秒
+            // 指数退避：每次乘以1.2的幂
+            retryDelay = Math.min(100 * Math.pow(1.2, attempt + 1), 10000);
         }
     }
 
-    // 所有重试都失败了，抛出最后一个错误
     throw lastError;
 }
 
