@@ -13,10 +13,6 @@ import { t } from "i18next";
 export const WINDOW_ID = "music";
 
 export const musicWindowState: Partial<WindowState> = {
-    size: {
-        width: 1000,
-        height: 700
-    },
     colorScheme: {
         // 窗口和标题栏完全透明
         bg: "bg-transparent",
