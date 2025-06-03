@@ -28,7 +28,7 @@ const PlayerView = ({ wid }: { wid: string }) => {
                             {currentSong?.title || t('music.noplay')}
                         </Marquee>
                     </div>
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-300 overflow-hidden">
+                    <div className="flex flex-wrap gap-4 text-sm text-gray-700 dark:text-gray-300 overflow-hidden">
                         <span className="flex items-center gap-1 min-w-0 overflow-hidden text-ellipsis">
                             <Disc className="w-4 h-4 flex-shrink-0" />
                             <span className="truncate">{currentSong?.album || "--"}</span>

@@ -37,6 +37,8 @@ export const musicWindowState: Partial<WindowState> = {
     }
 };
 
+
+
 export default function Music({ windowId = WINDOW_ID }: AppProps) {
     const { isMobile: isMobileDevice } = useDevice();
     const { isMobileLayout } = useWindowManager();
@@ -101,7 +103,7 @@ export default function Music({ windowId = WINDOW_ID }: AppProps) {
             {/* 主题适应蒙版层 - 亮色时添加冷色调蒙版，暗色时添加暖色调蒙版 */}
             <div className="absolute inset-0 z-1 mix-blend-soft-light bg-blue-100/40 dark:bg-amber-900/40 transition-colors duration-300" />
             {/* 明暗统一调整蒙版 */}
-            <div className="absolute inset-0 z-1 bg-slate-200/60 dark:bg-slate-500/40 backdrop-blur-[2px] transition-colors duration-300" />
+            <div className="absolute inset-0 z-1 bg-slate-200/50 dark:bg-slate-500/40 backdrop-blur-[2px] transition-colors duration-300" />
             {/* 内容层 */}
             <div className="flex flex-col h-full z-10 relative">
                 <PlayerView wid={windowId} />

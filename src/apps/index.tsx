@@ -7,6 +7,7 @@ import FriendsApp from "@/apps/Friends";
 import MusicApp, { WINDOW_ID as musicWindowId, musicWindowState } from "@/apps/Music";
 import Browser from "./Browser";
 import Terminal from "./Terminal";
+import Monitor from "./Monitor";
 import { AppProps } from "./BaseApp";
 import { WindowState } from "@/contexts/WindowManagerContext";
 
@@ -82,4 +83,7 @@ export const apps: AppMeta[] = [
     id: "browser", icon: <Earth className={iconClassName} />, label: "browser.title", entry: Browser,
     windowState: mediumWindowState, showInDock: true
   },
+  // {
+  //   id: "test-empty", icon: <SquareChevronRight className={iconClassName} />, label: "empty.title", entry: Monitor, showInDock: true
+  // }
 ];
