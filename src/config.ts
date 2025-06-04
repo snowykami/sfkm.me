@@ -203,6 +203,7 @@ const config: Config = {
                     nocover: "暂无封面",
                     nolyric: "暂无歌词",
                     noplay: "暂无播放",
+                    nosongs: "暂无歌曲",
                     notitle: "暂无标题",
                     nowPlaying: "现正播放",
                     pause: "暂停",
@@ -212,6 +213,7 @@ const config: Config = {
                     volume: "音量",
                     wiki: "百科",
                     similar: "相似歌曲",
+                    search: "搜索歌曲",
                     mode: {
                         loop: "列表循环",
                         single: "单曲循环",
@@ -441,6 +443,7 @@ const config: Config = {
                     nocover: "No cover",
                     nolyric: "No lyrics",
                     noplay: "No music playing",
+                    nosongs: "No songs",
                     notitle: "No title",
                     nowPlaying: "Now Playing",
                     pause: "Pause",
@@ -450,6 +453,7 @@ const config: Config = {
                     volume: "Volume",
                     wiki: "Wiki",
                     similar: "Similar Songs",
+                    search: "Search Songs",
                     mode: {
                         loop: "Loop All",
                         single: "Repeat One",
@@ -675,6 +679,7 @@ const config: Config = {
                     nocover: "カバーなし",
                     nolyric: "歌詞はありません",
                     noplay: "音楽は再生されていません",
+                    nosongs: "曲はありません",
                     notitle: "タイトルはありません",
                     nowPlaying: "再生中",
                     pause: "一時停止",
@@ -684,6 +689,7 @@ const config: Config = {
                     volume: "音量",
                     wiki: "ウィキ",
                     similar: "類似の曲",
+                    search: "曲を検索",
                     mode: {
                         loop: "リストループ",
                         single: "単曲リピート",

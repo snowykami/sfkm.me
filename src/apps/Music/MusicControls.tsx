@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useMusic } from "@/contexts/MusicContext";
 import { t } from "i18next";
 import { ListMusic, Pause, Play, Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume2 } from "lucide-react";
@@ -52,6 +52,20 @@ export default function MusicControls({ }: MusicControlsProps) {
 
     // 用于跟踪最后一次更新的播放列表
     const lastSongsList = useRef<string>("");
+
+    // 搜索相关状态
+    const [playlistSearch, setPlaylistSearch] = useState("");
+
+    // 搜索过滤后的歌曲列表
+    const filteredSongsList = useMemo(() => {
+        if (!songsList) return null;
+        if (!playlistSearch.trim()) return songsList;
+        const keywords = playlistSearch.trim().toLowerCase().split(/\s+/);
+        return songsList.filter(song => {
+            const text = `${song.title || ""} ${song.artist || ""} ${song.album || ""}`.toLowerCase();
+            return keywords.every(kw => text.includes(kw));
+        });
+    }, [songsList, playlistSearch]);
 
     // 处理点击外部关闭播放列表
     useEffect(() => {
@@ -281,7 +295,7 @@ export default function MusicControls({ }: MusicControlsProps) {
     };
 
     // 记忆当前播放歌曲的索引，避免每次渲染都重新计算
-    const currentSongIndex = songsList ? songsList.findIndex(song => song.src === currentSong?.src) : -1;
+    // const currentSongIndex = songsList ? songsList.findIndex(song => song.src === currentSong?.src) : -1;
 
     return (
         <div className="shrink-0 bg-gray-800/10 dark:bg-stone-300/10">
@@ -422,32 +436,50 @@ export default function MusicControls({ }: MusicControlsProps) {
                             <div className="sticky top-0 bg-white dark:bg-gray-800 p-2 font-bold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 z-10">
                                 {t('music.playlist')}
                             </div>
-                            {songsList === null ? (
+                            {/* 搜索框 */}
+                            <div className="sticky top-8 bg-white dark:bg-gray-800 px-2 py-1 z-10">
+                                <input
+                                    type="text"
+                                    value={playlistSearch}
+                                    onChange={e => setPlaylistSearch(e.target.value)}
+                                    placeholder={t('music.search') || "搜索歌曲/歌手/专辑"}
+                                    className="w-full px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 text-sm outline-none focus:ring-2 focus:ring-blue-400"
+                                />
+                            </div>
+                            {filteredSongsList === null ? (
                                 <div className="p-2 text-center text-gray-500 dark:text-gray-400">
                                     {t('music.loading')}...
                                 </div>
-                            ) : songsList.length === 0 ? (
+                            ) : filteredSongsList.length === 0 ? (
                                 <div className="p-2 text-center text-gray-500 dark:text-gray-400">
                                     {t('music.nosongs')}
                                 </div>
                             ) : (
                                 <ul>
-                                    {songsList.map((song, index) => {
-                                        const isCurrentSong = index === currentSongIndex;
+                                    {filteredSongsList.map((song, index) => {
+                                        // 需要修正 currentSongIndex 的判断
+                                        const isCurrentSong = song.src === currentSong?.src;
                                         const isLoading = isLoadingSong(song);
 
                                         return (
                                             <li
-                                                key={index}
-                                                ref={el => { playlistItemRefs.current[index] = el; }}
+                                                key={song.id || index}
+                                                ref={el => {
+                                                    // 只在原始 songsList 里有的才赋值
+                                                    const origIdx = songsList?.findIndex(s => s.src === song.src);
+                                                    if (origIdx !== undefined && origIdx >= 0) playlistItemRefs.current[origIdx] = el;
+                                                }}
                                                 className={`p-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${isCurrentSong
-                                                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
-                                                        : 'text-gray-800 dark:text-gray-200'
+                                                    ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
+                                                    : 'text-gray-800 dark:text-gray-200'
                                                     }`}
-                                                onClick={() => handlePlaylistItemClick(index)}
+                                                onClick={() => {
+                                                    // 需要用原始 songsList 的索引
+                                                    const origIdx = songsList?.findIndex(s => s.src === song.src) ?? -1;
+                                                    if (origIdx >= 0) handlePlaylistItemClick(origIdx);
+                                                }}
                                                 style={!isLoading ? {} : { opacity: 0.5, pointerEvents: "none" }}
                                             >
-                                                {/* 只对当前播放歌曲使用 Marquee */}
                                                 {isCurrentSong ? (
                                                     <Marquee pauseBeforeRepeatSec={1.5} speedPxPerSec={40}>
                                                         {song.title || t('music.notitle')} - {song.artist || t('music.noartist')}
