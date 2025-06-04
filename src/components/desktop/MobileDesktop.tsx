@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useApps } from "@/contexts/AppContext";
 import { t } from "i18next";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Home, X } from "lucide-react";
 import MobileWindow from "../windows/MobileWindow";
 import { useDevice } from "@/contexts/DeviceContext";
 import config from "@/config";
@@ -238,10 +238,32 @@ export default function MobileDesktop() {
             </div>
             {/* 页面指示器，绝对定位在窗口底部 */}
             <div className="absolute left-1/2 bottom-1 transform -translate-x-1/2 z-50 flex space-x-2">
+                {/* 桌面按钮 */}
+                <button
+                    onClick={() => {
+                        setCurrentIndex(null);
+                        window.location.hash = "#home";
+                    }}
+                    className={`
+            w-2 h-2 flex items-center justify-center rounded-full transition-colors
+            ${currentIndex === null
+                            ? "bg-slate-800 dark:bg-slate-300 text-white dark:text-slate-800"
+                            : "bg-slate-400 dark:bg-slate-600 text-white"}
+            focus:outline-none
+        `}
+                    style={{ cursor: "pointer" }}
+                    aria-label="回到桌面"
+                >
+                    <Home className="w-1.5 h-1.5" />
+                </button>
+                {/* 其它页面指示器 */}
                 {apps.map((_, index) => (
                     <button
                         key={index}
-                        onClick={() => setCurrentIndex(index)}
+                        onClick={() => {
+                            setCurrentIndex(index);
+                            window.location.hash = apps[index].id;
+                        }}
                         className={`
                 w-2 h-2 rounded-full transition-colors
                 ${index === currentIndex

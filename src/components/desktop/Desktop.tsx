@@ -30,8 +30,8 @@ async function getBackground(ctx: BackgroundContext): Promise<string | undefined
 }
 
 
-const WINDOW_MARGIN = 20; // 窗口移出后保留在视图内的边距
-const DOCK_HEIGHT = 80; // Dock 的大致高度，根据实际情况调整
+const WINDOW_MARGIN = 10; // 窗口移出后保留在视图内的边距
+const DOCK_HEIGHT = 120; // Dock 的大致高度，根据实际情况调整
 
 export function PCDesktop() {
     const { windows, openWindow, bringToFront, updateWindow } = useWindowManager();
@@ -203,6 +203,8 @@ export function PCDesktop() {
                                             showClose={win.showClose}
                                             showMinimize={win.showMinimize}
                                             showMaximize={win.showMaximize}
+                                            windowMargin={WINDOW_MARGIN}
+                                            dockHeight={DOCK_HEIGHT+WINDOW_MARGIN} // 调整 Dock 高度以适应顶部栏
                                         >
                                             {win.customRender()}
                                         </MacOSWindow>
@@ -222,6 +224,8 @@ export function PCDesktop() {
                                         showClose={win.showClose}
                                         showMinimize={win.showMinimize}
                                         showMaximize={win.showMaximize}
+                                        windowMargin={WINDOW_MARGIN}
+                                        dockHeight={DOCK_HEIGHT+WINDOW_MARGIN} // 调整 Dock 高度以适应顶部栏
                                     >
                                         <Entry
                                             windowId={win.id}
