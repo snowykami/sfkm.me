@@ -47,11 +47,11 @@ export const MobileWindow: React.FC<MobileWindowProps> = ({
   `}
                 >
                     {scrollable ? (
-                        <div className="flex-1 overflow-y-auto text-slate-800 dark:text-slate-200 pb-0">
+                        <div className="flex-1 overflow-y-auto text-slate-800 dark:text-slate-200 pb-4">
                             {children}
                         </div>
                     ) : (
-                        <div className="flex-1 text-slate-800 dark:text-slate-200 pb-0">
+                        <div className="flex-1 text-slate-800 dark:text-slate-200 pb-4">
                             {children}
                         </div>
                     )}
