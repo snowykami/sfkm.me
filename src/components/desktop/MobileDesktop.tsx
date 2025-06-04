@@ -32,23 +32,31 @@ export default function MobileDesktop() {
     // 页面加载时根据 hash 自动打开
     useEffect(() => {
         if (!isMobile) return;
-        const hash = window.location.hash.replace(/^#/, "");
-        let idx = -1;
-        if (hash === "home") {
-            setCurrentIndex(null); // home 路由显示桌面
-            setWindowAnim(null);
-            return;
-        }
-        if (hash) {
-            idx = apps.findIndex(app => app.id === hash);
-        }
-        if (idx >= 0) {
-            setCurrentIndex(idx);
-            setWindowAnim("in");
-        } else {
-            // 没有 hash 或找不到，默认跳到 #profile
-            window.location.hash = "#profile";
-        }
+
+        const handleHashChange = () => {
+            const hash = window.location.hash.replace(/^#/, "");
+            let idx = -1;
+            if (hash === "home") {
+                setCurrentIndex(null);
+                setWindowAnim(null);
+                return;
+            }
+            if (hash) {
+                idx = apps.findIndex(app => app.id === hash);
+            }
+            if (idx >= 0) {
+                setCurrentIndex(idx);
+                setWindowAnim("in");
+            } else {
+                window.location.hash = "#profile";
+            }
+        };
+
+        // 初始执行一次
+        handleHashChange();
+
+        window.addEventListener("hashchange", handleHashChange);
+        return () => window.removeEventListener("hashchange", handleHashChange);
     }, [apps, isMobile]);
 
     // 进入窗口时自动淡入
@@ -129,26 +137,34 @@ export default function MobileDesktop() {
     if (currentIndex === null) {
         return (
             <div
-                className="fixed inset-0 bg-slate-100/90 dark:bg-slate-900/95 backdrop-blur-md z-40 px-4 pt-12 transition-all duration-300"
+                className="fixed inset-0 bg-slate-100/90 dark:bg-slate-900/95 backdrop-blur-md z-40 px-4 pt-0 transition-all duration-300"
                 style={{
                     backgroundImage: background,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                 }}
             >
-                <div className="flex flex-wrap gap-4 mt-8 justify-center">
-                    {apps.map((app, idx) => (
-                        <div key={app.id} className="flex flex-col items-center">
-                            <button
-                                className={`w-16 h-16 rounded-xl flex items-center justify-center bg-white/90 dark:bg-slate-800/90 shadow transition-transform duration-300 ${isOpening ? "scale-110 opacity-0" : "scale-100 opacity-100"
-                                    }`}
-                                onClick={() => handleAppClick(idx)}
-                            >
-                                {app.icon}
-                            </button>
-                            <span className="text-xs mt-2 text-white dark:text-slate-200 drop-shadow">{t(app.label) || app.id}</span>
-                        </div>
-                    ))}
+                <div className="flex flex-wrap gap-4 mt-4 justify-center">
+                    <div className="flex flex-wrap gap-4 mt-8 justify-center">
+                        {apps.map((app, idx) => (
+                            <div key={app.id} className="flex flex-col items-center w-16">
+                                <button
+                                    className={`w-15 h-15 rounded-xl flex items-center justify-center bg-white/90 dark:bg-slate-800/90 shadow transition-transform duration-300 ${isOpening ? "scale-110 opacity-0" : "scale-100 opacity-100"}`}
+                                    onClick={() => handleAppClick(idx)}
+                                >
+                                    {app.icon}
+                                </button>
+                                <span
+                                    className="relative block w-16 text-xs mt-2 text-white dark:text-slate-200 drop-shadow-lg truncate text-center"
+                                    style={{ lineHeight: "1.2" }}
+                                    title={t(app.label) || app.id}
+                                >
+                                    <span className="absolute inset-0 left-0 right-0 bottom-0 w-full h-full bg-black/50 rounded px-1 pointer-events-none" aria-hidden="true"></span>
+                                    <span className="relative z-10">{t(app.label) || app.id}</span>
+                                </span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         );
@@ -174,7 +190,7 @@ export default function MobileDesktop() {
                 <button
                     onClick={goToPrevious}
                     disabled={currentIndex === 0}
-                    className="p-2 rounded-lg bg-slate-300/50 dark:bg-slate-700/50 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-200/50 dark:hover:bg-slate-600/50 transition-colors"
+                    className="p-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-200/50 dark:hover:bg-slate-600/50 transition-colors"
                 >
                     <ChevronLeft className="w-5 h-5 text-slate-800 dark:text-slate-300" />
                 </button>
@@ -186,7 +202,7 @@ export default function MobileDesktop() {
                 <button
                     onClick={goToNext}
                     disabled={currentIndex === apps.length - 1}
-                    className="p-2 rounded-lg bg-slate-300/50 dark:bg-slate-700/50 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-200/50 dark:hover:bg-slate-600/50 transition-colors"
+                    className="p-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-200/50 dark:hover:bg-slate-600/50 transition-colors"
                 >
                     <ChevronRight className="w-5 h-5 text-slate-800 dark:text-slate-300" />
                 </button>
@@ -194,7 +210,7 @@ export default function MobileDesktop() {
 
             {/* 滑动窗口区域 */}
             <div
-                className="flex-1 flex transition-transform duration-300 ease-out pb-4 overflow-y-auto"
+                className="flex-1 flex transition-transform duration-300 ease-out pb-0 overflow-y-auto"
                 style={{
                     transform: `translateX(-${slidePercentage}%)`,
                     width: `${apps.length * 100}%`,
@@ -206,7 +222,7 @@ export default function MobileDesktop() {
                 {apps.map((app, idx) => (
                     <div
                         key={app.id}
-                        className="h-full flex-shrink-0"
+                        className="h-full flex-shrink-0 relative" // 这里加 relative
                         style={{ width: `${100 / apps.length}%` }}
                     >
                         <MobileWindow
@@ -216,25 +232,29 @@ export default function MobileDesktop() {
                         >
                             <app.entry windowId={app.id} />
                         </MobileWindow>
+
                     </div>
                 ))}
             </div>
-            {/* 页面指示器 */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 bottom-1 z-50 flex space-x-2">
+            {/* 页面指示器，绝对定位在窗口底部 */}
+            <div className="absolute left-1/2 bottom-1 transform -translate-x-1/2 z-50 flex space-x-2">
                 {apps.map((_, index) => (
                     <button
                         key={index}
-                        onClick={() => {
-                            setCurrentIndex(index);
-                            window.location.hash = apps[index].id;
-                        }}
-                        className={`w-2 h-2 rounded-full transition-colors ${index === currentIndex
-                            ? "bg-slate-800 dark:bg-slate-300"
-                            : "bg-slate-400 dark:bg-slate-600"
-                            }`}
+                        onClick={() => setCurrentIndex(index)}
+                        className={`
+                w-2 h-2 rounded-full transition-colors
+                ${index === currentIndex
+                                ? "bg-slate-800 dark:bg-slate-300"
+                                : "bg-slate-400 dark:bg-slate-600"}
+                focus:outline-none
+            `}
+                        style={{ cursor: "pointer" }}
+                        aria-label={`切换到第${index + 1}页`}
                     />
                 ))}
             </div>
+
 
             {/* 统一关闭按钮 */}
             <div className="fixed bottom-1 left-19/20 z-[9999]" style={{ transform: "translateX(-50%)" }}>
