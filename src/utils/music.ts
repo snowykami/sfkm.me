@@ -174,34 +174,51 @@ async function fetchWithRetry<T>(
 export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
     return async () => {
         console.log(`[Music] 懒加载网易云音乐 URL: ${mid}`);
-        // 定义实际的请求函数
-        const fetchUrl = async (): Promise<string> => {
+
+        // 第一个接口（不重试）
+        const fetchFromYpm = async (): Promise<string> => {
             const response = await fetch(`https://ypm.liteyuki.org/api/song/url?id=${mid}`);
-            if (!response.ok) {
-                throw new Error(`获取网易云音乐URL失败: HTTP ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`获取网易云音乐URL失败: HTTP ${response.status}`);
             const data = await response.json();
-            if (!data || !data.data || !data.data[0] || !data.data[0].url) {
-                console.error("API返回数据结构不符合预期:", data);
-                throw new Error('获取网易云音乐URL失败: 数据结构不完整');
-            }
-            // 确保使用 HTTPS URL
+            if (!data || !data.data || !data.data[0] || !data.data[0].url) throw new Error('获取网易云音乐URL失败: 数据结构不完整');
             const url = data.data[0].url.replace("http://", "https://");
-            if (!url || typeof url !== 'string' || !url.startsWith('http')) {
-                console.error("API返回的URL无效:", url);
-                throw new Error(`无效的音频 URL: ${url}`);
-            }
+            if (!url || typeof url !== 'string' || !url.startsWith('http')) throw new Error(`无效的音频 URL: ${url}`);
             return url;
         };
 
+        // 第二个接口（带重试）
+        const fetchFromBackup = async (): Promise<string> => {
+            const fetchUrl = async (): Promise<string> => {
+                const response = await fetch(`https://music.api.liteyuki.org/music/?action=netease&module=get_url&mids=${mid}`);
+                if (!response.ok) throw new Error(`备用接口获取网易云音乐URL失败: HTTP ${response.status}`);
+                const data = await response.json();
+                if (!data || !data.data || !data.data[0] || !data.data[0].url) throw new Error('备用接口获取网易云音乐URL失败: 数据结构不完整');
+                const url = data.data[0].url.replace("http://", "https://");
+                if (!url || typeof url !== 'string' || !url.startsWith('http')) throw new Error(`备用接口返回无效的音频 URL: ${url}`);
+                return url;
+            };
+            return await fetchWithRetry(fetchUrl, 3, 1000);
+        };
+
         try {
-            // 使用重试函数执行请求
-            const url = await fetchWithRetry(fetchUrl, 3, 1000);
-            console.log(`[Music] 网易云音乐URL加载成功: ${url.substring(0, 50)}...`);
-            return url;
+            // 只请求一次第一个接口
+            const url = await fetchFromYpm();
+            if (url.includes("music.126")) {
+                console.log(`[Music] 网易云音乐URL加载成功: ${url.substring(0, 50)}...`);
+                return url;
+            } else {
+                // url 不包含 music.126，立即用备用接口
+                console.warn("[Music] 第一个接口返回的URL不包含 music.126，尝试备用接口");
+                const backupUrl = await fetchFromBackup();
+                console.log(`[Music] 网易云音乐URL(备用)加载成功: ${backupUrl.substring(0, 50)}...`);
+                return backupUrl;
+            }
         } catch (error) {
-            console.error(`[Music] 获取网易云音乐URL失败(所有重试均失败):`, error);
-            throw error; // 重新抛出错误以便上层处理
+            // 第一个接口失败，直接用备用接口
+            console.warn("[Music] 第一个接口失败，尝试备用接口", error);
+            const backupUrl = await fetchFromBackup();
+            console.log(`[Music] 网易云音乐URL(备用)加载成功: ${backupUrl.substring(0, 50)}...`);
+            return backupUrl;
         }
     };
 }
