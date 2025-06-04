@@ -17,8 +17,8 @@ export default function MobileDesktop() {
 
     const [windowAnim, setWindowAnim] = useState<"in" | "out" | null>(null);
     const [background, setBackground] = React.useState<string | undefined>();
-    const [dragOffset, setDragOffset] = useState(0);
-    const [isDragging, setIsDragging] = useState(false);
+    const [, setDragOffset] = useState(0);
+    const [, setIsDragging] = useState(false);
 
     // 动态背景
     useEffect(() => {
