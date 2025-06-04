@@ -87,16 +87,16 @@ export default function LyricScroller({ wid }: { wid: string }) {
               key={line.time + line.text + idx}
               ref={el => { lineRefs.current[idx] = el; }}
               className={`
-            ${isMobile ? "text-center" : "text-left"}
-            select-none px-2 py-0.5 rounded
-            transition-all duration-500 ease-[cubic-bezier(.4,2,.6,1)]
-            w-full
-            ${idx === currentLrcLine
-                  ? "text-blue-500 dark:text-blue-400 font-bold " + (isMobile ? "text-1xl" : "text-2xl") + " bg-blue-300/40 dark:bg-blue-400/20"
-                  : "text-slate-800 dark:text-slate-200 font-normal text-1xl"
+    ${isMobile ? "text-center" : "text-left"}
+    select-none px-2 py-0.5 rounded
+    transition-all duration-500 ease-[cubic-bezier(.4,2,.6,1)]
+    w-full
+    ${idx === currentLrcLine
+                  ? "text-blue-500 dark:text-blue-400 font-bold text-xl bg-blue-300/40 dark:bg-blue-400/20"
+                  : "text-slate-800 dark:text-slate-200 font-normal text-xl"
                 }
-            ${style}
-          `}
+    ${style}
+  `}
               style={{
                 filter: idx === currentLrcLine ? "drop-shadow(0 2px 8px #60a5fa44)" : undefined,
               }}
