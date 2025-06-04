@@ -5,15 +5,28 @@ import { t } from "i18next";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import MobileWindow from "../windows/MobileWindow";
 import { useDevice } from "@/contexts/DeviceContext";
+import config from "@/config";
 
 export default function MobileDesktop() {
     const { apps } = useApps();
     const { isMobile, mode } = useDevice();
     const [currentIndex, setCurrentIndex] = useState<number | null>(null);
-    const [isOpening, setIsOpening] = useState(false); // 新增状态：控制打开动画
+    const [isOpening, setIsOpening] = useState(false); // 控制桌面图标动画
     const [touchStart, setTouchStart] = useState(0);
     const [touchEnd, setTouchEnd] = useState(0);
-    const [, setIsDragging] = useState(false); // 用于区分滑动和点击
+    const [, setIsDragging] = useState(false);
+
+    const [windowAnim, setWindowAnim] = useState<"in" | "out" | null>(null);
+    const [background, setBackground] = React.useState<string | undefined>();
+
+    // 动态背景
+    useEffect(() => {
+        let mounted = true;
+        Promise.resolve(config.background?.({ isMobile, mode })).then(bg => {
+            if (mounted) setBackground(bg as string);
+        });
+        return () => { mounted = false; };
+    }, [isMobile, mode]);
 
     // 页面加载时根据 hash 自动打开
     useEffect(() => {
@@ -25,66 +38,70 @@ export default function MobileDesktop() {
         }
         if (idx >= 0) {
             setCurrentIndex(idx);
+            setWindowAnim("in");
         } else {
             const profileIdx = apps.findIndex(app => app.id === "profile");
             setCurrentIndex(profileIdx >= 0 ? profileIdx : null);
+            setWindowAnim("in");
         }
     }, [apps, isMobile]);
+
+    // 进入窗口时自动淡入
+    useEffect(() => {
+        if (currentIndex !== null) setWindowAnim("in");
+    }, [currentIndex]);
 
     if (!isMobile) return null;
 
     // 滑动手势
     const handleTouchStart = (e: React.TouchEvent) => {
         setTouchStart(e.targetTouches[0].clientX);
-        setTouchEnd(e.targetTouches[0].clientX); // 初始化 touchEnd，防止未滑动时触发误判
-        setIsDragging(false); // 初始化拖动状态
+        setTouchEnd(e.targetTouches[0].clientX);
+        setIsDragging(false);
     };
 
     const handleTouchMove = (e: React.TouchEvent) => {
         setTouchEnd(e.targetTouches[0].clientX);
         if (Math.abs(touchStart - e.targetTouches[0].clientX) > 10) {
-            setIsDragging(true); // 如果滑动距离超过 10px，标记为拖动
+            setIsDragging(true);
         }
     };
 
     const handleTouchEnd = () => {
         if (currentIndex === null) return;
         const distance = touchStart - touchEnd;
-
-        // 判断滑动距离是否超过阈值
         if (distance > 50 && currentIndex < apps.length - 1) {
             setCurrentIndex(currentIndex + 1);
         } else if (distance < -50 && currentIndex > 0) {
             setCurrentIndex(currentIndex - 1);
         }
-
         setTouchStart(0);
         setTouchEnd(0);
-        setIsDragging(false); // 重置拖动状态
+        setIsDragging(false);
     };
 
+    // 桌面图标点击
     const handleAppClick = (idx: number) => {
-        setIsOpening(true); // 开始动画
+        setIsOpening(true);
         setTimeout(() => {
+            setWindowAnim("in");
             setCurrentIndex(idx);
             window.location.hash = apps[idx].id;
-            setIsOpening(false); // 动画结束后重置状态
-        }, 300); // 动画持续时间
+            setIsOpening(false);
+        }, 300); // 图标动画时长
     };
 
+    // 上/下切换
     const goToPrevious = () => {
         if (currentIndex !== null && currentIndex > 0) {
-            const newIndex = currentIndex - 1;
-            setCurrentIndex(newIndex);
-            window.location.hash = apps[newIndex].id; // 更新哈希
+            setCurrentIndex(currentIndex - 1);
+            window.location.hash = apps[currentIndex - 1].id;
         }
     };
-
     const goToNext = () => {
         if (currentIndex !== null && currentIndex < apps.length - 1) {
-            const newIndex = currentIndex + 1;
-            setCurrentIndex(newIndex);
-            window.location.hash = apps[newIndex].id; // 更新哈希
+            setCurrentIndex(currentIndex + 1);
+            window.location.hash = apps[currentIndex + 1].id;
         }
     };
 
@@ -93,33 +110,57 @@ export default function MobileDesktop() {
 
     // 关闭按钮
     const handleClose = () => {
-        setCurrentIndex(null); // 回到桌面
-        window.location.hash = ""; // 清除 hash
+        setWindowAnim("out");
+        setTimeout(() => {
+            setCurrentIndex(null);
+            window.location.hash = "";
+        }, 300); // 动画时长
     };
 
     // 桌面视图部分
     if (currentIndex === null) {
         return (
-            <div className="fixed inset-0 bg-slate-100/90 dark:bg-slate-900/95 backdrop-blur-md z-40 px-4 pt-12">
+            <div
+                className="fixed inset-0 bg-slate-100/90 dark:bg-slate-900/95 backdrop-blur-md z-40 px-4 pt-12 transition-all duration-300"
+                style={{
+                    backgroundImage: background,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                }}
+            >
                 <div className="flex flex-wrap gap-4 mt-8 justify-center">
                     {apps.map((app, idx) => (
-                        <button
-                            key={app.id}
-                            className={`w-16 h-16 rounded-xl flex flex-col items-center justify-center bg-white/80 dark:bg-slate-800/80 shadow transition-transform duration-300 ${isOpening ? "scale-110 opacity-0" : "scale-100 opacity-100"
-                                }`}
-                            onClick={() => handleAppClick(idx)}
-                        >
-                            {app.icon}
-                            <span className="text-xs mt-1">{t(app.label) || app.id}</span>
-                        </button>
+                        <div key={app.id} className="flex flex-col items-center">
+                            <button
+                                className={`w-16 h-16 rounded-xl flex items-center justify-center bg-white/80 dark:bg-slate-800/80 shadow transition-transform duration-300 ${isOpening ? "scale-110 opacity-0" : "scale-100 opacity-100"
+                                    }`}
+                                onClick={() => handleAppClick(idx)}
+                            >
+                                {app.icon}
+                            </button>
+                            <span className="text-xs mt-2 text-white dark:text-slate-200 drop-shadow">{t(app.label) || app.id}</span>
+                        </div>
                     ))}
                 </div>
             </div>
         );
     }
 
+    // 窗口视图部分（加动画）
     return (
-        <div className="fixed inset-0 bg-slate-100/90 dark:bg-slate-900/95 backdrop-blur-md z-40 flex flex-col">
+        <div
+            className={`
+                fixed inset-0 bg-slate-100/90 dark:bg-slate-900/95 backdrop-blur-md z-40 flex flex-col
+                transition-all duration-300
+                ${windowAnim === "in" ? "opacity-100 scale-100 pointer-events-auto" : ""}
+                ${windowAnim === "out" ? "opacity-0 scale-95 pointer-events-none" : ""}
+            `}
+            style={{
+                backgroundImage: background,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+            }}
+        >
             {/* 顶部标题栏 */}
             <div className="bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm border-b border-slate-300/60 dark:border-slate-700/50 px-4 py-2 flex items-center justify-between">
                 <button
@@ -152,7 +193,6 @@ export default function MobileDesktop() {
                 }}
                 onTouchStart={handleTouchStart}
                 onTouchMove={(e) => {
-                    // 只处理横向滑动，忽略纵向滑动
                     if (Math.abs(e.targetTouches[0].clientX - touchStart) > Math.abs(e.targetTouches[0].clientY - touchStart)) {
                         handleTouchMove(e);
                     }
@@ -168,7 +208,7 @@ export default function MobileDesktop() {
                         <MobileWindow
                             id={app.id}
                             visible={currentIndex === idx}
-                            scrollable={true} // 确保窗口内部可滚动
+                            scrollable={true}
                         >
                             <app.entry windowId={app.id} />
                         </MobileWindow>
