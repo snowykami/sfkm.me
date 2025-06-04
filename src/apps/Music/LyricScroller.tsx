@@ -73,10 +73,9 @@ export default function LyricScroller({ wid }: { wid: string }) {
           let style = "";
           if (offset === 0) {
             // 当前行
-            style = "opacity-100 scale-100 translate-y-0 z-10";
+            style = "opacity-100 scale-90 translate-y-0 z-10";
           } else if (Math.abs(offset) === 1) {
-            // 上下相邻
-            style = "opacity-70 scale-95 " + (offset > 0 ? "translate-y-4" : "-translate-y-4") + " z-0";
+            style = "opacity-70 scale-90 " + (offset > 0 ? "translate-y-4" : "-translate-y-4") + " z-0";
           } else if (Math.abs(offset) === 2) {
             style = "opacity-40 scale-90 " + (offset > 0 ? "translate-y-8" : "-translate-y-8") + " z-0";
           } else {
@@ -92,8 +91,8 @@ export default function LyricScroller({ wid }: { wid: string }) {
             transition-all duration-500 ease-[cubic-bezier(.4,2,.6,1)]
             w-full
             ${idx === currentLrcLine
-                  ? "text-blue-500 dark:text-blue-400 font-bold " + (isMobile ? "text-1xl" : "text-2xl") + " bg-blue-300/40 dark:bg-blue-400/20"
-                  : "text-slate-800 dark:text-slate-200 font-normal text-1xl"
+                  ? "text-blue-500 dark:text-blue-400 font-bold text-[1.35rem] bg-blue-300/40 dark:bg-blue-400/20"
+                  : "text-slate-800 dark:text-slate-200 font-normal text-[1.25rem]"
                 }
             ${style}
           `}
