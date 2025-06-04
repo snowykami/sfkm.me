@@ -208,16 +208,16 @@ export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
                 return url;
             } else {
                 // url 不包含 music.126，立即用备用接口
-                console.warn("[Music] 第一个接口返回的URL不包含 music.126，尝试备用接口");
+                console.warn("[Music] liteyuki接口返回的URL不包含 music.126，尝试ffmpeg备用接口:", url);
                 const backupUrl = await fetchFromBackup();
-                console.log(`[Music] 网易云音乐URL(备用)加载成功: ${backupUrl.substring(0, 50)}...`);
+                console.log(`[Music] 网易云音乐URL(ffmpeg)加载成功: ${backupUrl.substring(0, 50)}...`);
                 return backupUrl;
             }
         } catch (error) {
             // 第一个接口失败，直接用备用接口
             console.warn("[Music] 第一个接口失败，尝试备用接口", error);
             const backupUrl = await fetchFromBackup();
-            console.log(`[Music] 网易云音乐URL(备用)加载成功: ${backupUrl.substring(0, 50)}...`);
+            console.log(`[Music] 网易云音乐URL(ffmpeg)加载成功: ${backupUrl.substring(0, 50)}...`);
             return backupUrl;
         }
     };

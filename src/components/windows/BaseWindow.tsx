@@ -24,8 +24,11 @@ export interface BaseWindowProps {
   onDragStop?: RndDragCallback;
   onResizeStop?: RndResizeCallback;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
+  dockHeight?: number; // 可选的停靠栏高度
+  windowMargin?: number; // 窗口边距
   dragHandleClassName?: string;
   children?: React.ReactNode;
+  
 }
 
 interface PreMaximizeState {
@@ -52,9 +55,10 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
   onResizeStop,
   onClick,
   dragHandleClassName,
+  dockHeight = 0, // 默认停靠栏顶部绝对高度
+  windowMargin = 0, // 窗口边距
   children,
 }) => {
-
   const windowManager = useWindowManager?.();
   const win =
     id && windowManager
@@ -84,14 +88,12 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
     }
   }, [visible]);
 
-  const WINDOW_MARGIN = 8;
-
   const maximizedStyle = (win?.maximized ?? maximized)
     ? {
-      x: WINDOW_MARGIN,
-      y: WINDOW_MARGIN,
-      width: window.innerWidth - WINDOW_MARGIN * 2,
-      height: window.innerHeight - WINDOW_MARGIN * 2,
+      x: windowMargin,
+      y: windowMargin,
+      width: window.innerWidth - windowMargin * 2,
+      height: window.innerHeight - windowMargin * 2 - dockHeight,
     }
     : {
       x: win?.position?.x ?? position.x,
@@ -105,7 +107,7 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
   const rndRef = useRef<RndType | null>(null);
   const handleDrag: RndDragCallback = (_e, d) => {
     if ((win?.maximized ?? maximized)) return;
-    if (d.y <= WINDOW_MARGIN) {
+    if (d.y <= windowMargin) {
       setShowMaximizeHint(true);
     } else {
       setShowMaximizeHint(false);
@@ -152,7 +154,7 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
     if (!win?.maximized && preMaximize && rndRef.current) {
       const mouse = preMaximize.mouseOffset;
       const newX = Math.max(0, (window.innerWidth / 2) - (preMaximize.size.width / 2));
-      const newY = Math.max(WINDOW_MARGIN, mouse.y - preMaximize.size.height / 2);
+      const newY = Math.max(windowMargin, mouse.y - preMaximize.size.height / 2);
       rndRef.current.updatePosition({ x: newX, y: newY });
       rndRef.current.updateSize({ width: preMaximize.size.width, height: preMaximize.size.height });
       setPreMaximize(null);
@@ -166,7 +168,7 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
         setSize({ width: preMaximize.size.width, height: preMaximize.size.height });
       }
     }
-  }, [win?.maximized, preMaximize, id, windowManager, size.width, size.height]);
+  }, [win?.maximized, preMaximize, id, windowManager, size.width, size.height, windowMargin]);
   if (!shouldRender) return null;
   // 移动端下直接全屏
   const rndSize = isMobile
