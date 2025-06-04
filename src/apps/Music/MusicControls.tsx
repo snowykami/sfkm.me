@@ -2,10 +2,12 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useMusic } from "@/contexts/MusicContext";
+import { useDevice } from "@/contexts/DeviceContext";
 import { t } from "i18next";
 import { ListMusic, Pause, Play, Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume2 } from "lucide-react";
 import { Marquee } from "@/components/ui/Marquee";
 import { Song } from "@/types/music";
+import { deriveLyricThemeColors } from "@/utils/color";
 
 // 加载中的歌曲常量
 const LOADING_SONG: Song = {
@@ -66,6 +68,26 @@ export default function MusicControls({ }: MusicControlsProps) {
             return keywords.every(kw => text.includes(kw));
         });
     }, [songsList, playlistSearch]);
+
+    // 进度条颜色 控制区
+    const { getAlbumCoverColor } = useMusic();
+    const { mode } = useDevice();
+    const [progressTheme, setProgressTheme] = useState({
+        day: "#000",
+        night: "#000",
+    });
+    // 主题色衍生切换
+    useEffect(() => {
+        let mounted = true;
+        getAlbumCoverColor().then(color => {
+            if (!mounted) return;
+            setProgressTheme({
+                day: deriveLyricThemeColors(color).dayProgress,
+                night: deriveLyricThemeColors(color).nightProgress, // 使用 deriveLyricThemeColors 获取夜间主题色
+            });
+        });
+        return () => { mounted = false; };
+    }, [getAlbumCoverColor]);
 
     // 处理点击外部关闭播放列表
     useEffect(() => {
@@ -328,7 +350,7 @@ export default function MusicControls({ }: MusicControlsProps) {
                 [&::-ms-fill-upper]:bg-blue-600
             `}
                     style={{
-                        accentColor: "#3b82f6",
+                        accentColor: mode === "dark" ? progressTheme.night : progressTheme.day,
                     }}
                 />
                 {/* 进度条背景 */}
@@ -338,9 +360,10 @@ export default function MusicControls({ }: MusicControlsProps) {
                 />
                 {/* 已播放进度 */}
                 <div
-                    className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-blue-500 rounded-full pointer-events-none"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 h-1 rounded-full pointer-events-none"
                     style={{
                         width: duration > 0 ? `${(currentTime / duration) * 100}%` : "0%",
+                        backgroundColor: mode === "dark" ? progressTheme.night : progressTheme.day,
                     }}
                     aria-hidden
                 />
