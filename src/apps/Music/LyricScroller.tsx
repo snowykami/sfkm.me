@@ -75,11 +75,11 @@ export default function LyricScroller({ wid }: { wid: string }) {
             // 当前行
             style = "opacity-100 scale-90 translate-y-0 z-10";
           } else if (Math.abs(offset) === 1) {
-            style = "opacity-70 scale-90 " + (offset > 0 ? "translate-y-4" : "-translate-y-4") + " z-0";
+            style = "opacity-80 scale-90 " + (offset > 0 ? "translate-y-4" : "-translate-y-4") + " z-0";
           } else if (Math.abs(offset) === 2) {
-            style = "opacity-40 scale-90 " + (offset > 0 ? "translate-y-8" : "-translate-y-8") + " z-0";
+            style = "opacity-60 scale-90 " + (offset > 0 ? "translate-y-8" : "-translate-y-8") + " z-0";
           } else {
-            style = "opacity-20 scale-90 " + (offset > 0 ? "translate-y-12" : "-translate-y-12") + " z-0";
+            style = "opacity-40 scale-90 " + (offset > 0 ? "translate-y-12" : "-translate-y-12") + " z-0";
           }
           return (
             <div
