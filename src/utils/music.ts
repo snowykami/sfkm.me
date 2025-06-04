@@ -174,30 +174,23 @@ async function fetchWithRetry<T>(
 export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
     return async () => {
         console.log(`[Music] 懒加载网易云音乐 URL: ${mid}`);
-
         // 定义实际的请求函数
         const fetchUrl = async (): Promise<string> => {
-            const response = await fetch(`https://music.api.liteyuki.org/music/?action=netease&module=get_url&mids=${mid}`);
-
+            const response = await fetch(`https://ypm.liteyuki.org/api/song/url?id=${mid}`);
             if (!response.ok) {
                 throw new Error(`获取网易云音乐URL失败: HTTP ${response.status}`);
             }
-
             const data = await response.json();
-
             if (!data || !data.data || !data.data[0] || !data.data[0].url) {
                 console.error("API返回数据结构不符合预期:", data);
                 throw new Error('获取网易云音乐URL失败: 数据结构不完整');
             }
-
             // 确保使用 HTTPS URL
             const url = data.data[0].url.replace("http://", "https://");
-
             if (!url || typeof url !== 'string' || !url.startsWith('http')) {
                 console.error("API返回的URL无效:", url);
                 throw new Error(`无效的音频 URL: ${url}`);
             }
-
             return url;
         };
 
