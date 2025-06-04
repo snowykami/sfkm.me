@@ -23,12 +23,15 @@ const PlayerView = ({ wid }: { wid: string }) => {
             <div className="flex-1 p-4 flex flex-col min-h-0 max-w-full overflow-hidden">
                 {/* 歌曲信息区（顶部） */}
                 <div className={`mb-4 ${isMobile ? "mt-0" : "mt-2"} max-w-full`}>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white mb-2 w-full overflow-hidden">
+                    <div className={`text-2xl font-bold text-gray-900 dark:text-white mb-2 w-full overflow-hidden ${isMobile ? "text-center" : "text-left"}`}>
                         <Marquee pauseBeforeRepeatSec={1.5} speedPxPerSec={40}>
                             {currentSong?.title || t('music.noplay')}
                         </Marquee>
                     </div>
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-700 dark:text-gray-300 overflow-hidden">
+                    <div className={
+                        `flex flex-wrap gap-4 text-sm text-gray-700 dark:text-gray-300 overflow-hidden
+    ${isMobile ? "justify-center text-center" : ""}`
+                    }>
                         <span className="flex items-center gap-1 min-w-0 overflow-hidden text-ellipsis">
                             <Disc className="w-4 h-4 flex-shrink-0" />
                             <span className="truncate">{currentSong?.album || "--"}</span>
