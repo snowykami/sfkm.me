@@ -140,7 +140,14 @@ const config: Config = {
         })
     ],
     background: async (ctx: BackgroundContext) => {
-        console.log("Background context:", ctx);
+        if (ctx.isMobile) {
+            const randomIndex = Math.floor(Math.random() * 3) + 1; // 随机选择背景图
+            if (ctx.mode === "light") {
+                return `url('https://cdn.liteyuki.org/snowykami/light_${randomIndex}.png')`;
+            } else if (ctx.mode === "dark") {
+                return `url('https://cdn.liteyuki.org/snowykami/dark_${randomIndex}.png')`;
+            }
+        }
         return "url('https://cdn.liteyuki.org/blog/background.png')"
     },
     languageResources: {

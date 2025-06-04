@@ -1,4 +1,4 @@
-import { User, Award, MessageCircle, PanelsTopLeft, Users, Music, SquareChevronRight, Orbit, Code } from "lucide-react";
+import { User, Award, MessageCircle, PanelsTopLeft, Users, Music, SquareChevronRight, Orbit, Code, Send } from "lucide-react";
 import ProfileApp from "@/apps/Profile";
 import ProjectsApp from "@/apps/Projects";
 import SkillsApp from "@/apps/Skills";
@@ -6,6 +6,7 @@ import ContactApp from "@/apps/Contacts";
 import FriendsApp from "@/apps/Friends";
 import MusicApp, { WINDOW_ID as musicWindowId, musicWindowState } from "@/apps/Music";
 import Terminal from "./Terminal";
+import Ech0 from "./Echo";
 import { AppProps } from "./BaseApp";
 import { WindowState } from "@/contexts/WindowManagerContext";
 import VSCode from "./VSCode";
@@ -138,11 +139,15 @@ export const apps: AppMeta[] = [
     windowState: { ...{ size: { height: mediumWindowState.size?.height || 700, width: mediumWindowState.size?.width || 1000 } }, ...musicWindowState, }, showInDock: true
   },
   {
-    id: "terminal", icon: <SquareChevronRight className={iconClassName} />, label: "terminal.title", entry: Terminal,
-    windowState: mediumWindowState, showInDock: true
+    id: "ech0", icon: <Send className={iconClassName} />, label: "Ech0", entry: Ech0,
+    windowState: phoneWindowState, showInDock: true
   },
   {
     id: "liteyukilab", icon: <Orbit className={iconClassName} />, label: "liteyukilab.title", entry: LiteyukiLab,
+    windowState: mediumWindowState, showInDock: true
+  },
+  {
+    id: "terminal", icon: <SquareChevronRight className={iconClassName} />, label: "terminal.title", entry: Terminal,
     windowState: mediumWindowState, showInDock: true
   },
   {
