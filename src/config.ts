@@ -284,11 +284,23 @@ const config: Config = {
                     prompt: "欢迎使用虚空终端！输入 <code>help</code> 查看可用命令。",
                     error: "命令执行出错：{{error}}",
                     unknown: "未知命令：{{command}}",
+                    path: {
+                        notfound: "路径 {{path}} 不存在",
+                        notdir: "{{path}} 不是一个目录",
+                        notfile: "{{path}} 不是一个文件",
+                        pleaseinputpath: "请输入有效的路径",
+                    },
                     commands: {
                         about: {
                             description: "显示关于此名片的信息",
                             usage: "使用 <code>about</code> 查看相关信息",
                             content: "这是一个仿真终端，可以干一些操作网页的事情"
+                        },
+                        cat: {
+                            description: "显示文件内容",
+                        },
+                        cd: {
+                            description: "切换当前工作目录",
                         },
                         chlang: {
                             description: "切换语言, chlang <language>",
@@ -322,6 +334,9 @@ const config: Config = {
                             notFound: "未找到 ID 为 {{id}} 的窗口",
                             killed: "已结束窗口 {{id}}",
                         },
+                        ls: {
+                            description: "列出当前目录下的文件和目录",
+                        },
                         node: {
                             description: "进入 Node.js 交互模式或执行单行语句",
                             exit: "退出 Node.js 交互模式",
@@ -351,6 +366,10 @@ const config: Config = {
                             description: "模拟 curl 请求，支持常用参数（-X, -H, -d, --data, --header, --json, -i 等）",
                             noUrl: "请提供 URL",
                             failed: "请求失败: {{error}}"
+                        },
+                        pwd: {
+                            description: "显示当前工作目录",
+                            result: "当前工作目录：{{path}}"
                         },
                         win: {
                             description: "窗口管理器",
@@ -383,7 +402,7 @@ const config: Config = {
                     maximize: "最大化",
                     releaseToMaximize: "释放以最大化",
                 },
-                vscode:{
+                vscode: {
                     title: "微软大战代码"
                 },
                 // ...其它中文翻译
