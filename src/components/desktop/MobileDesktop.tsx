@@ -14,10 +14,11 @@ export default function MobileDesktop() {
     const [isOpening, setIsOpening] = useState(false); // 控制桌面图标动画
     const [touchStart, setTouchStart] = useState(0);
     const [touchEnd, setTouchEnd] = useState(0);
-    const [, setIsDragging] = useState(false);
 
     const [windowAnim, setWindowAnim] = useState<"in" | "out" | null>(null);
     const [background, setBackground] = React.useState<string | undefined>();
+    const [dragOffset, setDragOffset] = useState(0);
+    const [isDragging, setIsDragging] = useState(false);
 
     // 动态背景
     useEffect(() => {
@@ -33,6 +34,11 @@ export default function MobileDesktop() {
         if (!isMobile) return;
         const hash = window.location.hash.replace(/^#/, "");
         let idx = -1;
+        if (hash === "home") {
+            setCurrentIndex(null); // home 路由显示桌面
+            setWindowAnim(null);
+            return;
+        }
         if (hash) {
             idx = apps.findIndex(app => app.id === hash);
         }
@@ -40,9 +46,8 @@ export default function MobileDesktop() {
             setCurrentIndex(idx);
             setWindowAnim("in");
         } else {
-            const profileIdx = apps.findIndex(app => app.id === "profile");
-            setCurrentIndex(profileIdx >= 0 ? profileIdx : null);
-            setWindowAnim("in");
+            // 没有 hash 或找不到，默认跳到 #profile
+            window.location.hash = "#profile";
         }
     }, [apps, isMobile]);
 
@@ -57,27 +62,30 @@ export default function MobileDesktop() {
     const handleTouchStart = (e: React.TouchEvent) => {
         setTouchStart(e.targetTouches[0].clientX);
         setTouchEnd(e.targetTouches[0].clientX);
-        setIsDragging(false);
+        setIsDragging(true);
+        setDragOffset(0);
     };
 
     const handleTouchMove = (e: React.TouchEvent) => {
-        setTouchEnd(e.targetTouches[0].clientX);
-        if (Math.abs(touchStart - e.targetTouches[0].clientX) > 10) {
-            setIsDragging(true);
-        }
+        const currentX = e.targetTouches[0].clientX;
+        setTouchEnd(currentX);
+        setDragOffset(currentX - touchStart);
     };
+
 
     const handleTouchEnd = () => {
         if (currentIndex === null) return;
-        const distance = touchStart - touchEnd;
-        if (distance > 50 && currentIndex < apps.length - 1) {
-            setCurrentIndex(currentIndex + 1);
-        } else if (distance < -50 && currentIndex > 0) {
+        const distance = touchEnd - touchStart;
+        const threshold = 60; // 滑动阈值
+        if (distance > threshold && currentIndex > 0) {
             setCurrentIndex(currentIndex - 1);
+        } else if (distance < -threshold && currentIndex < apps.length - 1) {
+            setCurrentIndex(currentIndex + 1);
         }
+        setIsDragging(false);
+        setDragOffset(0);
         setTouchStart(0);
         setTouchEnd(0);
-        setIsDragging(false);
     };
 
     // 桌面图标点击
@@ -113,7 +121,7 @@ export default function MobileDesktop() {
         setWindowAnim("out");
         setTimeout(() => {
             setCurrentIndex(null);
-            window.location.hash = "";
+            window.location.hash = "#home"; // 这里改成 #home
         }, 300); // 动画时长
     };
 
@@ -132,7 +140,7 @@ export default function MobileDesktop() {
                     {apps.map((app, idx) => (
                         <div key={app.id} className="flex flex-col items-center">
                             <button
-                                className={`w-16 h-16 rounded-xl flex items-center justify-center bg-white/80 dark:bg-slate-800/80 shadow transition-transform duration-300 ${isOpening ? "scale-110 opacity-0" : "scale-100 opacity-100"
+                                className={`w-16 h-16 rounded-xl flex items-center justify-center bg-white/90 dark:bg-slate-800/90 shadow transition-transform duration-300 ${isOpening ? "scale-110 opacity-0" : "scale-100 opacity-100"
                                     }`}
                                 onClick={() => handleAppClick(idx)}
                             >
@@ -192,11 +200,7 @@ export default function MobileDesktop() {
                     width: `${apps.length * 100}%`,
                 }}
                 onTouchStart={handleTouchStart}
-                onTouchMove={(e) => {
-                    if (Math.abs(e.targetTouches[0].clientX - touchStart) > Math.abs(e.targetTouches[0].clientY - touchStart)) {
-                        handleTouchMove(e);
-                    }
-                }}
+                onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
             >
                 {apps.map((app, idx) => (
