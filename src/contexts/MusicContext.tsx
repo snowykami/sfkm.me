@@ -416,6 +416,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
 
     // 修改 useEffect 以处理 lrc 为 Promise 的情况
     useEffect(() => {
+        // setCurrentLrcLine(0);
         setCurrentLrc("");
         lastLrcRef.current = "";
         lrcSessionRef.current += 1;
@@ -492,36 +493,36 @@ export function MusicProvider({ children }: MusicProviderProps) {
     const [duration, setDuration] = useState<number>(0);
 
     // 修改播放时间更新逻辑
-useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio) return;
 
-    const handleTimeUpdate = () => {
+        const handleTimeUpdate = () => {
+            setCurrentTime(audio.currentTime);
+            if (lyricRef.current && currentSong?.lrc) {
+                const offset = currentSong.offset ?? 0;
+                lyricRef.current.play(audio.currentTime * 1000 - offset);
+            }
+        };
+
+        const handleLoadedMetadata = () => {
+            setDuration(audio.duration);
+        };
+
+        audio.addEventListener("timeupdate", handleTimeUpdate);
+        audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+        audio.addEventListener("durationchange", handleLoadedMetadata);
+
+        // 初始化
         setCurrentTime(audio.currentTime);
-        if (lyricRef.current && currentSong?.lrc) {
-            const offset = currentSong.offset ?? 0;
-            lyricRef.current.play(audio.currentTime * 1000 - offset);
-        }
-    };
-
-    const handleLoadedMetadata = () => {
         setDuration(audio.duration);
-    };
 
-    audio.addEventListener("timeupdate", handleTimeUpdate);
-    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
-    audio.addEventListener("durationchange", handleLoadedMetadata);
-
-    // 初始化
-    setCurrentTime(audio.currentTime);
-    setDuration(audio.duration);
-
-    return () => {
-        audio.removeEventListener("timeupdate", handleTimeUpdate);
-        audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
-        audio.removeEventListener("durationchange", handleLoadedMetadata);
-    };
-}, [resolvedSrc, currentSong?.lrc, currentSong?.offset]);
+        return () => {
+            audio.removeEventListener("timeupdate", handleTimeUpdate);
+            audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+            audio.removeEventListener("durationchange", handleLoadedMetadata);
+        };
+    }, [resolvedSrc, currentSong?.lrc, currentSong?.offset]);
 
     const animate = useCallback((now: number) => {
         const delta = now - lastFrameTimeRef.current;

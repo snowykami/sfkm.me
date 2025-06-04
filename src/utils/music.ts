@@ -178,7 +178,7 @@ export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
         // 第一个接口（不重试）
         const fetchFromYpm = async (): Promise<string> => {
             const response = await fetch(`https://ypm.liteyuki.org/api/song/url?id=${mid}`);
-            if (!response.ok) throw new Error(`获取网易云音乐URL失败: HTTP ${response.status}`);
+            if (!response.ok) throw new Error(`liteyuki获取网易云音乐URL失败: HTTP ${response.status}`);
             const data = await response.json();
             if (!data || !data.data || !data.data[0] || !data.data[0].url) throw new Error('获取网易云音乐URL失败: 数据结构不完整');
             const url = data.data[0].url.replace("http://", "https://");
@@ -190,7 +190,7 @@ export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
         const fetchFromBackup = async (): Promise<string> => {
             const fetchUrl = async (): Promise<string> => {
                 const response = await fetch(`https://music.api.liteyuki.org/music/?action=netease&module=get_url&mids=${mid}`);
-                if (!response.ok) throw new Error(`备用接口获取网易云音乐URL失败: HTTP ${response.status}`);
+                if (!response.ok) throw new Error(`ffmpeg备用接口获取网易云音乐URL失败: HTTP ${response.status}`);
                 const data = await response.json();
                 if (!data || !data.data || !data.data[0] || !data.data[0].url) throw new Error('备用接口获取网易云音乐URL失败: 数据结构不完整');
                 const url = data.data[0].url.replace("http://", "https://");

@@ -67,32 +67,44 @@ export default function LyricScroller({ wid }: { wid: string }) {
       {lrcLines.length === 0 ? (
         <div className="text-center text-slate-600 dark:text-slate-500">{t("music.nolyric")}</div>
       ) : (
-        lrcLines.map((line, idx) => (
-          <div
-            key={line.time + line.text + idx}
-            ref={el => { lineRefs.current[idx] = el; }}
-            className={`
-            ${isMobile ? "text-center" : "text-left"} 
-            select-none 
-            px-2 /* 增加水平内边距 */
-            py-1 
-            rounded
-            transition-all 
-            duration-300 
-            ease-[cubic-bezier(.4,2,.6,1)]
-            w-full /* 确保宽度受限 */
+        lrcLines.map((line, idx) => {
+          // 计算与当前行的距离
+          const offset = idx - currentLrcLine;
+          let style = "";
+          if (offset === 0) {
+            // 当前行
+            style = "opacity-100 scale-100 translate-y-0 z-10";
+          } else if (Math.abs(offset) === 1) {
+            // 上下相邻
+            style = "opacity-70 scale-95 " + (offset > 0 ? "translate-y-4" : "-translate-y-4") + " z-0";
+          } else if (Math.abs(offset) === 2) {
+            style = "opacity-40 scale-90 " + (offset > 0 ? "translate-y-8" : "-translate-y-8") + " z-0";
+          } else {
+            style = "opacity-20 scale-90 " + (offset > 0 ? "translate-y-12" : "-translate-y-12") + " z-0";
+          }
+          return (
+            <div
+              key={line.time + line.text + idx}
+              ref={el => { lineRefs.current[idx] = el; }}
+              className={`
+            ${isMobile ? "text-center" : "text-left"}
+            select-none px-2 py-0.5 rounded
+            transition-all duration-500 ease-[cubic-bezier(.4,2,.6,1)]
+            w-full
             ${idx === currentLrcLine
-                ? `text-blue-500 dark:text-blue-400 font-bold ${isMobile ? "text-1xl" : "text-2xl"} bg-blue-300/40 dark:bg-blue-400/20 opacity-100
-                 break-words whitespace-pre-wrap /* 允许活动歌词换行 */`
-                : `text-slate-800 dark:text-slate-200 font-normal text-1xl opacity-60 
-                 overflow-hidden break-words whitespace-pre-wrap /* 允许非活动歌词也换行 */
-                 ${!isMobile ? "text-ellipsis max-h-10" : ""} /* 桌面端限制高度 */`
-              }
+                  ? "text-blue-500 dark:text-blue-400 font-bold " + (isMobile ? "text-1xl" : "text-2xl") + " bg-blue-300/40 dark:bg-blue-400/20"
+                  : "text-slate-800 dark:text-slate-200 font-normal text-1xl"
+                }
+            ${style}
           `}
-          >
-            {line.text}
-          </div>
-        ))
+              style={{
+                filter: idx === currentLrcLine ? "drop-shadow(0 2px 8px #60a5fa44)" : undefined,
+              }}
+            >
+              {line.text}
+            </div>
+          );
+        })
       )}
     </div>
   );
