@@ -1,12 +1,68 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTerminalCommand, useTerminalMatch, useTerminalCommands } from "@/contexts/TerminalCommandContext";
 import TerminalCommandRegister from './CommandRegister';
-import { parseCommand } from "@/utils/commands";
+import { CommandArg, parseCommand } from "@/utils/commands";
 import { t } from "i18next";
 
 const HISTORY_KEY = "terminal_history";
 const MAX_LINES = 100;
 const MAX_HISTORY = 100;
+
+// 虚拟文件系统类型
+type FileNode = { type: "file"; content: string };
+type DirNode = { type: "dir"; children: Record<string, FileSystemNode> };
+type FileSystemNode = FileNode | DirNode;
+
+// 虚拟文件系统结构
+const initialFS: Record<string, FileSystemNode> = {
+    "/": {
+        type: "dir",
+        children: {
+            home: {
+                type: "dir",
+                children: {
+                    snowykami: {
+                        type: "dir",
+                        children: {
+                            "readme.txt": { type: "file", content: "Welcome to Snowykami Terminal!" },
+                        }
+                    }
+                }
+            },
+            etc: { type: "dir", children: {} },
+            bin: {
+                type: "dir",
+                children: {
+                    ls: { type: "file", content: "ls command" },
+                    cd: { type: "file", content: "cd command" },
+                    cat: { type: "file", content: "cat command" },
+                    pwd: { type: "file", content: "pwd command" },
+                    clear: { type: "file", content: "clear command" },
+                    node: { type: "file", content: "node REPL" }
+                }
+            },
+            "about.txt": { type: "file", content: "This is a fake terminal." }
+        }
+    }
+};
+
+function resolvePath(path: string, cwd: string): string {
+    if (path.startsWith("/")) return path;
+    if (cwd.endsWith("/")) return cwd + path;
+    return cwd + "/" + path;
+}
+function normalizePath(path: string): string {
+    const parts = path.split("/").filter(Boolean);
+    const stack: string[] = [];
+    for (const part of parts) {
+        if (part === ".") continue;
+        if (part === "..") stack.pop();
+        else stack.push(part);
+    }
+    return "/" + stack.join("/");
+}
+
+// 命令参数类型（根据 parseCommand 返回结构调整）
 
 export default function Terminal() {
     const [lines, setLines] = useState<string[]>([t("terminal.prompt")]);
@@ -26,32 +82,101 @@ export default function Terminal() {
     const commands = useTerminalCommands();
     const register = useTerminalCommand();
 
-    // 将之前的 hasMatch 判断替换为：
-    const commandWord = input.trim().split(/\s+/)[0]; // 只获取第一个单词（命令部分）
+    // 虚拟文件系统和当前目录
+    const [fs] = useState(initialFS);
+    const [cwd, setCwd] = useState("/home/snowykami");
+
+    const commandWord = input.trim().split(/\s+/)[0];
     const hasMatch = commandWord.length > 0 && commands.some(cmd =>
         cmd.name.startsWith(commandWord) ||
         (cmd.alias && cmd.alias.some((a: string) => a.startsWith(commandWord)))
     );
     const inputColor = hasMatch ? "text-green-500" : "text-gray-200";
 
-    // node 交互上下文
     const nodeContextRef = useRef<Record<string, unknown>>({});
 
-    // 允许命令动态更新某一行
+    const HOME = "/home/snowykami";
+
     const updateLine = (content: string, idx?: number) => {
+        let lineIdx = idx;
         setLines(prev => {
             const copy = [...prev];
             if (typeof idx === "number" && idx >= 0 && idx < copy.length) {
                 copy[idx] = content;
             } else {
                 copy.push(content);
+                lineIdx = copy.length - 1;
             }
             return copy.length > MAX_LINES ? copy.slice(copy.length - MAX_LINES) : copy;
         });
-        return typeof idx === "number" ? idx : lines.length;
+        return lineIdx!;
     };
 
+    // 注册虚拟目录相关命令
     useEffect(() => {
+        register({
+            name: "pwd",
+            description: t("terminal.commands.pwd.description"),
+            run: () => cwd,
+        });
+        register({
+            name: "ls",
+            alias: ["la"],
+            description: t("terminal.commands.ls.description"),
+            run: (args: CommandArg) => {
+                // 只取第一个不是命令名的参数
+                const param = args.args?.find(arg => arg !== "ls");
+                let path = param ? resolvePath(param, cwd) : cwd;
+                path = normalizePath(path);
+                let node: FileSystemNode = fs["/"];
+                if (path !== "/") {
+                    for (const part of path.split("/").filter(Boolean)) {
+                        if (node.type !== "dir" || !node.children?.[part]) return t("terminal.commands.path.notfound", { path });
+                        node = node.children[part];
+                    }
+                }
+                if (node.type !== "dir") return t("terminal.commands.path.notdir", { path });
+                return Object.keys(node.children).join("  ");
+            }
+        });
+        register({
+            name: "cd",
+            description: t("terminal.commands.cd.description"),
+            run: (args: CommandArg) => {
+                const param = args.args?.find(arg => arg !== "cd");
+                let path = param ? resolvePath(param, cwd) : "/";
+                path = normalizePath(path);
+                let node: FileSystemNode = fs["/"];
+                if (path !== "/") {
+                    for (const part of path.split("/").filter(Boolean)) {
+                        if (node.type !== "dir" || !node.children?.[part]) return t("terminal.commands.path.notfound", { path });
+                        node = node.children[part];
+                    }
+                }
+                if (node.type !== "dir") return t("terminal.commands.path.notdir", { path });
+                setCwd(path);
+                return "";
+            }
+        });
+        register({
+            name: "cat",
+            description: t("terminal.commands.cat.description"),
+            run: (args: CommandArg) => {
+                const param = args.args?.find(arg => arg !== "cat");
+                let path = param ?? "";
+                if (!path) return "cat: 请输入文件名";
+                path = resolvePath(path, cwd);
+                path = normalizePath(path);
+                let node: FileSystemNode = fs["/"];
+                const parts = path.split("/").filter(Boolean);
+                for (let i = 0; i < parts.length; ++i) {
+                    if (node.type !== "dir" || !node.children?.[parts[i]]) return t("terminal.commands.path.notfound", { path });
+                    node = node.children[parts[i]];
+                }
+                if (node.type !== "file") return t("terminal.commands.path.notfile", { path });
+                return node.content;
+            }
+        });
         register({
             name: "clear",
             description: t("terminal.commands.clear.description"),
@@ -60,7 +185,8 @@ export default function Terminal() {
                 return "";
             },
         });
-    }, [register, commands, setLines]);
+        // ...如有更多命令可继续添加...
+    }, [register, cwd, fs]);
 
     useEffect(() => {
         if (containerRef.current) {
@@ -108,7 +234,7 @@ export default function Terminal() {
                     ]);
                 } catch (err) {
                     addLines([
-                        t("terminal.error", {"error": (err instanceof Error ? err.message : String(err))}) 
+                        t("terminal.error", { "error": (err instanceof Error ? err.message : String(err)) })
                     ]);
                 }
             }
@@ -131,7 +257,7 @@ export default function Terminal() {
             setSession("node");
             addLines([
                 `> ${cmdText}`,
-                t("terminal.commands.node.enter", {"version": process.versions?.node ?? ""})
+                t("terminal.commands.node.enter", { "version": process.versions?.node ?? "" })
             ]);
             setInput("");
             inputRef.current?.focus();
@@ -158,7 +284,6 @@ export default function Terminal() {
         let lastError = false;
         for (let i = 0; i < parts.length; ++i) {
             const { cmd, op } = parts[i];
-            // 判断是否需要执行
             if (i > 0) {
                 if (op === "&&" && (lastError || !lastResult)) break;
                 if (op === "||" && !(lastError || !lastResult)) break;
@@ -195,18 +320,66 @@ export default function Terminal() {
             e.preventDefault();
             const words = input.trim().split(/\s+/);
             const cur = words[0] || "";
-            if (!cur) return;
-            const matched = commands.filter(cmd =>
-                cmd.name.startsWith(cur) ||
-                (cmd.alias && cmd.alias.some(a => a.startsWith(cur)))
-            );
-            if (matched.length === 1) {
-                words[0] = matched[0].name;
-                setInput(words.join(" ") + " ");
-            } else if (matched.length > 1) {
-                addLines([
-                    matched.map(cmd => cmd.name).join("    ")
-                ]);
+            // 命令补全
+            if (words.length === 1) {
+                const matched = commands.filter(cmd =>
+                    cmd.name.startsWith(cur) ||
+                    (cmd.alias && cmd.alias.some(a => a.startsWith(cur)))
+                );
+                if (matched.length === 1) {
+                    words[0] = matched[0].name;
+                    setInput(words.join(" ") + " ");
+                } else if (matched.length > 1) {
+                    addLines([
+                        matched.map(cmd => cmd.name).join("    ")
+                    ]);
+                }
+                return;
+            }
+            // 参数补全（目录/文件名，严格遵循目录树）
+            const cmdName = words[0];
+            const argInput = words[words.length - 1];
+            if (["ls", "cd", "cat"].includes(cmdName)) {
+                // 处理绝对/相对路径
+                let basePath = cwd;
+                let prefix = argInput;
+                if (prefix.startsWith("/")) {
+                    // 绝对路径
+                    const idx = prefix.lastIndexOf("/");
+                    basePath = prefix.slice(0, idx) || "/";
+                    prefix = prefix.slice(idx + 1);
+                } else if (prefix.includes("/")) {
+                    // 相对路径
+                    const idx = prefix.lastIndexOf("/");
+                    basePath = resolvePath(prefix.slice(0, idx), cwd);
+                    prefix = prefix.slice(idx + 1);
+                }
+                basePath = normalizePath(basePath);
+                let node: FileSystemNode = fs["/"];
+                if (basePath !== "/") {
+                    for (const part of basePath.split("/").filter(Boolean)) {
+                        if (node.type !== "dir" || !node.children?.[part]) return;
+                        node = node.children[part];
+                    }
+                }
+                if (node.type === "dir") {
+                    const candidates = Object.keys(node.children)
+                        .filter(name => name.startsWith(prefix));
+                    if (candidates.length === 1) {
+                        // 只剩一个候选，直接补全
+                        const completed = candidates[0] + (node.children[candidates[0]].type === "dir" ? "/" : "");
+                        if (argInput.includes("/")) {
+                            words[words.length - 1] = argInput.slice(0, argInput.lastIndexOf("/") + 1) + completed;
+                        } else {
+                            words[words.length - 1] = completed;
+                        }
+                        setInput(words.join(" ") + " ");
+                    } else if (candidates.length > 1) {
+                        addLines([candidates.map(name =>
+                            name + (node.children[name].type === "dir" ? "/" : "")
+                        ).join("    ")]);
+                    }
+                }
             }
             return;
         }
@@ -234,10 +407,12 @@ export default function Terminal() {
     return (
         <div
             className="bg-zinc-900/80 text-gray-200 font-mono h-full flex flex-col overflow-hidden select-text"
+            tabIndex={0}
+            style={{ outline: "none" }}
             onClick={() => inputRef.current?.focus()}
+            ref={containerRef}
         >
             <div
-                ref={containerRef}
                 className="flex-1 overflow-y-auto p-4 pb-20 box-border"
             >
                 {lines.filter(Boolean).map((line, i) => (
@@ -250,8 +425,21 @@ export default function Terminal() {
                     />
                 ))}
                 <form onSubmit={handleSubmit} className="flex items-center mt-1">
-                    <span className="mr-2 text-blue-400">
-                        {session === "node" ? "node >" : ">"}
+                    <span className="mr-2 text-blue-400 flex items-center">
+                        {session === "node" ? (
+                            "node >"
+                        ) : cwd === HOME ? (
+                            <>
+                                <span title="Home" className="mr-1">🏠</span>
+                                <span className="text-blue-400">~</span>
+                                <span className="text-blue-400">&nbsp;&gt;</span>
+                            </>
+                        ) : (
+                            <>
+                                <span>{cwd}</span>
+                                <span className="text-blue-400">&nbsp;&gt;</span>
+                            </>
+                        )}
                     </span>
                     <input
                         ref={inputRef}
