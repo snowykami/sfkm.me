@@ -952,7 +952,6 @@ class IssueContext:
             self.repo.owner, self.repo.name, self.issue.number, label
         )
 
-
     async def check_passed(self) -> tuple[bool, str | None]:
         """
         检查 issue 是否已经通过，以及是谁添加的 passed 标签。
