@@ -151,5 +151,12 @@
         "link": "https://pass.liteyuki.org/login/liteyuki-user?orgChoiceMode=None",
         "description": "轻雪账号统一认证服务",
         "avatar": "https://cdn.liteyuki.org/logos/passport.svg"
+    },
+    {
+        "issue_number": 15,
+        "name": "大磊的猫窝",
+        "link": "http://zhyxulei.top/",
+        "description": "只有当不幸真的到来时，我们才会怀念和渴望那些逝去的美好时光",
+        "avatar": "https://q1.qlogo.cn/g?b=qq&nk=2742291286&s=100"
     }
 ]
