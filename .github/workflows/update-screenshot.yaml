@@ -12,6 +12,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: update-screenshot
+  cancel-in-progress: true
+
 jobs:
   update-screenshot:
     runs-on: ubuntu-latest
