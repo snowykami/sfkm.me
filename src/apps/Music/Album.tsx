@@ -4,13 +4,11 @@ import React, { useEffect, useRef, useState, } from "react";
 import Image from "next/image";
 import { useMusic } from "@/contexts/MusicContext";
 import { useDevice } from "@/contexts/DeviceContext";
-// 移除 useWindowManager 导入
-// import { useWindowManager } from "@/contexts/WindowManagerContext";
 import { t } from "i18next";
 import { useWindowManager } from "@/contexts/WindowManagerContext";
 
-// 移除 Particle 接口，不再使用粒子系统
-
+const MIN_DIAMETER = 120;
+const MAX_DIAMETER = 300;
 // 移除 wid prop
 export function Album({ wid }: { wid: string }) {
     const { currentSong, coverRotate, isPlaying } = useMusic();
@@ -21,15 +19,17 @@ export function Album({ wid }: { wid: string }) {
 
     const isMobile = isMobileDevice || isMobileLayout(wid);
 
-    // 根据父容器宽度的70%动态设置圆盘直径
+    // 根据父容器宽度动态设置圆盘直径，但限制最大直径
     useEffect(() => {
         function updateDiameter() {
             if (containerRef.current && containerRef.current.parentElement) {
                 const parentWidth = containerRef.current.parentElement.offsetWidth;
-                setDiameter(Math.max(120, Math.floor(parentWidth * (isMobile ? 0.45 : 0.6)))); // 移动端70%，桌面端50%})));
+                const calculatedDiameter = Math.floor(parentWidth * (isMobile ? 0.45 : 0.6));
+                setDiameter(Math.min(MAX_DIAMETER, Math.max(MIN_DIAMETER, calculatedDiameter)));
             }
         }
         updateDiameter();
+
         // 使用 ResizeObserver 监听父容器变化
         const parent = containerRef.current?.parentElement;
         if (!parent) return;
