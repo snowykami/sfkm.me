@@ -285,12 +285,7 @@ const config: Config = {
                     prompt: "欢迎使用虚空终端！输入 <code>help</code> 查看可用命令。",
                     error: "命令执行出错：{{error}}",
                     unknown: "未知命令：{{command}}",
-                    path: {
-                        notfound: "路径 {{path}} 不存在",
-                        notdir: "{{path}} 不是一个目录",
-                        notfile: "{{path}} 不是一个文件",
-                        pleaseinputpath: "请输入有效的路径",
-                    },
+
                     commands: {
                         about: {
                             description: "显示关于此名片的信息",
@@ -342,6 +337,12 @@ const config: Config = {
                             description: "进入 Node.js 交互模式或执行单行语句",
                             exit: "退出 Node.js 交互模式",
                             enter: "进入 Node.js 交互模式，输入 <code>exit</code> 退出",
+                        },
+                        path: {
+                            notfound: "路径 {{path}} 不存在",
+                            notdir: "{{path}} 不是一个目录",
+                            notfile: "{{path}} 不是一个文件",
+                            pleaseinputpath: "请输入有效的路径",
                         },
                         refresh: {
                             description: "刷新当前页面",
@@ -551,6 +552,12 @@ const config: Config = {
                             usage: "Use <code>about</code> to view related information",
                             content: "This is a simulated terminal that can perform some web operations",
                         },
+                        cat: {
+                            description: "Display the content of a file",
+                        },
+                        cd: {
+                            description: "Change the current working directory",
+                        },
                         chlang: {
                             description: "Switch language, chlang <language>",
                             usage: "Use <code>chlang [language]</code> to switch language, supports 'zh', 'en', 'ja', etc.",
@@ -583,10 +590,23 @@ const config: Config = {
                             notFound: "No window found with ID {{id}}",
                             killed: "Closed window with ID {{id}}",
                         },
+                        ls: {
+                            description: "List files and directories in the current directory",
+                        },
                         node: {
                             description: "Enter Node.js interactive mode or execute a single line of code",
                             exit: "Exit Node.js interactive mode",
                             enter: "Enter Node.js interactive mode, type <code>exit</code> to exit",
+                        },
+                        path: {
+                            notfound: "Path {{path}} does not exist",
+                            notdir: "{{path}} is not a directory",
+                            notfile: "{{path}} is not a file",
+                            pleaseinputpath: "Please enter a valid path",
+                        },
+                        pwd: {
+                            description: "Display the current working directory",
+                            result: "Current working directory: {{path}}",
                         },
                         refresh: {
                             description: "Refresh the current page",
@@ -787,6 +807,12 @@ const config: Config = {
                             usage: "<code>about</code> を使用して関連情報を表示",
                             content: "これはウェブ操作を行うことができるシミュレートされたターミナルです",
                         },
+                        cat: {
+                            description: "ファイルの内容を表示",
+                        },
+                        cd: {
+                            description: "現在の作業ディレクトリを変更",
+                        },
                         chlang: {
                             description: "言語を切り替える, chlang <language>",
                             usage: "<code>chlang [language]</code> を使用して言語を切り替えます。'zh', 'en', 'ja' などをサポート",
@@ -819,10 +845,23 @@ const config: Config = {
                             notFound: "ID {{id}} のウィンドウが見つかりません",
                             killed: "ウィンドウ {{id}} を閉じました",
                         },
+                        ls: {
+                            description: "現在のディレクトリ内のファイルとディレクトリをリスト表示",
+                        },
                         node: {
                             description: "Node.js インタラクティブモードに入るか、単一行のコードを実行",
                             exit: "Node.js インタラクティブモードを終了",
                             enter: "Node.js インタラクティブモードに入る。<code>exit</code> を入力して終了",
+                        },
+                        path: {
+                            notfound: "パス {{path}} は存在しません",
+                            notdir: "{{path}} はディレクトリではありません",    
+                            notfile: "{{path}} はファイルではありません",
+                            pleaseinputpath: "有効なパスを入力してください",
+                        },
+                        pwd: {
+                            description: "現在の作業ディレクトリを表示",
+                            result: "現在の作業ディレクトリ：{{path}}",
                         },
                         refresh: {
                             description: "現在のページをリフレッシュ",
