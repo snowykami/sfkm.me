@@ -210,7 +210,7 @@ const config: Config = {
                     play: "播放",
                     playlist: "播放列表",
                     prev: "上一首",
-                    pure: "纯音乐, 无歌词",
+                    pure: "纯音乐，请欣赏",
                     volume: "音量",
                     wiki: "百科",
                     similar: "相似歌曲",
