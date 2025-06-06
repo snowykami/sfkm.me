@@ -23,7 +23,10 @@ PREDATA = {
     "16877261721": {
         "lrcmid": "16877261721",
         "offset": 0,
-    }
+    },
+    "1969519579": {
+        "lrcmid": "1996929972",
+    },
 }
 
 
@@ -84,7 +87,7 @@ async def fetch_lyric_from_ncm_official(mid: str) -> str | None:
             lrc_response.raise_for_status()
             lrc_data = json.loads(lrc_response.text)
             if lrc_data.get("nolyric", False):
-                return "[No Lyrics]"
+                return "[00:00.00]music.pure"
             # 检查返回数据结构
             if "lyric" in lrc_data and lrc_data["lyric"]:
                 return lrc_data["lyric"]  # 官方API直接返回文本，不需要base64解码
@@ -203,7 +206,7 @@ async def fetch_songs_from_ncm(
 
     retries = 0
     last_error = None
-    
+
     while retries <= max_retries:
         try:
             async with httpx.AsyncClient(
@@ -222,7 +225,9 @@ async def fetch_songs_from_ncm(
                     if retries < max_retries:
                         retries += 1
                         wait_time = 1 * (2**retries)  # 指数退避策略
-                        print(f"获取歌曲信息失败: 数据为空，第{retries}次重试 (等待{wait_time}秒)")
+                        print(
+                            f"获取歌曲信息失败: 数据为空，第{retries}次重试 (等待{wait_time}秒)"
+                        )
                         await asyncio.sleep(wait_time)
                         continue
                     else:
@@ -235,7 +240,9 @@ async def fetch_songs_from_ncm(
                 lyric_tasks = {}
                 for mid in mids:
                     lyric_mid = lrcmid_map.get(mid, mid)
-                    lyric_tasks[mid] = asyncio.create_task(fetch_lyric_from_ncm(lyric_mid))
+                    lyric_tasks[mid] = asyncio.create_task(
+                        fetch_lyric_from_ncm(lyric_mid)
+                    )
 
                 # 创建歌曲对象列表
                 for song_info in song_data["data"]:
@@ -279,18 +286,20 @@ async def fetch_songs_from_ncm(
                     songs.append(song)
 
                 return songs
-                
+
         except Exception as e:
             last_error = e
             if retries < max_retries:
                 retries += 1
                 wait_time = 1 * (2**retries)  # 指数退避策略
-                print(f"批量获取网易云音乐歌曲信息出错，第{retries}次重试 (等待{wait_time}秒): {e}")
+                print(
+                    f"批量获取网易云音乐歌曲信息出错，第{retries}次重试 (等待{wait_time}秒): {e}"
+                )
                 await asyncio.sleep(wait_time)
             else:
                 print(f"批量获取网易云音乐歌曲信息出错，已达最大重试次数: {e}")
                 return []
-    
+
     print(f"批量获取网易云音乐歌曲信息失败: {last_error}")
     return []
 
@@ -313,7 +322,7 @@ async def fetch_songs_from_qqmusic(
 
     retries = 0
     last_error = None
-    
+
     while retries <= max_retries:
         try:
             async with httpx.AsyncClient(
@@ -332,7 +341,9 @@ async def fetch_songs_from_qqmusic(
                     if retries < max_retries:
                         retries += 1
                         wait_time = 1 * (2**retries)  # 指数退避策略
-                        print(f"获取QQ音乐歌曲信息失败: 数据为空，第{retries}次重试 (等待{wait_time}秒)")
+                        print(
+                            f"获取QQ音乐歌曲信息失败: 数据为空，第{retries}次重试 (等待{wait_time}秒)"
+                        )
                         await asyncio.sleep(wait_time)
                         continue
                     else:
@@ -345,7 +356,9 @@ async def fetch_songs_from_qqmusic(
                 lyric_tasks = {}
                 for mid in mids:
                     lyric_mid = lrcmid_map.get(mid, mid)
-                    lyric_tasks[mid] = asyncio.create_task(fetch_lyric_from_qq(lyric_mid))
+                    lyric_tasks[mid] = asyncio.create_task(
+                        fetch_lyric_from_qq(lyric_mid)
+                    )
 
                 # 创建歌曲对象列表
                 for song_info in song_data["data"]:
@@ -388,18 +401,20 @@ async def fetch_songs_from_qqmusic(
                     songs.append(song)
 
                 return songs
-                
+
         except Exception as e:
             last_error = e
             if retries < max_retries:
                 retries += 1
                 wait_time = 1 * (2**retries)  # 指数退避策略
-                print(f"批量获取QQ音乐歌曲信息出错，第{retries}次重试 (等待{wait_time}秒): {e}")
+                print(
+                    f"批量获取QQ音乐歌曲信息出错，第{retries}次重试 (等待{wait_time}秒): {e}"
+                )
                 await asyncio.sleep(wait_time)
             else:
                 print(f"批量获取QQ音乐歌曲信息出错，已达最大重试次数: {e}")
                 return []
-    
+
     print(f"批量获取QQ音乐歌曲信息失败: {last_error}")
     return []
 
@@ -418,16 +433,16 @@ async def process_chunk(
                 skipped_count += 1
             else:
                 filtered_songs_info.append(song_info)
-        
+
         if skipped_count > 0:
             print(f"共跳过 {skipped_count} 首已存在歌曲")
-            
+
         songs_info = filtered_songs_info
-        
+
     # 如果所有歌曲都被过滤，直接返回空列表
     if not songs_info:
         return []
-        
+
     # 按来源分组
     ncm_songs = []
     qq_songs = []
@@ -606,7 +621,7 @@ async def download(force: bool = False, new_playlist: bool = False):
             # 如果是强制模式，或者歌曲ID不在现有歌曲中，添加到合并列表
             song_dict = song.model_dump(by_alias=True)
             combined_songs.append(song_dict)
-            
+
             # 如果是强制模式且歌曲已存在，从现有歌曲字典中删除，后面不会再添加
             if force and song.id in existing_song_dict:
                 del existing_song_dict[song.id]
@@ -623,7 +638,7 @@ async def download(force: bool = False, new_playlist: bool = False):
 
         if force and replaced_count > 0:
             print(f"强制模式：替换了 {replaced_count} 首现有歌曲")
-            
+
         print(
             f"共下载 {len(all_songs) - skipped_count} 首新歌曲（跳过 {skipped_count} 首无效歌曲），总共保存 {len(combined_songs)} 首歌曲"
         )

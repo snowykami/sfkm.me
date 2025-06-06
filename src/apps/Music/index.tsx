@@ -27,8 +27,9 @@ export const musicWindowState: Partial<WindowState> = {
         backgroundOpacity: "0.8",
         backgroundBlendMode: "normal",
         backgroundOverlay: true,
-        overlayColor: "bg-slate-200",
-        overlayColorDark: "dark:bg-slate-500",
+        overlayColor: "bg-slate-200/50",
+        overlayColorDark: "dark:bg-slate-500/50",
+        overlayOpacity: "0.5",
         overlayBlendMode: "normal",
     }
 };
@@ -80,24 +81,11 @@ export default function Music({ windowId = WINDOW_ID }: AppProps) {
 
     return (
         <div className="flex flex-col h-full relative overflow-hidden">
-            {/* 背景图片层 */}
-            <div
-                className="absolute inset-0 z-0 transition-all duration-1000 ease-out"
-                style={{
-                    backgroundImage: `url(${coverUrl})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    filter: 'blur(30px) brightness(0.7)',
-                    transform: 'scale(1.1)', // 稍微放大以避免模糊边缘
-                }}
-            />
-            {/* 其余背景层和内容层不变 */}
-            {/* 叠加渐变层，增强可读性 */}
             <div
                 className="absolute inset-0 z-0 bg-gradient-to-b from-black/20 to-black/50 dark:from-black/30 dark:to-black/60"
             />
-            {/* 主题适应蒙版层 - 亮色时添加冷色调蒙版，暗色时添加暖色调蒙版 */}
-            <div className="absolute inset-0 z-1 mix-blend-soft-light bg-blue-100/40 dark:bg-amber-900/40 transition-colors duration-300" />
+            {/* 主题适应蒙版层 - 亮色时添加冷色调蒙版，暗色时添加暖色调蒙版
+            <div className="absolute inset-0 z-1 mix-blend-soft-light bg-blue-100/40 dark:bg-amber-900/40 transition-colors duration-300" /> */}
             {/* 明暗统一调整蒙版 */}
             <div className="absolute inset-0 z-1 bg-slate-200/50 dark:bg-slate-500/40 backdrop-blur-[2px] transition-colors duration-300" />
             {/* 内容层 */}

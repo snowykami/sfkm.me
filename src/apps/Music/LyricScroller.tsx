@@ -121,7 +121,7 @@ export default function LyricScroller({ wid }: { wid: string }) {
                 fontSize: isCurrent ? "1.35rem" : "1.25rem"
               }}
             >
-              {line.text}
+              {t(line.text)}
             </div>
           );
         })
