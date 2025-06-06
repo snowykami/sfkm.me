@@ -5,40 +5,9 @@ import type { BaseWindowProps } from "./BaseWindow";
 import { t } from "i18next";
 import BaseWindow from "./BaseWindow";
 import { Marquee } from "@/components/ui/Marquee";
+import { windowColorScheme } from "@/types/window";
 
-export interface MacOSWindowColorScheme {
-  bg?: string;
-  bgDark?: string;
-  border?: string;
-  borderDark?: string;
-  title?: string;
-  titleDark?: string;
-  titleBarBg?: string; // 标题栏背景色
-  titleBarBgDark?: string; // 标题栏背景色（暗黑模式）
-  titleBarBorder?: string; // 标题栏边框色
-  titleBarBorderDark?: string; // 标题栏边框色（暗黑模式）
-  titleBarClassName?: string; // 标题栏自定义类名
-  shadow?: string; // 窗口阴影
-  // 新增：窗口背景图片
-  backgroundImage?: string;
-  // 新增：窗口自定义背景色（优先级高于bg/bgDark）
-  backgroundColor?: string;
-  backgroundColorDark?: string;
-  // 新增：背景混合模式
-  backgroundBlendMode?: string;
-  // 新增：背景不透明度
-  backgroundOpacity?: string;
-  // 新增：是否模糊背景
-  backdropBlur?: boolean;
-  showBorder?: boolean; // 是否显示边框
 
-  backgroundOverlay?: boolean; // 是否启用背景蒙版
-  overlayColor?: string; // 蒙版颜色
-  overlayColorDark?: string; // 暗模式蒙版颜色
-  overlayOpacity?: string; // 蒙版不透明度
-  overlayBlendMode?: string; // 蒙版混合模式
-  overlayGradient?: string; // 蒙版渐变设置
-}
 
 interface MacOSWindowProps extends Omit<BaseWindowProps, "children" | "title"> {
   id: string;
@@ -46,7 +15,7 @@ interface MacOSWindowProps extends Omit<BaseWindowProps, "children" | "title"> {
   showClose?: boolean;
   showMinimize?: boolean;
   showMaximize?: boolean;
-  colorScheme?: MacOSWindowColorScheme;
+  colorScheme?: windowColorScheme;
 }
 
 export const MacOSWindow: React.FC<MacOSWindowProps> = ({
@@ -65,7 +34,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
 
   if (!win) return null;
 
-  const defaultScheme: MacOSWindowColorScheme = {
+  const defaultScheme: windowColorScheme = {
     bg: "bg-slate-100/95",
     bgDark: "dark:bg-slate-800/95",
     border: "border-slate-300/60",
@@ -76,17 +45,19 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
     titleBarBgDark: "dark:bg-slate-800/80",
     titleBarBorder: "border-slate-300/60",
     titleBarBorderDark: "dark:border-slate-800/50",
+    titleBarClassName: "",
     backgroundImage: "",
     backgroundColor: "",
     backgroundColorDark: "",
     backgroundBlendMode: "normal",
     backgroundOpacity: "1",
     backdropBlur: true,
+    backdropBlurClass: "",
+    shadow: "shadow-xl",
     showBorder: true, // 默认显示边框
     backgroundOverlay: false,
     overlayColor: "bg-black/20",
     overlayColorDark: "dark:bg-black/30",
-    overlayOpacity: "1",
     overlayBlendMode: "normal",
     overlayGradient: "",
   };
@@ -198,14 +169,13 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
         {scheme.backgroundOverlay && (
           <div
             className={`
-            absolute inset-0 z-1
+            absolute inset-0 z-[5]
             ${scheme.overlayColor || defaultScheme.overlayColor}
             ${scheme.overlayColorDark || defaultScheme.overlayColorDark}
             transition-colors duration-300
             ${scheme.overlayGradient || ''}
           `}
             style={{
-              opacity: scheme.overlayOpacity ? parseFloat(scheme.overlayOpacity) : 1,
               mixBlendMode: (scheme.overlayBlendMode || 'normal') as React.CSSProperties['mixBlendMode'],
             }}
           />
@@ -215,7 +185,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
         <div
           className={`
             ${scheme.bg} ${scheme.bgDark}
-            ${scheme.backdropBlur ? "backdrop-blur-md" : ""}
+            ${scheme.backdropBlur ? scheme.backdropBlurClass : ""}
             ${scheme.shadow || "shadow-xl"}
             ${scheme.showBorder !== false ? `border ${scheme.border} ${scheme.borderDark}` : ""}
             overflow-hidden
@@ -239,6 +209,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
               px-4 py-3 flex items-center select-none relative
               cursor-grab active:cursor-grabbing
               ${scheme.titleBarClassName || ''}
+              ${scheme.titleBarClassName}
             `}
           >
             <div className="window-controls flex items-center space-x-2">

@@ -26,6 +26,7 @@ const PlayerView = ({ wid }: { wid: string }) => {
                     <div className={`text-2xl font-bold text-gray-900 dark:text-white mb-2 w-full overflow-hidden ${isMobile ? "text-center" : "text-left"}`}>
                         <Marquee pauseBeforeRepeatSec={1.5} speedPxPerSec={40}>
                             {currentSong?.title || t('music.noplay')}
+                            <span className="text-gray-600 dark:text-gray-400/80">{currentSong?.alias?.length ? ` (${currentSong?.alias?.join(", ")})` : ""}</span>
                         </Marquee>
                     </div>
                     <div className={

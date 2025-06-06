@@ -2,18 +2,12 @@
 import type React from "react";
 import { useDevice } from "@/contexts/DeviceContext";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface MobileWindowColorScheme {
-    bg?: string;
-    bgDark?: string;
-    border?: string;
-    borderDark?: string;
-}
+import { windowColorScheme } from "@/types/window";
 
 interface MobileWindowProps {
     id?: string;
     children?: React.ReactNode;
-    colorScheme?: MobileWindowColorScheme;
+    colorScheme?: windowColorScheme;
     visible?: boolean;
     scrollable?: boolean; // 新增 scrollable 属性，默认为 true
     // onClose?: () => void; // 父级统一渲染关闭按钮，这里去掉
@@ -29,7 +23,7 @@ export const MobileWindow: React.FC<MobileWindowProps> = ({
 
     if (!isMobile || !visible) return null;
 
-    const defaultScheme: MobileWindowColorScheme = {
+    const defaultScheme: windowColorScheme = {
         bg: "bg-slate-100/95",
         bgDark: "dark:bg-slate-800/95",
         border: "border-slate-300/40",

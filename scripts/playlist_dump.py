@@ -42,6 +42,7 @@ class Song(BaseModel):
     albumLink: str = ""
     artistLink: str = ""
     songLink: str = ""
+    alias: list[str] = []
     quality: str = "high"  # 添加quality字段用于音质
     id: str = ""  # 添加id字段用于唯一标识
 
@@ -51,6 +52,7 @@ class SongInfo(BaseModel):
     offset: int = 0
     lrcmid: str = ""
     source_type: str = ""
+    alia: list[str] = []  # 添加别名字段，用于存储歌曲的别名列表
 
 
 def base64_to_string(base64_str: str) -> str:
@@ -194,6 +196,7 @@ async def fetch_songs_from_ncm(
     offset_map: dict[str, int] | None = None,
     lrcmid_map: dict[str, str] | None = None,
     max_retries: int = 3,
+    alias_data: dict[str, list[str]] | None = None,  # 一首歌可以有多个别名，多首歌就是列表嵌套
 ) -> list[Song]:
     """批量从网易云音乐获取歌曲信息，支持重试机制"""
     if not mids:
@@ -283,6 +286,7 @@ async def fetch_songs_from_ncm(
                         songLink=song_info.get("link", ""),
                         offset=offset_map.get(mid, 0),
                         id=mid,
+                        alias=alias_data.get(mid, []),  # 添加别名
                     )
                     songs.append(song)
 
@@ -450,6 +454,7 @@ async def process_chunk(
 
     ncm_mids = []
     qq_mids = []
+    alias_data: dict[str, list[str]] = {}
     ncm_offsets = {}
     qq_offsets = {}
     ncm_lrcmids = {}
@@ -462,6 +467,8 @@ async def process_chunk(
             ncm_offsets[song_info.id] = song_info.offset
             if song_info.lrcmid:
                 ncm_lrcmids[song_info.id] = song_info.lrcmid
+            if song_info.alia:
+                alias_data[song_info.id] = song_info.alia
         elif song_info.source_type == "qq":
             qq_songs.append(song_info)
             qq_mids.append(song_info.id)
@@ -472,7 +479,7 @@ async def process_chunk(
     # 创建任务
     tasks = []
     if ncm_mids:
-        tasks.append(fetch_songs_from_ncm(ncm_mids, ncm_offsets, ncm_lrcmids))
+        tasks.append(fetch_songs_from_ncm(ncm_mids, ncm_offsets, ncm_lrcmids, alias_data=alias_data))
     if qq_mids:
         tasks.append(fetch_songs_from_qqmusic(qq_mids, qq_offsets, qq_lrcmids))
 
@@ -569,6 +576,7 @@ async def download(force: bool = False, new_playlist: bool = False):
                             offset=offset,
                             lrcmid=lrcmid,
                             source_type=source_type,
+                            alia=track.get("alia", []),  # 获取别名列表
                         )
                     )
         except Exception as e:
