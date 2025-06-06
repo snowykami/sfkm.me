@@ -23,7 +23,7 @@ function LyricBox({
 }) {
   const { currentLrcLine, lrcLines, currentSongIndex, currentSong } = useMusic();
   // 当前显示的歌词
-  const [currentLrc, setCurrentLrc] = useState("Lyrics loading...");
+  const [currentLrc, setCurrentLrc] = useState(currentSong?.title + " - " + currentSong?.artist || "Lyrics loading...");
   // 控制淡入淡出的状态
   const [fadeState, setFadeState] = useState<"fade-in" | "fade-out">("fade-in");
 
@@ -44,7 +44,7 @@ function LyricBox({
   // 切歌时，重置歌词和淡入状态
   useEffect(() => {
     if (currentSongIndex !== -1 && currentSong) {
-      setCurrentLrc(lrcLines[currentLrcLine]?.text || "Lyrics loading...");
+      setCurrentLrc(currentSong?.title + " - " + currentSong?.artist || "Lyrics loading...");
       setFadeState("fade-in");
     }
   }, [currentSongIndex, currentSong, lrcLines, currentLrcLine]);
