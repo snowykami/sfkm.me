@@ -18,8 +18,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ### 扩展功能
 
-- [x] 自定义应用注册功能
-- [x] 自定义窗口
+- [x] 自定义应用注册功能，可以开发你自己的基于react等web技术栈的应用
+- [x] 自定义窗口，完全自定义窗口样式，不再局限于预设窗口样式
 
 ...更多请自行探索
 
