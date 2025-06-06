@@ -12,7 +12,7 @@ import { t } from "i18next";
 
 export const WINDOW_ID = "music";
 
-const OVERLAYCOLOR = "bg-slate-300/30";
+const OVERLAYCOLOR = "bg-slate-200/40";
 const OVERLAYCOLORDARK = "dark:bg-slate-800/75";
 
 export const getNewWindowColorScheme = (colorScheme: Partial<WindowState["colorScheme"]> = {}): WindowState["colorScheme"] => {
@@ -32,6 +32,7 @@ export const getNewWindowColorScheme = (colorScheme: Partial<WindowState["colorS
         overlayColor: OVERLAYCOLOR,
         overlayColorDark: OVERLAYCOLORDARK,
         overlayBlendMode: "normal",
+        backgroundClassName: "transition-all duration-300",
         ...colorScheme,
     };
 }

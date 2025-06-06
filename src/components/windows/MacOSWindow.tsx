@@ -159,6 +159,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
           <div
             className={`
               absolute inset-0 z-0
+              ${scheme.backgroundClassName}
               ${scheme.backgroundColorDark || ''}
             `}
             style={getBackgroundStyle()}

@@ -21,6 +21,7 @@ export interface windowColorScheme {
   // 新增：背景不透明度
   backgroundOpacity?: string;
   // 新增：是否模糊背景
+  backgroundClassName?: string; // 背景模糊的CSS类名
   backdropBlur?: boolean;
   backdropBlurClass?: string; // 模糊背景的CSS类名
   showBorder?: boolean; // 是否显示边框
