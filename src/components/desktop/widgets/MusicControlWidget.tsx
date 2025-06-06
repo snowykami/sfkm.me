@@ -6,6 +6,7 @@ import BaseWidget from "./BaseWidget";
 import { Song } from "@/types/music";
 import { useWindowManager } from "@/contexts/WindowManagerContext";
 import { WINDOW_ID as musicWindowId } from '@/apps/Music';
+import { t } from "i18next";
 
 type PlayMode = "order" | "repeat-one" | "shuffle";
 
@@ -67,7 +68,7 @@ function LyricBox({
             display: "inline-block",
           }}
         >
-          {currentLrc || "No lyrics available"}
+          {t(currentLrc) || "No lyrics available"}
         </span>
       </div>
     </div>
