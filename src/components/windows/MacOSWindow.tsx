@@ -52,7 +52,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
     backgroundBlendMode: "normal",
     backgroundOpacity: "1",
     backdropBlur: true,
-    backdropBlurClass: "",
+    backdropBlurClass: "backdrop-blur-md",
     shadow: "shadow-xl",
     showBorder: true, // 默认显示边框
     backgroundOverlay: false,
