@@ -77,7 +77,7 @@ export default function Music({ windowId = WINDOW_ID }: AppProps) {
     }, [currentSong, updateWindow, windowId]);
 
     // 获取封面图片URL，如果没有就使用默认图片
-    const coverUrl = currentSong?.cover || "/images/default-cover.jpg";
+    // const coverUrl = currentSong?.cover || "/images/default-cover.jpg";
 
     return (
         <div className="flex flex-col h-full relative overflow-hidden">
