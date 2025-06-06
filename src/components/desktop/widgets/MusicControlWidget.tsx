@@ -105,7 +105,7 @@ function CoverBox({
         background: "#f1f5f9",
         overflow: "hidden",
         marginRight: 4,
-        transform: `rotate(${coverRotate}deg)`,
+        transform: `rotate(${coverRotate * 2}deg)`,
         transition: isPlaying ? undefined : "transform 0.2s linear",
         cursor: "pointer",
       }}
