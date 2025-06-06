@@ -1,6 +1,6 @@
 "use client"
 
-import { MacOSWindowColorScheme } from "@/components/windows/MacOSWindow";
+import { windowColorScheme } from "@/types/window";
 import React, { createContext, useContext, useState, ReactNode, useCallback, useEffect } from "react";
 
 // 临时窗口定义接口
@@ -10,7 +10,7 @@ export interface TempWindowDefinition {
   content: React.ReactNode | (() => React.ReactNode);
   size?: { width: number; height: number };
   position?: { x: number; y: number };
-  colorScheme?: MacOSWindowColorScheme;
+  colorScheme?: windowColorScheme;
   showClose?: boolean;
   showMinimize?: boolean;
   showMaximize?: boolean;
@@ -29,7 +29,7 @@ export interface WindowState {
   isEdgeHidden?: boolean; // 窗口是否隐藏到边缘
   originalPositionBeforeEdgeHide?: { x: number; y: number }; // 隐藏前的原始位置
   hiddenEdge?: 'top' | 'bottom' | 'left' | 'right'; // 隐藏到哪个边缘
-  colorScheme?: MacOSWindowColorScheme;
+  colorScheme?: windowColorScheme;
   // 用于临时窗口的内容渲染
   customRender?: () => React.ReactNode;
   // 窗口其他属性

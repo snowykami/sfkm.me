@@ -12,9 +12,11 @@ import { t } from "i18next";
 
 export const WINDOW_ID = "music";
 
-export const musicWindowState: Partial<WindowState> = {
-    colorScheme: {
-        // 窗口和标题栏完全透明
+const OVERLAYCOLOR = "bg-slate-300/30";
+const OVERLAYCOLORDARK = "dark:bg-slate-800/75";
+
+export const getNewWindowColorScheme = (colorScheme: Partial<WindowState["colorScheme"]> = {}): WindowState["colorScheme"] => {
+    return {
         bg: "bg-transparent",
         bgDark: "dark:bg-transparent",
         titleBarBg: "bg-transparent",
@@ -22,18 +24,21 @@ export const musicWindowState: Partial<WindowState> = {
         titleBarBorder: "border-transparent",
         titleBarBorderDark: "dark:border-transparent",
         showBorder: false,
-        backgroundImage: "https://cdn.liteyuki.org/blog/background.png",
         backdropBlur: true,
         backgroundOpacity: "0.8",
         backgroundBlendMode: "normal",
         backgroundOverlay: true,
-        overlayColor: "bg-slate-200/50",
-        overlayColorDark: "dark:bg-slate-500/50",
-        overlayOpacity: "0.5",
+        backdropBlurClass: "backdrop-blur-3xl",
+        overlayColor: OVERLAYCOLOR,
+        overlayColorDark: OVERLAYCOLORDARK,
         overlayBlendMode: "normal",
-    }
-};
+        ...colorScheme,
+    };
+}
 
+export const musicWindowState: Partial<WindowState> = {
+    colorScheme: getNewWindowColorScheme(),
+};
 
 
 export default function Music({ windowId = WINDOW_ID }: AppProps) {
@@ -44,6 +49,7 @@ export default function Music({ windowId = WINDOW_ID }: AppProps) {
     const { currentSong } = useMusic();
     const { updateWindow } = useWindowManager();
     const lastSongTitleRef = useRef<string | null>(null);
+    const [currentCoverUrl, setCurrentCoverUrl] = React.useState<string | null>(null);
 
     // 只更新标题，不更新样式
     useEffect(() => {
@@ -55,39 +61,32 @@ export default function Music({ windowId = WINDOW_ID }: AppProps) {
         }
         updateWindow(windowId, {
             title: fullTitle,
-            colorScheme: {
-                bg: "bg-transparent",
-                bgDark: "dark:bg-transparent",
-                titleBarBg: "bg-transparent",
-                titleBarBgDark: "dark:bg-transparent",
-                titleBarBorder: "border-transparent",
-                titleBarBorderDark: "dark:border-transparent",
-                showBorder: false,
+            colorScheme: getNewWindowColorScheme({
                 backgroundImage: currentSong.cover || "https://cdn.liteyuki.org/blog/background.png",
-                backdropBlur: true,
-                backgroundOpacity: "0.6",
-                backgroundBlendMode: "normal",
-                backgroundOverlay: true,
-                overlayColor: "bg-slate-200",
-                overlayColorDark: "dark:bg-slate-500",
-                overlayBlendMode: "multiply",
-            }
+            })
         });
         lastSongTitleRef.current = title;
+        setCurrentCoverUrl(currentSong.cover || "https://cdn.liteyuki.org/blog/background.png");
     }, [currentSong, updateWindow, windowId]);
-
-    // 获取封面图片URL，如果没有就使用默认图片
-    // const coverUrl = currentSong?.cover || "/images/default-cover.jpg";
 
     return (
         <div className="flex flex-col h-full relative overflow-hidden">
-            <div
-                className="absolute inset-0 z-0 bg-gradient-to-b from-black/20 to-black/50 dark:from-black/30 dark:to-black/60"
-            />
-            {/* 主题适应蒙版层 - 亮色时添加冷色调蒙版，暗色时添加暖色调蒙版
-            <div className="absolute inset-0 z-1 mix-blend-soft-light bg-blue-100/40 dark:bg-amber-900/40 transition-colors duration-300" /> */}
-            {/* 明暗统一调整蒙版 */}
-            <div className="absolute inset-0 z-1 bg-slate-200/50 dark:bg-slate-500/40 backdrop-blur-[2px] transition-colors duration-300" />
+            {/* <div
+                className="absolute inset-0 z-0 bg-gradient-to-b from-black/20 to-black/30 dark:from-black/10 dark:to-black/20"
+            /> */}
+            {/* 移动端没有窗口 */}
+            {isMobile && (
+                <div className={`absolute inset-0 z-5 ${OVERLAYCOLOR} ${OVERLAYCOLORDARK} transition-colors duration-300`} />
+            )}
+            {/* 背景层 */}
+            {isMobile && (
+                <div
+                    className="absolute inset-0 z-0 bg-cover bg-center transition-all duration-300 blur-3xl"
+                    style={{
+                        backgroundImage: `url(${currentCoverUrl})`,
+                    }}
+                />
+            )}
             {/* 内容层 */}
             <div className="flex flex-col h-full z-10 relative">
                 <PlayerView wid={windowId} />

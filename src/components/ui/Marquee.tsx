@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect, ReactNode } from "react";
 
-// 定义默认参数
 const DEFAULT_MARQUEE_SPEED_PX_PER_SEC = 30;
 const DEFAULT_PAUSE_BEFORE_REPEAT_SEC = 2;
 
@@ -9,89 +8,76 @@ interface MarqueeProps {
     speedPxPerSec?: number;
     durationSec?: number;
     pauseBeforeRepeatSec?: number;
+    forceScroll?: boolean;
 }
 
 export function Marquee({ 
     children, 
-    speedPxPerSec, 
+    speedPxPerSec = DEFAULT_MARQUEE_SPEED_PX_PER_SEC, 
     durationSec, 
-    pauseBeforeRepeatSec = DEFAULT_PAUSE_BEFORE_REPEAT_SEC 
+    pauseBeforeRepeatSec = DEFAULT_PAUSE_BEFORE_REPEAT_SEC,
+    forceScroll = false
 }: MarqueeProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
     const [isOverflowing, setIsOverflowing] = useState(false);
+    const [contentWidth, setContentWidth] = useState(0);
+    const [containerWidth, setContainerWidth] = useState(0);
     const [uniqueId] = useState(() => `marquee-${Math.random().toString(36).substring(2, 9)}`);
 
+    // 检查是否需要滚动
     useEffect(() => {
-        const updateMarquee = () => {
+        const checkOverflow = () => {
             if (!containerRef.current || !contentRef.current) return;
             
-            const containerWidth = containerRef.current.offsetWidth;
-            const contentWidth = contentRef.current.scrollWidth;
-
-            // 检测是否溢出
-            const overflowing = contentWidth > containerWidth;
-            setIsOverflowing(overflowing);
+            // 获取容器宽度
+            const newContainerWidth = containerRef.current.clientWidth;
             
-            if (!overflowing) {
-                if (contentRef.current) {
-                    contentRef.current.style.animation = 'none';
-                    contentRef.current.style.transform = 'none';
-                }
-                return;
-            }
-
-            // 计算动画参数
-            const scrollDistance = contentWidth;
+            // 这里改用 scrollWidth 而不是复杂的计算
+            const newContentWidth = contentRef.current.scrollWidth;
             
-            // 计算滚动时间
-            let scrollDuration: number;
-            if (durationSec !== undefined) {
-                scrollDuration = durationSec;
-            } else if (speedPxPerSec !== undefined && speedPxPerSec > 0) {
-                scrollDuration = scrollDistance / speedPxPerSec;
-            } else {
-                scrollDuration = scrollDistance / DEFAULT_MARQUEE_SPEED_PX_PER_SEC;
-            }
-
-            const totalDuration = scrollDuration + pauseBeforeRepeatSec;
-            
-            // 应用动画样式
-            if (contentRef.current) {
-                contentRef.current.style.animation = `${uniqueId} ${totalDuration}s linear infinite`;
-            }
+            setContainerWidth(newContainerWidth);
+            setContentWidth(newContentWidth);
+            setIsOverflowing(forceScroll || newContentWidth > newContainerWidth);
         };
-
-        // 立即执行一次
-        updateMarquee();
-
-        // 监听容器大小变化
-        const resizeObserver = new ResizeObserver(updateMarquee);
+        
+        // 首次检查
+        checkOverflow();
+        
+        // 设置短暂延迟再次检查，以防内容延迟渲染
+        const timeoutId = setTimeout(checkOverflow, 100);
+        
+        // 设置调整大小时的处理
+        const resizeObserver = new ResizeObserver(checkOverflow);
         if (containerRef.current) {
             resizeObserver.observe(containerRef.current);
         }
-
-        // 监听内容变化
-        const mutationObserver = new MutationObserver(updateMarquee);
         if (contentRef.current) {
-            mutationObserver.observe(contentRef.current, { 
-                childList: true, 
-                subtree: true, 
-                characterData: true 
-            });
+            resizeObserver.observe(contentRef.current);
         }
+        
+        return () => {
+            clearTimeout(timeoutId);
+            resizeObserver.disconnect();
+        };
+    }, [children, forceScroll]);
 
-        // 定义动画
-        let scrollDurationForKeyframe = 1;
+    // 创建动画样式
+    useEffect(() => {
+        if (!isOverflowing || contentWidth === 0) return;
+        
+        // 计算动画参数
+        let scrollDuration: number;
         if (durationSec !== undefined) {
-            scrollDurationForKeyframe = durationSec;
-        } else if (speedPxPerSec !== undefined && speedPxPerSec > 0 && contentRef.current) {
-            scrollDurationForKeyframe = contentRef.current.scrollWidth / speedPxPerSec;
-        } else if (contentRef.current) {
-            scrollDurationForKeyframe = contentRef.current.scrollWidth / DEFAULT_MARQUEE_SPEED_PX_PER_SEC;
+            scrollDuration = durationSec;
+        } else {
+            scrollDuration = contentWidth / speedPxPerSec;
         }
-        const pausePercent = (pauseBeforeRepeatSec / (pauseBeforeRepeatSec + scrollDurationForKeyframe)) * 100;
-
+        
+        const totalDuration = scrollDuration + pauseBeforeRepeatSec;
+        const pausePercent = (pauseBeforeRepeatSec / totalDuration) * 100;
+        
+        // 创建CSS动画
         const styleEl = document.createElement('style');
         styleEl.innerHTML = `
             @keyframes ${uniqueId} {
@@ -99,19 +85,25 @@ export function Marquee({
                     transform: translateX(0);
                 }
                 100% {
-                    transform: translateX(calc(-100% - 40px));
+                    transform: translateX(calc(-${contentWidth}px - 20px));
                 }
             }
         `;
         document.head.appendChild(styleEl);
-
-        // 清理函数
+        
+        // 应用动画
+        const contentElement = contentRef.current;
+        if (contentElement) {
+            contentElement.style.animation = `${uniqueId} ${totalDuration}s linear infinite`;
+        }
+        
         return () => {
-            resizeObserver.disconnect();
-            mutationObserver.disconnect();
             styleEl.remove();
+            if (contentElement) {
+                contentElement.style.animation = 'none';
+            }
         };
-    }, [children, speedPxPerSec, durationSec, pauseBeforeRepeatSec, uniqueId]);
+    }, [isOverflowing, contentWidth, containerWidth, speedPxPerSec, durationSec, pauseBeforeRepeatSec, uniqueId]);
 
     return (
         <div
@@ -126,7 +118,7 @@ export function Marquee({
                     whiteSpace: "nowrap",
                     willChange: "transform",
                     transform: "translateX(0)",
-                    paddingRight: isOverflowing ? "40px" : "0"
+                    paddingRight: isOverflowing ? "20px" : "0"
                 }}
             >
                 {children}
