@@ -18,7 +18,7 @@ const initialFS: Record<string, FileSystemNode> = {
     "/": {
         type: "dir",
         children: {
-            home: {
+            User: {
                 type: "dir",
                 children: {
                     snowykami: {
@@ -84,7 +84,7 @@ export default function Terminal() {
 
     // 虚拟文件系统和当前目录
     const [fs] = useState(initialFS);
-    const [cwd, setCwd] = useState("/home/snowykami");
+    const [cwd, setCwd] = useState("/User/snowykami");
 
     const commandWord = input.trim().split(/\s+/)[0];
     const hasMatch = commandWord.length > 0 && commands.some(cmd =>
@@ -95,7 +95,7 @@ export default function Terminal() {
 
     const nodeContextRef = useRef<Record<string, unknown>>({});
 
-    const HOME = "/home/snowykami";
+    const HOME = "/User/snowykami";
 
     const updateLine = (content: string, idx?: number) => {
         let lineIdx = idx;
