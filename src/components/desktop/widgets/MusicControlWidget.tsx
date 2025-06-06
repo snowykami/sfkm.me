@@ -21,7 +21,7 @@ function LyricBox({
 }: {
   onClick?: () => void;
 }) {
-  const { displayLrc, currentSong } = useMusic();
+  const { displayLrc, currentSong, currentSongIndex } = useMusic();
   // 当前显示的歌词
   const [currentLrc, setCurrentLrc] = useState(displayLrc);
   // 控制淡入淡出的状态
@@ -30,18 +30,15 @@ function LyricBox({
   const fadeDuration = 150; // 淡入淡出动画时长
 
   useEffect(() => {
-    if (displayLrc !== currentLrc) {
-      // 触发淡出动画
-      setFadeState("fade-out");
-
-      // 在淡出动画结束后切换歌词并触发淡入动画
-      const timer = setTimeout(() => {
-        setCurrentLrc(displayLrc);
-        setFadeState("fade-in");
-      }, fadeDuration); // 300ms是淡出动画的时长
-      return () => clearTimeout(timer);
-    }
-  }, [displayLrc, currentLrc]);
+    // 触发淡出动画
+    setFadeState("fade-out");
+    // 在淡出动画结束后切换歌词并触发淡入动画
+    const timer = setTimeout(() => {
+      setCurrentLrc(displayLrc);
+      setFadeState("fade-in");
+    }, fadeDuration); // 300ms是淡出动画的时长
+    return () => clearTimeout(timer);
+  }, [displayLrc, currentLrc, currentSongIndex]);
 
   return (
     <div
