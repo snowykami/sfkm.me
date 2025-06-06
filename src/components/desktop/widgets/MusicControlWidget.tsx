@@ -47,7 +47,7 @@ function LyricBox({
       setCurrentLrc(currentSong?.title + " - " + currentSong?.artist || "Lyrics loading...");
       setFadeState("fade-in");
     }
-  }, [currentSongIndex, currentSong, lrcLines, currentLrcLine]);
+  }, [currentSongIndex, currentSong]);
 
   return (
     <div
