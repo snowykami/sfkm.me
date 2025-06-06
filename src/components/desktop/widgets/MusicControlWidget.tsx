@@ -21,24 +21,33 @@ function LyricBox({
 }: {
   onClick?: () => void;
 }) {
-  const { displayLrc, currentSong, currentSongIndex } = useMusic();
+  const { currentLrcLine, lrcLines, currentSongIndex, currentSong } = useMusic();
   // 当前显示的歌词
-  const [currentLrc, setCurrentLrc] = useState(displayLrc);
+  const [currentLrc, setCurrentLrc] = useState("Lyrics loading...");
   // 控制淡入淡出的状态
   const [fadeState, setFadeState] = useState<"fade-in" | "fade-out">("fade-in");
 
   const fadeDuration = 150; // 淡入淡出动画时长
 
   useEffect(() => {
-    // 触发淡出动画
-    setFadeState("fade-out");
-    // 在淡出动画结束后切换歌词并触发淡入动画
-    const timer = setTimeout(() => {
-      setCurrentLrc(displayLrc);
+    if (lrcLines[currentLrcLine]?.text !== currentLrc) {
+      // 触发淡出动画
+      setFadeState("fade-out");
+      // 在淡出动画结束后切换歌词并触发淡入动画
+      const timer = setTimeout(() => {
+        setCurrentLrc(lrcLines[currentLrcLine]?.text);
+        setFadeState("fade-in");
+      }, fadeDuration); // 300ms是淡出动画的时长
+      return () => clearTimeout(timer);
+    }
+  }, [currentLrc, lrcLines, currentLrcLine]);
+  // 切歌时，重置歌词和淡入状态
+  useEffect(() => {
+    if (currentSongIndex !== -1 && currentSong) {
+      setCurrentLrc(lrcLines[currentLrcLine]?.text || "Lyrics loading...");
       setFadeState("fade-in");
-    }, fadeDuration); // 300ms是淡出动画的时长
-    return () => clearTimeout(timer);
-  }, [displayLrc, currentLrc, currentSongIndex]);
+    }
+  }, [currentSongIndex, currentSong, lrcLines, currentLrcLine]);
 
   return (
     <div
@@ -65,7 +74,7 @@ function LyricBox({
             display: "inline-block",
           }}
         >
-          {t(currentLrc) || "No lyrics available"}
+          {t(currentLrc) || "Lyrics not available"}
         </span>
       </div>
     </div>
