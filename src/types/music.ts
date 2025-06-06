@@ -10,6 +10,7 @@ export interface Song {
     albumLink?: string // 专辑链接
     artistLink?: string // 艺术家链接
     songLink?: string // 歌曲链接
+    quality?: "standard" | "high" | "exhigh" | "lossless" | "hires" // 音质标识，对应128，192，320，flac，hires
     id: string // 唯一标识符
     [key: string]: unknown // 允许其他属性
 }

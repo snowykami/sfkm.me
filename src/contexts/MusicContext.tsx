@@ -527,7 +527,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
     const animate = useCallback((now: number) => {
         const delta = now - lastFrameTimeRef.current;
         lastFrameTimeRef.current = now;
-        rotateRef.current += delta * 0.09;
+        rotateRef.current += delta * 0.02;
         setCoverRotate(rotateRef.current);
         animFrameRef.current = requestAnimationFrame(animate);
     }, []);
@@ -929,7 +929,9 @@ export function MusicProvider({ children }: MusicProviderProps) {
         if (!currentSong?.cover) {
             return DEFAULT_COVER_COLOR;
         }
+
         try {
+            // 1. 加载图片
             const img = new Image();
             img.crossOrigin = "Anonymous";
             await new Promise((resolve, reject) => {
@@ -937,33 +939,59 @@ export function MusicProvider({ children }: MusicProviderProps) {
                 img.onerror = reject;
                 img.src = currentSong.cover || "";
             });
+
+            // 2. 创建小尺寸画布 (提高性能)
+            const size = 32; // 更小的尺寸，足够获取整体色调
             const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            if (!ctx) return DEFAULT_COVER_COLOR;
-            const size = Math.min(img.width, img.height, 64); // 小尺寸更快
             canvas.width = size;
             canvas.height = size;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) return DEFAULT_COVER_COLOR;
+
+            // 3. 绘制并执行高斯模糊
             ctx.drawImage(img, 0, 0, size, size);
-            const imageData = ctx.getImageData(0, 0, size, size).data;
-            const colorMap = new Map<string, number>();
-            const simplify = (v: number) => Math.round(v / 32) * 32;
-            for (let i = 0; i < imageData.length; i += 4) {
-                const r = imageData[i], g = imageData[i + 1], b = imageData[i + 2], a = imageData[i + 3];
-                // 跳过透明、过亮、过暗像素
-                if (a < 128) continue;
-                if ((r > 240 && g > 240 && b > 240) || (r < 20 && g < 20 && b < 20)) continue;
-                const key = `${simplify(r)},${simplify(g)},${simplify(b)}`;
-                colorMap.set(key, (colorMap.get(key) || 0) + 1);
+
+            // 应用高斯模糊 (多次应用低半径模糊比单次应用高半径模糊效果更好)
+            for (let i = 0; i < 3; i++) {
+                ctx.filter = "blur(2px)";
+                ctx.drawImage(canvas, 0, 0);
             }
-            let maxCount = 0, dominantColor = DEFAULT_COVER_COLOR;
-            for (const [colorKey, count] of colorMap.entries()) {
-                if (count > maxCount) {
-                    maxCount = count;
-                    const [r, g, b] = colorKey.split(',').map(Number);
-                    dominantColor = `rgb(${r}, ${g}, ${b})`;
-                }
+            ctx.filter = "none";
+
+            // 4. 最终再次绘制到一个极小的画布上，获取平均色
+            const finalSize = 1; // 1x1 像素，即整体平均色
+            const smallCanvas = document.createElement("canvas");
+            smallCanvas.width = finalSize;
+            smallCanvas.height = finalSize;
+            const smallCtx = smallCanvas.getContext("2d");
+            if (!smallCtx) return DEFAULT_COVER_COLOR;
+
+            // 绘制模糊后的图像到1x1画布，自动获得平均色
+            smallCtx.drawImage(canvas, 0, 0, size, size, 0, 0, finalSize, finalSize);
+
+            // 5. 获取平均颜色
+            const pixel = smallCtx.getImageData(0, 0, 1, 1).data;
+            const r = pixel[0];
+            const g = pixel[1];
+            const b = pixel[2];
+
+            // 6. 如果颜色太暗或太亮，进行调整
+            const avgLuminance = (r + g + b) / 3;
+            if (avgLuminance < 40) {
+                // 太暗，提亮
+                const factor = 40 / avgLuminance;
+                return `rgb(${Math.min(255, Math.round(r * factor))}, 
+                        ${Math.min(255, Math.round(g * factor))}, 
+                        ${Math.min(255, Math.round(b * factor))})`;
+            } else if (avgLuminance > 220) {
+                // 太亮，降低亮度
+                const factor = 220 / avgLuminance;
+                return `rgb(${Math.round(r * factor)}, 
+                        ${Math.round(g * factor)}, 
+                        ${Math.round(b * factor)})`;
             }
-            return dominantColor;
+
+            return `rgb(${r}, ${g}, ${b})`;
         } catch (error) {
             console.error("Failed to get album cover color:", error);
             return DEFAULT_COVER_COLOR;

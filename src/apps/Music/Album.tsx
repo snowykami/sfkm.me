@@ -75,7 +75,7 @@ export function Album({ wid }: { wid: string }) {
                     height: diameter,
                     background: "radial-gradient(circle at 60% 40%, #222 70%, #444 100%)",
                     border: `${Math.max(6, diameter * 0.04)}px solid #222`,
-                    transform: `rotate(${coverRotate * 0.2}deg)`,
+                    transform: `rotate(${coverRotate}deg)`,
                     transition: isPlaying ? "none" : "transform 0.3s cubic-bezier(.4,2,.6,1)",
                 }}
             >

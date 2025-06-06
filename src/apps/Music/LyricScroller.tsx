@@ -21,8 +21,8 @@ export default function LyricScroller({ wid }: { wid: string }) {
     dayBg: "oklch(80.9% 0.105 251.813)",
     nightText: "oklch(70.7% 0.165 254.624)",
     nightBg: "oklch(54.6% 0.245 262.881)",
-    otherDayText: "oklch(70.4% 0.04 256.788)",
-    otherNightText: "oklch(92.9% 0.013 255.508)",
+    dayOtherText: "oklch(70.4% 0.04 256.788)",
+    nightOtherText: "oklch(92.9% 0.013 255.508)",
   });
 
   // 切歌时更新主题色
@@ -113,7 +113,7 @@ export default function LyricScroller({ wid }: { wid: string }) {
               style={{
                 color: isCurrent
                   ? (mode === "dark" ? lyricTheme.nightText : lyricTheme.dayText)
-                  : (mode === "dark" ? lyricTheme.otherNightText : lyricTheme.otherDayText),
+                  : (mode === "dark" ? lyricTheme.nightOtherText : lyricTheme.dayOtherText),
                 background: isCurrent
                   ? (mode === "dark" ? lyricTheme.nightBg : lyricTheme.dayBg)
                   : "transparent",

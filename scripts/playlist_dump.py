@@ -42,6 +42,7 @@ class Song(BaseModel):
     albumLink: str = ""
     artistLink: str = ""
     songLink: str = ""
+    quality: str = "high"  # 添加quality字段用于音质
     id: str = ""  # 添加id字段用于唯一标识
 
 
