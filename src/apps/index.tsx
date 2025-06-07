@@ -1,4 +1,4 @@
-import { User, Award, MessageCircle, PanelsTopLeft, Users, Music, SquareChevronRight, Orbit, Code, Send } from "lucide-react";
+import { User, Award, MessageCircle, PanelsTopLeft, Users, Music, SquareChevronRight, Orbit, Code, Send, Waypoints } from "lucide-react";
 import ProfileApp from "@/apps/Profile";
 import ProjectsApp from "@/apps/Projects";
 import SkillsApp from "@/apps/Skills";
@@ -11,6 +11,8 @@ import { AppProps } from "./BaseApp";
 import { WindowState } from "@/contexts/WindowManagerContext";
 import VSCode from "./VSCode";
 import LiteyukiLab from "./LiteyukiLab";
+// 临时活动限定APP
+import Traceroute from "./Temp/Traceroute";
 
 // 参考屏幕尺寸 - 2K屏幕
 const REFERENCE_WIDTH = 2560;
@@ -152,6 +154,10 @@ export const apps: AppMeta[] = [
   },
   {
     id: "vscode", icon: <Code className={iconClassName} />, label: "vscode.title", entry: VSCode,
+    windowState: mediumWindowState, showInDock: true
+  },
+  {
+    id: "traceroute", icon: <Waypoints className={iconClassName} />, label: "traceroute.title", entry: Traceroute,
     windowState: mediumWindowState, showInDock: true
   }
 ];
