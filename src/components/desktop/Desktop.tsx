@@ -64,28 +64,22 @@ export function PCDesktop() {
     useEffect(() => {
         // 只在初始加载时检查哈希值并设置默认值
         const checkInitialHash = () => {
-            // 获取当前哈希值
             let hash = window.location.hash.slice(1); // 去掉前面的 #
-
             // 只有在初始加载且哈希为空时，才重定向到 #profile
             if (!hash) {
                 // 设置默认哈希为 profile
                 window.location.hash = 'profile';
                 hash = 'profile';
             }
-            // 打开对应的窗口
             openWindow(hash, apps.find(app => app.id === hash)?.windowState || mediumWindowState);
         };
-        // 仅在初始加载时执行一次
         checkInitialHash();
 
         // 哈希变化时的处理函数 - 不再设置默认哈希
         const handleHashChange = () => {
-            // 获取当前哈希值
             const hash = window.location.hash.slice(1); // 去掉前面的 #
-            // 只有当哈希存在时才打开窗口
             if (hash) {
-                openWindow(hash, apps.find(app => app.id === hash)?.windowState || mediumWindowState);
+                openWindow(hash);
             }
         };
         // 监听哈希变化
