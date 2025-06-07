@@ -13,6 +13,9 @@ interface HopResult {
     rtt: number | null;
     status: string;
     timestamp: number;
+    // Add new fields for geolocation and ISP
+    location?: string | null;
+    isp?: string | null;
 }
 
 interface TracerouteResponse {
@@ -145,11 +148,19 @@ export default function Traceroute({ }: AppProps) {
                 setResults((prev) => {
                     // 检查是否已存在相同的跳点
                     const exists = prev.some(hop => hop.hop === data.hop);
+                    let updatedResults;
                     if (exists) {
-                        return prev.map(hop => hop.hop === data.hop ? data : hop);
+                        updatedResults = prev.map(hop => hop.hop === data.hop ? data : hop);
                     } else {
-                        return [...prev, data];
+                        updatedResults = [...prev, data];
                     }
+
+                    // 如果跳点有 IP 地址，则获取地理位置信息
+                    if (data.addr) {
+                        fetchGeolocation(data.addr, data.hop);
+                    }
+
+                    return updatedResults;
                 });
             }
         };
@@ -164,6 +175,43 @@ export default function Traceroute({ }: AppProps) {
             setLoading(false);
         });
     };
+
+    // 获取 IP 地理位置信息
+    const fetchGeolocation = async (ip: string, hopNumber: number) => {
+        const geoApiUrl = `https://api.mir6.com/api/ip?ip=${ip}&type=json`;
+        try {
+            const response = await fetch(geoApiUrl);
+            if (!response.ok) {
+                throw new Error("Geolocation API request failed");
+            }
+            const geoData = await response.json();
+
+            let location = "未知";
+            let isp = "未知";
+
+            if (geoData.code === 200 && geoData.data) {
+                location = geoData.data.location || "未知";
+                isp = geoData.data.isp || "未知";
+            }
+
+            // 更新特定跳点的地理位置信息
+            setResults(prev =>
+                prev.map(hop =>
+                    hop.hop === hopNumber ? { ...hop, location, isp } : hop
+                )
+            );
+
+        } catch (error) {
+            console.error("Error fetching geolocation:", error);
+            // 错误时也更新为未知
+            setResults(prev =>
+                prev.map(hop =>
+                    hop.hop === hopNumber ? { ...hop, location: "未知", isp: "未知" } : hop
+                )
+            );
+        }
+    };
+
 
     // 组件卸载时关闭 EventSource
     useEffect(() => {
@@ -326,7 +374,7 @@ export default function Traceroute({ }: AppProps) {
                         {completed && <span className="ml-2 text-green-500">(已完成)</span>}
                     </div>
 
-                    <div 
+                    <div
                         ref={resultsContainerRef}
                         className="border rounded flex-1 overflow-auto dark:border-gray-600"
                         style={{ overflowY: 'auto' }}
@@ -335,8 +383,10 @@ export default function Traceroute({ }: AppProps) {
                             <thead className="sticky top-0 bg-white dark:bg-gray-800 z-10">
                                 <tr className="border-b dark:border-gray-600">
                                     <th className="text-left py-2 px-2 w-12">跳点</th>
-                                    <th className="text-left py-2 px-2">IP 地址</th>
-                                    <th className="text-left py-2 px-2">主机名</th>
+                                    <th className="text-left py-2 px-2 w-40">IP 地址</th> {/* Adjusted width */}
+                                    <th className="text-left py-2 px-2 w-40">主机名</th> {/* Adjusted width */}
+                                    <th className="text-left py-2 px-2 w-48">地理位置</th> {/* New column - Added w-48 */}
+                                    <th className="text-left py-2 px-2 w-32">运营商</th> {/* New column */}
                                     <th className="text-left py-2 px-2 w-28">响应时间</th>
                                     <th className="text-left py-2 px-2 w-28">状态</th>
                                 </tr>
@@ -344,7 +394,7 @@ export default function Traceroute({ }: AppProps) {
                             <tbody>
                                 {results.length === 0 ? (
                                     <tr>
-                                        <td colSpan={5} className="py-4 text-center text-gray-500 dark:text-gray-400">
+                                        <td colSpan={7} className="py-4 text-center text-gray-500 dark:text-gray-400"> {/* Adjusted colspan */}
                                             {loading ? "等待数据..." : "没有结果"}
                                         </td>
                                     </tr>
@@ -361,6 +411,13 @@ export default function Traceroute({ }: AppProps) {
                                                     {(hop.hostname && hop.hostname !== "未知")
                                                         ? hop.hostname
                                                         : hop.addr ? '-' : '*'}
+                                                </td>
+                                                {/* Display Geolocation and ISP */}
+                                                <td className="py-2 px-2 text-sm truncate w-48"> {/* Added w-48 */}
+                                                    {hop.addr ? (hop.location !== undefined ? hop.location : '查询中...') : '*'}
+                                                </td>
+                                                <td className="py-2 px-2 text-sm truncate">
+                                                    {hop.addr ? (hop.isp !== undefined ? hop.isp : '查询中...') : '*'}
                                                 </td>
                                                 <td className="py-2 px-2 font-mono text-sm">
                                                     {hop.rtt !== null ? `${hop.rtt.toFixed(2)}ms` : '*'}

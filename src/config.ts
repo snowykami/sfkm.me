@@ -398,6 +398,9 @@ const config: Config = {
                         },
                     },
                 },
+                traceroute: {
+                    title: "Traceroute",
+                },
                 ui: {
                     close: "关闭",
                     minimize: "最小化",
@@ -658,6 +661,9 @@ const config: Config = {
                         },
                     },
                 },
+                traceroute: {
+                    title: "Traceroute",
+                },
                 ui: {
                     close: "Close",
                     minimize: "Minimize",
@@ -912,6 +918,9 @@ const config: Config = {
                             statusnormal: "通常",
                         },
                     },
+                },
+                traceroute: {
+                    title: "Traceroute",
                 },
                 ui: {
                     close: "閉じる",
