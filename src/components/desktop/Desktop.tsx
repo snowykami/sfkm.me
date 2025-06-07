@@ -62,40 +62,39 @@ export function PCDesktop() {
 
     // 监听路由变化并打开对应窗口
     useEffect(() => {
-        // 记录当前处理的hash，避免重复处理相同的hash
-        let currentHash = window.location.hash.slice(1);
+        // 只在初始加载时检查哈希值并设置默认值
+        const checkInitialHash = () => {
+            // 获取当前哈希值
+            let hash = window.location.hash.slice(1); // 去掉前面的 #
 
+            // 只有在初始加载且哈希为空时，才重定向到 #profile
+            if (!hash) {
+                // 设置默认哈希为 profile
+                window.location.hash = 'profile';
+                hash = 'profile';
+            }
+            // 打开对应的窗口
+            openWindow(hash, apps.find(app => app.id === hash)?.windowState || mediumWindowState);
+        };
+        // 仅在初始加载时执行一次
+        checkInitialHash();
+
+        // 哈希变化时的处理函数 - 不再设置默认哈希
         const handleHashChange = () => {
-            const newHash = window.location.hash.slice(1);
-            // 如果hash没有变化，不执行任何操作
-            if (newHash === currentHash) return;
-
-            // 更新currentHash
-            currentHash = newHash;
-
-            if (newHash) {
-                openWindow(newHash, apps.find(app => app.id === newHash)?.windowState || mediumWindowState);
+            // 获取当前哈希值
+            const hash = window.location.hash.slice(1); // 去掉前面的 #
+            // 只有当哈希存在时才打开窗口
+            if (hash) {
+                openWindow(hash, apps.find(app => app.id === hash)?.windowState || mediumWindowState);
             }
         };
-
-        // 初次加载时检查哈希值
-        if (currentHash) {
-            // 如果已有哈希值，直接打开对应窗口
-            openWindow(currentHash, apps.find(app => app.id === currentHash)?.windowState || mediumWindowState);
-        } else {
-            // 首次打开且没有哈希值时，重定向到 #profile
-            // 避免触发hashchange事件重复处理
-            currentHash = 'profile';
-            window.location.hash = currentHash;
-            openWindow(currentHash, apps.find(app => app.id === currentHash)?.windowState || mediumWindowState);
-        }
-
         // 监听哈希变化
         window.addEventListener('hashchange', handleHashChange);
+        // 组件卸载时移除监听器
         return () => {
             window.removeEventListener('hashchange', handleHashChange);
         };
-    }, [apps, openWindow]);
+    }, [openWindow, apps]);
 
     const handleDesktopClick = (event: React.MouseEvent<HTMLDivElement>) => {
         const targetElement = event.target as HTMLElement;
@@ -122,9 +121,10 @@ export function PCDesktop() {
                         isEdgeHidden: false,
                         originalPositionBeforeEdgeHide: undefined,
                         hiddenEdge: undefined,
+                        // 不改变其他属性，保持窗口原有层级
                     });
-                    // 恢复后是否需要置顶？根据需求决定，这里选择置顶
-                    bringToFront(win.id);
+                    // 移除下面这行，避免恢复后改变窗口层级顺序
+                    // bringToFront(win.id);
                 }
             });
         } else {
