@@ -96,6 +96,7 @@ export function PCDesktop() {
         };
     }, [openWindow, apps]);
 
+    // 点击贴边
     const handleDesktopClick = (event: React.MouseEvent<HTMLDivElement>) => {
         const targetElement = event.target as HTMLElement;
         if (
