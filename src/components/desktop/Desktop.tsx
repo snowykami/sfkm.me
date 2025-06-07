@@ -62,16 +62,40 @@ export function PCDesktop() {
 
     // 监听路由变化并打开对应窗口
     useEffect(() => {
+        // 记录当前处理的hash，避免重复处理相同的hash
+        let currentHash = window.location.hash.slice(1);
+
         const handleHashChange = () => {
-            const hash = window.location.hash.slice(1); // 获取哈希值，去掉前面的 #
-            if (hash) {
-                openWindow(hash, mediumWindowState); // 打开对应的窗口 ID
+            const newHash = window.location.hash.slice(1);
+            // 如果hash没有变化，不执行任何操作
+            if (newHash === currentHash) return;
+
+            // 更新currentHash
+            currentHash = newHash;
+
+            if (newHash) {
+                openWindow(newHash, apps.find(app => app.id === newHash)?.windowState || mediumWindowState);
             }
         };
+
         // 初次加载时检查哈希值
-        handleHashChange();
+        if (currentHash) {
+            // 如果已有哈希值，直接打开对应窗口
+            openWindow(currentHash, apps.find(app => app.id === currentHash)?.windowState || mediumWindowState);
+        } else {
+            // 首次打开且没有哈希值时，重定向到 #profile
+            // 避免触发hashchange事件重复处理
+            currentHash = 'profile';
+            window.location.hash = currentHash;
+            openWindow(currentHash, apps.find(app => app.id === currentHash)?.windowState || mediumWindowState);
+        }
+
         // 监听哈希变化
-    }, [openWindow]);
+        window.addEventListener('hashchange', handleHashChange);
+        return () => {
+            window.removeEventListener('hashchange', handleHashChange);
+        };
+    }, [apps, openWindow]);
 
     const handleDesktopClick = (event: React.MouseEvent<HTMLDivElement>) => {
         const targetElement = event.target as HTMLElement;
@@ -204,7 +228,7 @@ export function PCDesktop() {
                                             showMinimize={win.showMinimize}
                                             showMaximize={win.showMaximize}
                                             windowMargin={WINDOW_MARGIN}
-                                            dockHeight={DOCK_HEIGHT+WINDOW_MARGIN} // 调整 Dock 高度以适应顶部栏
+                                            dockHeight={DOCK_HEIGHT + WINDOW_MARGIN} // 调整 Dock 高度以适应顶部栏
                                         >
                                             {win.customRender()}
                                         </MacOSWindow>
@@ -225,7 +249,7 @@ export function PCDesktop() {
                                         showMinimize={win.showMinimize}
                                         showMaximize={win.showMaximize}
                                         windowMargin={WINDOW_MARGIN}
-                                        dockHeight={DOCK_HEIGHT+WINDOW_MARGIN} // 调整 Dock 高度以适应顶部栏
+                                        dockHeight={DOCK_HEIGHT + WINDOW_MARGIN} // 调整 Dock 高度以适应顶部栏
                                     >
                                         <Entry
                                             windowId={win.id}
