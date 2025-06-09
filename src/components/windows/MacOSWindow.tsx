@@ -31,6 +31,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
   const win = windows.find(w => w.id === id);
   const [closing, setClosing] = useState(false);
   const [minimizing, setMinimizing] = useState(false);
+  const isTop = win?.zIndex === Math.max(...windows.map(w => w.zIndex));
 
   if (!win) return null;
 
@@ -213,13 +214,18 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
               ${scheme.titleBarClassName}
             `}
           >
-            <div className="window-controls flex items-center space-x-2">
-              {/* 关闭、最小化、最大化按钮代码保持不变 */}
+            <div className="window-controls flex items-center space-x-2 group">
               {/* 关闭按钮 */}
               {showClose && (
                 <div
-                  className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center group relative"
-                  onClick={handleClose}
+                  className={`
+        w-3 h-3 rounded-full
+        ${isTop ? "bg-red-500" : "bg-gray-400"}
+        group-hover:bg-red-500
+        hover:bg-red-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center relative
+      `}
+                  onClick={isTop ? handleClose : undefined}
+                  style={{ pointerEvents: isTop ? "auto" : "none" }}
                 >
                   <div className="w-1.5 h-0.5 bg-red-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rotate-45 absolute"></div>
                   <div className="w-1.5 h-0.5 bg-red-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200 -rotate-45 absolute"></div>
@@ -228,16 +234,30 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
               {/* 最小化按钮 */}
               {showMinimize && (
                 <div
-                  className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center group relative"
-                  onClick={handleMinimize}>
+                  className={`
+        w-3 h-3 rounded-full
+        ${isTop ? "bg-yellow-500" : "bg-gray-400"}
+        group-hover:bg-yellow-500
+        hover:bg-yellow-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center relative
+      `}
+                  onClick={isTop ? handleMinimize : undefined}
+                  style={{ pointerEvents: isTop ? "auto" : "none" }}
+                >
                   <div className="w-1.5 h-0.5 bg-yellow-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
                 </div>
               )}
               {/* 最大化按钮 */}
               {showMaximize && (
                 <div
-                  className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center group relative"
-                  onClick={handleMaximize}>
+                  className={`
+        w-3 h-3 rounded-full
+        ${isTop ? "bg-green-500" : "bg-gray-400"}
+        group-hover:bg-green-500
+        hover:bg-green-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center relative
+      `}
+                  onClick={isTop ? handleMaximize : undefined}
+                  style={{ pointerEvents: isTop ? "auto" : "none" }}
+                >
                   <div className="w-1.5 h-1.5 border border-green-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
                 </div>
               )}
