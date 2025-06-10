@@ -149,9 +149,9 @@ export default function FriendsContent() {
     }, [])
 
     return (
-        <CardContent className="p-6 transition-colors">
+        <CardContent className="p-6 transition-colors h-full flex flex-col">
             {/* 标题栏固定 */}
-            <div className="flex items-center mb-4">
+            <div className="flex items-center mb-4 flex-shrink-0">
                 <Users className="w-5 h-5 text-slate-500 dark:text-slate-400 mr-2" />
                 <h2 className="text-lg font-semibold text-slate-800 dark:text-white flex-1">{t('friends.title')}</h2>
                 <Button
@@ -164,8 +164,10 @@ export default function FriendsContent() {
                     </a>
                 </Button>
             </div>
-            {/* 列表可滚动，标题和按钮不会跟随滚动 */}
-            <div className="flex flex-col gap-2 max-h-[60vh] overflow-y-auto pr-1">
+            {/* 列表可滚动，外层不滚动 */}
+            <div className="flex-1 min-h-0 flex flex-col gap-2 overflow-y-auto px-0"
+                style={{ scrollbarGutter: "stable overlay" }}
+            >
                 {list.map((friend) => (
                     <Card
                         key={friend.link}
