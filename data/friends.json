@@ -242,5 +242,12 @@
         "link": "https://yyz9.cn/",
         "description": "yyz的个人学习记录，红岩网校运维安全部的大佬",
         "avatar": "https://yyz9.cn/img/avatar_hu1b37c766fff55303c7e18ee666723dd8_271849_300x0_resize_box_3.png"
+    },
+    {
+        "issue_number": 28,
+        "name": "轻雪开源镜像站",
+        "link": "https://mirrors.liteyuki.org/",
+        "description": "轻雪开源镜像站/反向代理站，为一些特定地区网络不好的开发者提供必要的资源代理访问",
+        "avatar": "https://mirrors.liteyuki.org/upload/logo9.png?t=1746096078397"
     }
 ]
