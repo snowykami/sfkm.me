@@ -186,5 +186,12 @@
         "link": "https://www.yyydl.top/",
         "description": "低调佬，owner of nonebot",
         "avatar": "https://q.qlogo.cn/g?b=qq&nk=3323077879&s=640"
+    },
+    {
+        "issue_number": 20,
+        "name": "咕咕的GitHub主页",
+        "link": "https://github.com/synodriver",
+        "description": "咕咕，synodriver，一位很厉害的CPython开发者，喜欢玩NAS，同时是神羽帝国的馒头山大王",
+        "avatar": "https://q.qlogo.cn/g?b=qq&nk=624805065&s=640"
     }
 ]
