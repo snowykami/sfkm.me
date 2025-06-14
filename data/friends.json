@@ -179,5 +179,12 @@
         "link": "https://www.elysium-stack.cn/",
         "description": "不会摄影的设计师不是优秀的旅行家",
         "avatar": "https://www.elysium-stack.cn/upload/ee0757e6-ebb4-46d0-a388-660f648653ea.jpg"
+    },
+    {
+        "issue_number": 19,
+        "name": "低调佬的博客",
+        "link": "https://www.yyydl.top/",
+        "description": "低调佬，owner of nonebot",
+        "avatar": "https://q.qlogo.cn/g?b=qq&nk=3323077879&s=640"
     }
 ]
