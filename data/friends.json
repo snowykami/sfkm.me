@@ -256,5 +256,12 @@
         "link": "https://blog.coldbin.top/",
         "description": "阿冰的小屋，红岩网校后端研发部的大佬",
         "avatar": "https://blog.coldbin.top/images/avatar.jpg"
+    },
+    {
+        "issue_number": 30,
+        "name": "zhangxinhui02的个人主页",
+        "link": "https://www.mikumikumi.xyz/",
+        "description": "红岩网校运维安全部的大佬",
+        "avatar": "https://avatars.githubusercontent.com/u/25164524?v=4"
     }
 ]
