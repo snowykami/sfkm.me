@@ -1,8 +1,11 @@
 import { LucideProps } from "lucide-react";
+import { IconType } from "react-icons";
+
+type Icon = React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>> | IconType | string;
 
 export interface Contact {
     // icon可以是Lucide图标组件或url资源
-    icon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>> | string;
+    icon: Icon;
     label: string;
     value: string;
     link: string;
