@@ -115,7 +115,7 @@
         "name": "轻雪工作室 LiteyukiStudio",
         "link": "https://liteyuki.org/",
         "description": "轻雪工作室 LiteyukiStudio 是一个以开源为主的工作室",
-        "avatar": "https://cdn.liteyuki.org/logos/studio.svg"
+        "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png"
     },
     {
         "issue_number": 8,
@@ -179,5 +179,89 @@
         "link": "https://www.elysium-stack.cn/",
         "description": "不会摄影的设计师不是优秀的旅行家",
         "avatar": "https://www.elysium-stack.cn/upload/ee0757e6-ebb4-46d0-a388-660f648653ea.jpg"
+    },
+    {
+        "issue_number": 19,
+        "name": "低调佬的博客",
+        "link": "https://www.yyydl.top/",
+        "description": "低调佬，owner of nonebot",
+        "avatar": "https://q.qlogo.cn/g?b=qq&nk=3323077879&s=640"
+    },
+    {
+        "issue_number": 20,
+        "name": "咕咕的GitHub主页",
+        "link": "https://github.com/synodriver",
+        "description": "咕咕，synodriver，一位很厉害的CPython开发者，喜欢玩NAS，同时是神羽帝国的馒头山大王",
+        "avatar": "https://q.qlogo.cn/g?b=qq&nk=624805065&s=640"
+    },
+    {
+        "issue_number": 21,
+        "name": "skywircl",
+        "link": "https://www.madfrey.top/",
+        "description": "红岩网校后端研发部的大佬之一，Student, and will graduate with a B.Eng in Computer Science in Summer 2025.  You can send email to skywircl @ gmail dot com to get a touch with me.",
+        "avatar": "https://avatars.githubusercontent.com/u/89887780?v=4"
+    },
+    {
+        "issue_number": 22,
+        "name": "joshua的个人主页",
+        "link": "https://joshua.su/",
+        "description": "红岩网校运维安全部的大佬，云原生糕手，请输入help来查看可用命令",
+        "avatar": "https://avatars.githubusercontent.com/u/54235339?v=4"
+    },
+    {
+        "issue_number": 23,
+        "name": "JasonZYT的个人主页",
+        "link": "https://jasonz.yt/",
+        "description": "JasonZYT的个人主页",
+        "avatar": "https://avatars.githubusercontent.com/u/66063199?v=4"
+    },
+    {
+        "issue_number": 24,
+        "name": "Sianao Site",
+        "link": "https://sianao.site/",
+        "description": "红岩网校后端研发部曾经的leader，非常厉害，游遍大厂",
+        "avatar": "https://avatars.githubusercontent.com/u/96694568?v=4"
+    },
+    {
+        "issue_number": 25,
+        "name": "Lomirus的个人博客",
+        "link": "https://lomirus.github.io/",
+        "description": "Lomirus的个人博客，红岩网校前端研发部的大佬，全栈糕手，前端基建狂魔",
+        "avatar": "https://lomirus.github.io/img/avatar_hu11994427718878188740.jpg"
+    },
+    {
+        "issue_number": 26,
+        "name": "ferdinand的GitHub",
+        "link": "https://github.com/Ferdinadaedth",
+        "description": "红岩网校的站长兼运维",
+        "avatar": "https://avatars.githubusercontent.com/u/115557428?v=4"
+    },
+    {
+        "issue_number": 27,
+        "name": "yyz的个人学习记录",
+        "link": "https://yyz9.cn/",
+        "description": "yyz的个人学习记录，红岩网校运维安全部的大佬",
+        "avatar": "https://yyz9.cn/img/avatar_hu1b37c766fff55303c7e18ee666723dd8_271849_300x0_resize_box_3.png"
+    },
+    {
+        "issue_number": 28,
+        "name": "轻雪开源镜像站",
+        "link": "https://mirrors.liteyuki.org/",
+        "description": "轻雪开源镜像站/反向代理站，为一些特定地区网络不好的开发者提供必要的资源代理访问",
+        "avatar": "https://mirrors.liteyuki.org/upload/logo9.png?t=1746096078397"
+    },
+    {
+        "issue_number": 29,
+        "name": "阿冰的小屋",
+        "link": "https://blog.coldbin.top/",
+        "description": "阿冰的小屋，红岩网校后端研发部的大佬",
+        "avatar": "https://blog.coldbin.top/images/avatar.jpg"
+    },
+    {
+        "issue_number": 30,
+        "name": "zhangxinhui02的个人主页",
+        "link": "https://www.mikumikumi.xyz/",
+        "description": "红岩网校运维安全部的大佬",
+        "avatar": "https://avatars.githubusercontent.com/u/25164524?v=4"
     }
 ]
