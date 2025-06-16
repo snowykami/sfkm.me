@@ -23,6 +23,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-i18next": "^15.5.2",
+    "react-icons": "^5.5.0",
     "react-rnd": "^10.5.2",
     "tailwind-merge": "^3.3.0",
     "tw-animate-css": "^1.3.2"

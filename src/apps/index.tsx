@@ -1,4 +1,4 @@
-import { User, Award, MessageCircle, PanelsTopLeft, Users, Music, SquareChevronRight, Orbit, Code, Send, Waypoints } from "lucide-react";
+import { User, MessageCircle, Users, Music, SquareChevronRight, Orbit, Code, Send, Waypoints } from "lucide-react";
 import ProfileApp from "@/apps/Profile";
 import ProjectsApp from "@/apps/Projects";
 import SkillsApp from "@/apps/Skills";
@@ -11,8 +11,12 @@ import { AppProps } from "./BaseApp";
 import { WindowState } from "@/contexts/WindowManagerContext";
 import VSCode from "./VSCode";
 import LiteyukiLab from "./LiteyukiLab";
+import { MdOutlineWorkspaces } from "react-icons/md";
+import { LiaAtomSolid } from "react-icons/lia";
 // 临时活动限定APP
 import Traceroute from "./Temp/Traceroute";
+import { BiPlanet } from "react-icons/bi";
+import { SiSvgtrace } from "react-icons/si";
 
 // 参考屏幕尺寸 - 2K屏幕
 const REFERENCE_WIDTH = 2560;
@@ -120,11 +124,11 @@ export const apps: AppMeta[] = [
     windowState: phoneWindowState, showInDock: true
   },
   {
-    id: "projects", icon: <PanelsTopLeft className={iconClassName} />, label: "projects.title", entry: ProjectsApp,
+    id: "projects", icon: <MdOutlineWorkspaces className={iconClassName}/>, label: "projects.title", entry: ProjectsApp,
     windowState: phoneWindowState, showInDock: true
   },
   {
-    id: "skills", icon: <Award className={iconClassName} />, label: "skills.title", entry: SkillsApp,
+    id: "skills", icon: <LiaAtomSolid className={iconClassName} />, label: "skills.title", entry: SkillsApp,
     windowState: phoneWindowState,
     showInDock: true
   },
@@ -145,7 +149,7 @@ export const apps: AppMeta[] = [
     windowState: phoneWindowState, showInDock: true
   },
   {
-    id: "liteyukilab", icon: <Orbit className={iconClassName} />, label: "liteyukilab.title", entry: LiteyukiLab,
+    id: "liteyukilab", icon: <BiPlanet className={iconClassName} />, label: "liteyukilab.title", entry: LiteyukiLab,
     windowState: mediumWindowState, showInDock: true
   },
   {
@@ -157,7 +161,7 @@ export const apps: AppMeta[] = [
     windowState: mediumWindowState, showInDock: true
   },
   {
-    id: "traceroute", icon: <Waypoints className={iconClassName} />, label: "traceroute.title", entry: Traceroute,
+    id: "traceroute", icon: <SiSvgtrace className={iconClassName} />, label: "traceroute.title", entry: Traceroute,
     windowState: mediumWindowState, showInDock: true
   }
 ];

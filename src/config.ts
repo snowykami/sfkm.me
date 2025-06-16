@@ -9,8 +9,12 @@ import projectsJson from '@/data/projects.json'
 import skillsJson from '@/data/skills.json'
 import { Song, SongOrPromise } from '@/types/music'
 import { BackgroundContext } from '@/types/background'
-import { ExternalLink, Github, HeadphonesIcon, Mail, MessageCircleMore, Tv, Twitter } from 'lucide-react'
+import { ExternalLink, Github, Mail, Tv, Twitter } from 'lucide-react'
 import { fetchSongSrcFromNCM, fetchSongSrcFromQQ } from './utils/music'
+import { SiNpm, SiPypi, SiDocker } from "react-icons/si";
+import { TbBrandNeteaseMusic } from "react-icons/tb";
+import { BiPlanet } from "react-icons/bi";
+import { RiQqLine } from "react-icons/ri";
 
 interface Config {
     // 网站元数据，此处大部分数据都支持填写常量或者i18n化函数
@@ -77,10 +81,14 @@ const config: Config = {
     contacts: [
         { icon: Mail, label: "contacts.email", value: "a@sfkm.me", link: "mailto:a@sfkm.me" },
         { icon: Github, label: "GitHub", value: "github.com/snowykami", link: "https://github.com/snowykami" },
-        { icon: MessageCircleMore, label: "contacts.liteyukilab", value: "snowykami@lab.liteyuki.icu", link: "https://lab.liteyuki.icu/@snowykami" },
+        { icon: BiPlanet, label: "contacts.liteyukilab", value: "snowykami@lab.liteyuki.icu", link: "https://lab.liteyuki.icu/@snowykami" },
         { icon: Tv, label: "bilibili", value: "snowykami", link: "https://space.bilibili.com/233938750" },
-        { icon: HeadphonesIcon, label: "contacts.ncm", value: "snowykami", link: "https://music.163.com/#/user/home?id=1491388449" },
+        { icon: RiQqLine, label: "QQ", value: "2751454815", link: "https://qm.qq.com/q/wjsV7ysAkS" },
+        { icon: TbBrandNeteaseMusic, label: "contacts.ncm", value: "snowykami", link: "https://music.163.com/#/user/home?id=1491388449" },
         { icon: Twitter, label: "X", value: "@snowykami1145", link: "https://x.com/snowykami1145" },
+        { icon: SiNpm, label: "NPM", value: "snowykami", link: "https://www.npmjs.com/~snowykami" },
+        { icon: SiPypi, label: "Pypi", value: "SnowyKami", link: "https://pypi.org/user/SnowyKami/" },
+        { icon: SiDocker, label: "Docker Hub", value: "snowykami", link: "https://hub.docker.com/u/snowykami" },
         ...(contactsJson as Contact[])
     ],
     friends: [...(friendsJson as Friend[])],
