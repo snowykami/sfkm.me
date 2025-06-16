@@ -1,4 +1,4 @@
-import { User, MessageCircle, Users, Music, SquareChevronRight, Orbit, Code, Send, Waypoints } from "lucide-react";
+import { User, MessageCircle, Users, Music, SquareChevronRight, Code, Send} from "lucide-react";
 import ProfileApp from "@/apps/Profile";
 import ProjectsApp from "@/apps/Projects";
 import SkillsApp from "@/apps/Skills";
