@@ -270,5 +270,12 @@
         "link": "https://sfkm.me/",
         "description": "远野千束的个人主页",
         "avatar": "https://cdn.liteyuki.org/snowykami/avatar.jpg"
+    },
+    {
+        "issue_number": 31,
+        "name": "红岩网校工作站 RedrockTeam",
+        "link": "https://m.redrock.team/",
+        "description": "一个从事互联网产品开发的学生组织，隶属于校团委",
+        "avatar": "https://sre-docs.redrock.team/logo.png"
     }
 ]
