@@ -54,7 +54,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
     backgroundOpacity: "1",
     backdropBlur: true,
     backdropBlurClass: "backdrop-blur-md",
-    shadow: "shadow-xl",
+    shadow: "shadow-2xl",
     showBorder: true, // 默认显示边框
     backgroundOverlay: false,
     overlayColor: "bg-black/20",
