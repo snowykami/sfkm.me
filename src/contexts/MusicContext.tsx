@@ -148,7 +148,6 @@ export function MusicProvider({ children }: MusicProviderProps) {
     const [pendingSeek, setPendingSeek] = useState<number | null>(
         initialState.time > 0 ? initialState.time : null
     );
-    const [playMode, setPlayMode] = useState<PlayMode>(getInitialPlayMode());
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [currentSong, setCurrentSong] = useState<Song | null>(null);
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -167,6 +166,9 @@ export function MusicProvider({ children }: MusicProviderProps) {
     const [volume, setVolume] = useState<number>(() => getInitialVolumeState().volume);
     const [isMuted, setIsMuted] = useState<boolean>(() => getInitialVolumeState().isMuted);
     const [resolvedSrc, setResolvedSrc] = useState<string | null>(null);
+    const playModeRef = useRef<PlayMode>(getInitialPlayMode());
+    // 保留 state 用于 UI 渲染
+    const [playMode, setPlayMode] = useState<PlayMode>(getInitialPlayMode());
 
 
     useEffect(() => {
@@ -629,13 +631,13 @@ export function MusicProvider({ children }: MusicProviderProps) {
 
         let nextLoadedIndex: number;
 
-        if (playMode === "shuffle") {
+        if (playModeRef.current === "shuffle") {
             // 随机播放
             nextLoadedIndex = Math.floor(Math.random() * resolvedSongs.length);
             if (resolvedSongs.length > 1 && nextLoadedIndex === currentLoadedIndex) {
                 nextLoadedIndex = (nextLoadedIndex + 1) % resolvedSongs.length;
             }
-        } else if (playMode === "repeat-one") {
+        } else if (playModeRef.current === "repeat-one") {
             // 单曲循环
             if (audioRef.current) {
                 audioRef.current.currentTime = 0;
@@ -654,7 +656,7 @@ export function MusicProvider({ children }: MusicProviderProps) {
             setCurrentSongIndex(nextOriginalIndex);
             setIsPlaying(true);
         }
-    }, [playMode, currentSongIndex, resolvedSongs, audioRef, lyricRef, mapToLoadedIndex, mapToOriginalIndex]);
+    }, [currentSongIndex, resolvedSongs, audioRef, lyricRef, mapToLoadedIndex, mapToOriginalIndex]);
 
     const handlePrev = useCallback((): void => {
         if (!resolvedSongs || resolvedSongs.length === 0) return;
@@ -665,13 +667,13 @@ export function MusicProvider({ children }: MusicProviderProps) {
 
         let prevLoadedIndex: number;
 
-        if (playMode === "shuffle") {
+        if (playModeRef.current === "shuffle") {
             // 随机播放
             prevLoadedIndex = Math.floor(Math.random() * resolvedSongs.length);
             if (resolvedSongs.length > 1 && prevLoadedIndex === currentLoadedIndex) {
                 prevLoadedIndex = (prevLoadedIndex + 1) % resolvedSongs.length;
             }
-        } else if (playMode === "repeat-one") {
+        } else if (playModeRef.current === "repeat-one") {
             // 单曲循环
             if (audioRef.current) {
                 audioRef.current.currentTime = 0;
@@ -690,28 +692,24 @@ export function MusicProvider({ children }: MusicProviderProps) {
             setCurrentSongIndex(prevOriginalIndex);
             setIsPlaying(true);
         }
-    }, [playMode, currentSongIndex, resolvedSongs, audioRef, lyricRef, mapToLoadedIndex, mapToOriginalIndex]);
+    }, [currentSongIndex, resolvedSongs, audioRef, lyricRef, mapToLoadedIndex, mapToOriginalIndex]);
 
     const handleEnded = useCallback((): void => {
         if (!resolvedSongs || resolvedSongs.length === 0) {
             setIsPlaying(false);
             return;
         }
-
-        if (playMode === "repeat-one") {
+        if (playModeRef.current === "repeat-one") {
             // 单曲循环
             audioRef.current?.play().catch(() => { });
             lyricRef.current?.play(0);
             return;
         }
-
         // 获取当前歌曲的加载索引
         const currentLoadedIndex = mapToLoadedIndex(currentSongIndex);
         if (currentLoadedIndex === -1) return;
-
         let nextLoadedIndex: number;
-
-        if (playMode === "shuffle") {
+        if (playModeRef.current === "shuffle") {
             // 随机播放
             nextLoadedIndex = Math.floor(Math.random() * resolvedSongs.length);
             if (resolvedSongs.length > 1 && nextLoadedIndex === currentLoadedIndex) {
@@ -721,26 +719,27 @@ export function MusicProvider({ children }: MusicProviderProps) {
             // 顺序播放
             nextLoadedIndex = (currentLoadedIndex + 1) % resolvedSongs.length;
         }
-
         // 将加载索引转换回原始索引
         const nextOriginalIndex = mapToOriginalIndex(nextLoadedIndex);
         if (nextOriginalIndex !== -1) {
             setCurrentSongIndex(nextOriginalIndex);
             setIsPlaying(true);
         }
-    }, [playMode, currentSongIndex, resolvedSongs, audioRef, lyricRef, mapToLoadedIndex, mapToOriginalIndex]);
+    }, [currentSongIndex, resolvedSongs, audioRef, lyricRef, mapToLoadedIndex, mapToOriginalIndex]);
 
     const handleSwitchPlayMode = useCallback((): void => {
-        setPlayMode((mode: PlayMode) => {
-            let next: PlayMode;
-            if (mode === "order") next = "repeat-one";
-            else if (mode === "repeat-one") next = "shuffle";
-            else next = "order";
-            try {
-                localStorage.setItem(PLAYMODE_KEY, next);
-            } catch { }
-            return next;
-        });
+        let next: PlayMode;
+        if (playModeRef.current === "order") next = "repeat-one";
+        else if (playModeRef.current === "repeat-one") next = "shuffle";
+        else next = "order";
+
+        // 同时更新 ref 和 state
+        playModeRef.current = next;
+        setPlayMode(next);
+
+        try {
+            localStorage.setItem(PLAYMODE_KEY, next);
+        } catch { }
     }, []);
 
     // 修改 handlePlaySong 方法，接受的是加载后的索引
