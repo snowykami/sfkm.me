@@ -144,7 +144,9 @@ export default function Terminal() {
         if (path !== "/") {
           for (const part of path.split("/").filter(Boolean)) {
             if (node.type !== "dir" || !node.children?.[part])
-              return t("terminal.commands.path.notfound", { path });
+              return t("terminal.commands.path.notfound", {
+                path,
+              });
             node = node.children[part];
           }
         }
@@ -164,7 +166,9 @@ export default function Terminal() {
         if (path !== "/") {
           for (const part of path.split("/").filter(Boolean)) {
             if (node.type !== "dir" || !node.children?.[part])
-              return t("terminal.commands.path.notfound", { path });
+              return t("terminal.commands.path.notfound", {
+                path,
+              });
             node = node.children[part];
           }
         }
@@ -321,7 +325,9 @@ export default function Terminal() {
       const command = matchCommand(cmd);
       if (command) {
         try {
-          const r = await command.run(parseCommand(cmd), { updateLine });
+          const r = await command.run(parseCommand(cmd), {
+            updateLine,
+          });
           result = typeof r === "string" ? r : "";
         } catch (err) {
           result = t("terminal.error", {

@@ -227,7 +227,9 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
         hover:bg-red-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center relative
       `}
                   onClick={isTop ? handleClose : undefined}
-                  style={{ pointerEvents: isTop ? "auto" : "none" }}
+                  style={{
+                    pointerEvents: isTop ? "auto" : "none",
+                  }}
                 >
                   <div className="w-1.5 h-0.5 bg-red-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rotate-45 absolute"></div>
                   <div className="w-1.5 h-0.5 bg-red-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200 -rotate-45 absolute"></div>
@@ -243,7 +245,9 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
         hover:bg-yellow-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center relative
       `}
                   onClick={isTop ? handleMinimize : undefined}
-                  style={{ pointerEvents: isTop ? "auto" : "none" }}
+                  style={{
+                    pointerEvents: isTop ? "auto" : "none",
+                  }}
                 >
                   <div className="w-1.5 h-0.5 bg-yellow-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
                 </div>
@@ -258,7 +262,9 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
         hover:bg-green-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center relative
       `}
                   onClick={isTop ? handleMaximize : undefined}
-                  style={{ pointerEvents: isTop ? "auto" : "none" }}
+                  style={{
+                    pointerEvents: isTop ? "auto" : "none",
+                  }}
                 >
                   <div className="w-1.5 h-1.5 border border-green-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
                 </div>

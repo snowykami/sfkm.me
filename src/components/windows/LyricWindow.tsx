@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMusic } from "@/contexts/MusicContext";
 import { motion } from "framer-motion";
-import { BaseWindow } from "../windows/BaseWindow";
+import { BaseWindow } from "@/components/windows/BaseWindow";
 
 export interface DesktopLyricWidgetProps {
   id?: string;
@@ -35,7 +35,10 @@ export const LyricWindow: React.FC<DesktopLyricWidgetProps> = ({
 
   useEffect(() => {
     if (lyricRef.current) {
-      lyricRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      lyricRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
     }
   }, [displayLrc]);
 

@@ -143,7 +143,15 @@ export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <DeviceContext.Provider
-      value={{ isMobile, mode, setMode, toggleMode, lang, setLang, viewport }}
+      value={{
+        isMobile,
+        mode,
+        setMode,
+        toggleMode,
+        lang,
+        setLang,
+        viewport,
+      }}
     >
       {children}
     </DeviceContext.Provider>

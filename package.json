@@ -15,7 +15,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.15.0",
-    "i18n-next": "^0.0.4",
     "i18next": "^25.2.1",
     "lrc-file-parser": "^2.4.1",
     "lucide-react": "^0.511.0",

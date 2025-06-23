@@ -210,7 +210,10 @@ export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
 
       // 检查CORS
       try {
-        const headResp = await fetch(url, { method: "HEAD", mode: "cors" });
+        const headResp = await fetch(url, {
+          method: "HEAD",
+          mode: "cors",
+        });
         // 只要能正常返回就认为支持CORS（部分云音乐服务器不会返回Access-Control-Allow-Origin头，但能正常播放）
         if (headResp.status >= 400) {
           throw new Error("网易云音乐音频URL不支持跨域(CORS)");
