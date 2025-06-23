@@ -177,11 +177,15 @@ export default function MusicControls({}: MusicControlsProps) {
     };
 
     // 添加所有事件监听
-    playlistElement.addEventListener("wheel", handleWheel, { passive: true });
+    playlistElement.addEventListener("wheel", handleWheel, {
+      passive: true,
+    });
     playlistElement.addEventListener("touchmove", handleTouchMove, {
       passive: true,
     });
-    playlistElement.addEventListener("scroll", handleScroll, { passive: true });
+    playlistElement.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
 
     // 清理事件监听
     return () => {
@@ -548,7 +552,10 @@ export default function MusicControls({}: MusicControlsProps) {
                         style={
                           !isLoading
                             ? {}
-                            : { opacity: 0.5, pointerEvents: "none" }
+                            : {
+                                opacity: 0.5,
+                                pointerEvents: "none",
+                              }
                         }
                       >
                         {isCurrentSong ? (

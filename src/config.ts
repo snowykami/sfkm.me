@@ -65,9 +65,21 @@ const config: Config = {
     ],
     sites: [
       { label: "Blog", url: "https://blog.sfkm.me", icon: ExternalLink },
-      { label: "GitHub", url: "https://github.com/snowykami", icon: Github },
-      { label: "AList", url: "https://als.liteyuki.org", icon: ExternalLink },
-      { label: "CDN", url: "https://cdn.liteyuki.org", icon: ExternalLink },
+      {
+        label: "GitHub",
+        url: "https://github.com/snowykami",
+        icon: Github,
+      },
+      {
+        label: "AList",
+        url: "https://als.liteyuki.org",
+        icon: ExternalLink,
+      },
+      {
+        label: "CDN",
+        url: "https://cdn.liteyuki.org",
+        icon: ExternalLink,
+      },
     ],
     skillBadges: [
       // 浅色和深色都适配

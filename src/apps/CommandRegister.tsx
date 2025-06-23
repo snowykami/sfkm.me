@@ -321,7 +321,9 @@ export default function TerminalCommandRegister() {
         updateWindow(win.id, { maximized: !isMax, minimized: false });
         return isMax
           ? t("terminal.commands.win.restored", { title: win.title })
-          : t("terminal.commands.win.maximized", { title: win.title });
+          : t("terminal.commands.win.maximized", {
+              title: win.title,
+            });
       } else if (["min", "minimize"].includes(subCommand)) {
         const id = ctx.args[2];
         if (!id) return t("terminal.commands.win.noId");
@@ -331,7 +333,9 @@ export default function TerminalCommandRegister() {
         updateWindow(win.id, { minimized: !isMin, maximized: false });
         return isMin
           ? t("terminal.commands.win.restored", { title: win.title })
-          : t("terminal.commands.win.minimized", { title: win.title });
+          : t("terminal.commands.win.minimized", {
+              title: win.title,
+            });
       } else if (["open", "o"].includes(subCommand)) {
         const id = ctx.args[2];
         if (!id) return t("terminal.commands.win.noId");

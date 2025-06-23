@@ -321,7 +321,12 @@ export const WindowManagerProvider: React.FC<{ children: ReactNode }> = ({
         if (exist) {
           return ws.map((w) =>
             w.id === id
-              ? { ...w, visible: true, minimized: false, ...initial }
+              ? {
+                  ...w,
+                  visible: true,
+                  minimized: false,
+                  ...initial,
+                }
               : w,
           );
         }

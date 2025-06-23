@@ -265,7 +265,11 @@ export function MusicProvider({ children }: MusicProviderProps) {
           setTracks((current) =>
             current.map((track) =>
               track.originalIndex === originalIndex
-                ? { status: "error", originalIndex, retries: retries + 1 }
+                ? {
+                    status: "error",
+                    originalIndex,
+                    retries: retries + 1,
+                  }
                 : track,
             ),
           );
@@ -281,8 +285,11 @@ export function MusicProvider({ children }: MusicProviderProps) {
       .filter(
         (
           track,
-        ): track is { status: "loaded"; originalIndex: number; data: Song } =>
-          track.status === "loaded",
+        ): track is {
+          status: "loaded";
+          originalIndex: number;
+          data: Song;
+        } => track.status === "loaded",
       )
       .map((track) => track.data);
 
@@ -973,7 +980,11 @@ export function MusicProvider({ children }: MusicProviderProps) {
         artist: currentSong.artist,
         album: currentSong.album,
         artwork: [
-          { src: currentSong.cover || "", sizes: "512x512", type: "image/png" },
+          {
+            src: currentSong.cover || "",
+            sizes: "512x512",
+            type: "image/png",
+          },
         ],
       });
     } else {
