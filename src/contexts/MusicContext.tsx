@@ -66,6 +66,15 @@ const RETRY_DELAY = 2000; // 2秒
 function getInitialState(totalSongs: number) {
     if (typeof window !== "undefined") {
         try {
+            // 优先从url的查询参数mi中获取索引
+            const urlParams = new URLSearchParams(window.location.search);
+            const mi = urlParams.get("mi");
+            if (mi !== null) {
+                const index = parseInt(mi, 10);
+                if (!isNaN(index) && index >= 0 && index < totalSongs) {
+                    return { index, time: 0 };
+                }
+            }
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
                 const { index, time } = JSON.parse(saved);
@@ -294,19 +303,15 @@ export function MusicProvider({ children }: MusicProviderProps) {
             try {
                 console.log(`[Music] 优先加载当前歌曲: 索引 ${currentOriginalIndex}`);
                 const result = await loadSong(currentSongOrPromise, currentOriginalIndex);
-
                 // 如果组件已卸载，不继续处理
                 if (isCancelled) return;
-
                 if (result.status === 'loaded') {
                     // 立即更新当前歌曲，不等待其他歌曲加载
                     setCurrentSong(result.data);
-
                     // 更新 tracks 中当前歌曲的状态
                     setTracks(prev => prev.map(track =>
                         track.originalIndex === currentOriginalIndex ? result : track
                     ));
-
                     console.log(`[Music] 当前歌曲加载成功: ${result.data.title}`);
                 } else {
                     console.warn(`[Music] 当前歌曲加载失败, 将在后台队列中重试`);
@@ -349,14 +354,12 @@ export function MusicProvider({ children }: MusicProviderProps) {
 
                 // 设置加载完成
                 setIsLoadingSongs(false);
-
                 // 为加载失败的歌曲设置重试
                 validResults.forEach(result => {
                     if (result.status === 'error') {
                         retrySong(result.originalIndex, result.retries);
                     }
                 });
-
                 console.log(`[Music] 所有歌曲加载完成，共 ${validResults.length} 首`);
             } catch (error) {
                 console.error("[Music] 加载歌曲列表出错:", error);
