@@ -142,10 +142,10 @@
 /* 兼容 Firefox */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(100,116,139,0.5) transparent;
+  scrollbar-color: rgba(100, 116, 139, 0.5) transparent;
 }
 .custom-scrollbar:hover {
-  scrollbar-color: rgba(100,116,139,0.8) transparent;
+  scrollbar-color: rgba(100, 116, 139, 0.8) transparent;
 }
 
 a {

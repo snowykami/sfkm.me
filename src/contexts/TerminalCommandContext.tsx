@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
 import { CommandArg } from "@/utils/commands";
 import React, { createContext, useContext, useRef } from "react";
 
 export type TerminalCommandExtraCtx = {
-    updateLine: (content: string, idx?: number) => number;
+  updateLine: (content: string, idx?: number) => number;
 };
 
 export type TerminalContextType = {
@@ -17,8 +17,8 @@ export type TerminalContextType = {
 
 const TerminalContext = createContext<TerminalContextType>({
   commands: [],
-  onCommand: () => { },
-  unregisterCommand: () => { }, // 新增：默认空函数
+  onCommand: () => {},
+  unregisterCommand: () => {}, // 新增：默认空函数
   matchCommand: () => undefined,
   findCommand: () => undefined,
 });
@@ -27,16 +27,23 @@ export type TerminalCommand = {
   name: string; // 命令前缀
   alias?: string[]; // 可选别名
   description?: string;
-  run: (ctx: CommandArg, extraCtx?: TerminalCommandExtraCtx) => Promise<string | null> | string;
+  run: (
+    ctx: CommandArg,
+    extraCtx?: TerminalCommandExtraCtx,
+  ) => Promise<string | null> | string;
 };
 
-export const TerminalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const TerminalProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const commandsRef = useRef<TerminalCommand[]>([]);
 
   // 注册命令
   const onCommand = (cmd: TerminalCommand) => {
     // 如果命令已存在，先移除旧命令
-    const existingIndex = commandsRef.current.findIndex(c => c.name === cmd.name);
+    const existingIndex = commandsRef.current.findIndex(
+      (c) => c.name === cmd.name,
+    );
     if (existingIndex !== -1) {
       commandsRef.current.splice(existingIndex, 1);
     }
@@ -45,7 +52,7 @@ export const TerminalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // 新增：注销命令
   const unregisterCommand = (name: string) => {
-    const index = commandsRef.current.findIndex(cmd => cmd.name === name);
+    const index = commandsRef.current.findIndex((cmd) => cmd.name === name);
     if (index !== -1) {
       commandsRef.current.splice(index, 1);
     }
@@ -59,7 +66,7 @@ export const TerminalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // 根据命令名或别名查找命令
   const findCommand = (name: string) => {
-    return commandsRef.current.find(cmd => {
+    return commandsRef.current.find((cmd) => {
       if (cmd.name === name) return true;
       if (cmd.alias && cmd.alias.includes(name)) return true;
       return false;
@@ -67,13 +74,15 @@ export const TerminalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   return (
-    <TerminalContext.Provider value={{
-      commands: commandsRef.current,
-      onCommand,
-      unregisterCommand, // 新增：暴露注销命令方法
-      matchCommand,
-      findCommand,
-    }}>
+    <TerminalContext.Provider
+      value={{
+        commands: commandsRef.current,
+        onCommand,
+        unregisterCommand, // 新增：暴露注销命令方法
+        matchCommand,
+        findCommand,
+      }}
+    >
       {children}
     </TerminalContext.Provider>
   );

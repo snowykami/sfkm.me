@@ -4,31 +4,33 @@ import { AppProps } from "./BaseApp";
 export default function Ech0({ windowId }: AppProps) {
   const [url, setUrl] = useState<string>("https://ech0.sfkm.me");
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  
+
   // 当组件挂载时，尝试从 localStorage 恢复 URL
   useEffect(() => {
     const savedUrl = localStorage.getItem(`liteyukilab-url-${windowId}`);
     if (savedUrl) {
       setUrl(savedUrl);
     }
-    
+
     // 注册窗口关闭前的保存事件
     const handleBeforeUnload = () => {
       try {
         if (iframeRef.current?.contentWindow?.location.href) {
-          localStorage.setItem(`liteyukilab-url-${windowId}`, 
-                              iframeRef.current.contentWindow.location.href);
+          localStorage.setItem(
+            `liteyukilab-url-${windowId}`,
+            iframeRef.current.contentWindow.location.href,
+          );
         }
       } catch (e) {
         // 忽略跨域错误
         console.log("无法保存 URL，可能是跨域限制", e);
       }
     };
-    
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [windowId]);
-  
+
   // 监听 iframe 内部导航，并保存新 URL
   const handleIframeLoad = (event: React.SyntheticEvent<HTMLIFrameElement>) => {
     try {

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Desktop from "@/components/desktop/Desktop";
 import MobileDesktop from "@/components/desktop/MobileDesktop";
 import { useDevice } from "@/contexts/DeviceContext";
@@ -9,11 +9,7 @@ export default function Home() {
 
   return (
     <div className="h-full overflow-hidden">
-      {isMobile ? (
-        <MobileDesktop />
-      ) : (
-        <Desktop />
-      )}
+      {isMobile ? <MobileDesktop /> : <Desktop />}
     </div>
   );
 }

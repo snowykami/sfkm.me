@@ -1,8 +1,6 @@
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
 
 // Context
 import { DeviceProvider } from "@/contexts/DeviceContext";
@@ -56,9 +54,7 @@ export default function RootLayout({
           <TerminalProvider>
             <DeviceProvider>
               <WindowManagerProvider>
-                <ThemeProvider>
-                  {children}
-                </ThemeProvider>
+                <ThemeProvider>{children}</ThemeProvider>
               </WindowManagerProvider>
             </DeviceProvider>
           </TerminalProvider>

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useEffect, useRef } from "react";
 import { Rnd, RndDragCallback, RndResizeCallback } from "react-rnd";
 import type { Rnd as RndType } from "react-rnd";
@@ -28,7 +28,6 @@ export interface BaseWindowProps {
   windowMargin?: number; // 窗口边距
   dragHandleClassName?: string;
   children?: React.ReactNode;
-  
 }
 
 interface PreMaximizeState {
@@ -88,25 +87,26 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
     }
   }, [visible]);
 
-  const maximizedStyle = (win?.maximized ?? maximized)
-    ? {
-      x: windowMargin,
-      y: windowMargin,
-      width: window.innerWidth - windowMargin * 2,
-      height: window.innerHeight - windowMargin * 2 - dockHeight,
-    }
-    : {
-      x: win?.position?.x ?? position.x,
-      y: win?.position?.y ?? position.y,
-      width: win?.size?.width ?? size.width,
-      height: win?.size?.height ?? size.height,
-    };
+  const maximizedStyle =
+    (win?.maximized ?? maximized)
+      ? {
+          x: windowMargin,
+          y: windowMargin,
+          width: window.innerWidth - windowMargin * 2,
+          height: window.innerHeight - windowMargin * 2 - dockHeight,
+        }
+      : {
+          x: win?.position?.x ?? position.x,
+          y: win?.position?.y ?? position.y,
+          width: win?.size?.width ?? size.width,
+          height: win?.size?.height ?? size.height,
+        };
 
   const [showMaximizeHint, setShowMaximizeHint] = useState(false);
   const [preMaximize, setPreMaximize] = useState<PreMaximizeState | null>(null);
   const rndRef = useRef<RndType | null>(null);
   const handleDrag: RndDragCallback = (_e, d) => {
-    if ((win?.maximized ?? maximized)) return;
+    if (win?.maximized ?? maximized) return;
     if (d.y <= windowMargin) {
       setShowMaximizeHint(true);
     } else {
@@ -153,22 +153,45 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
   useEffect(() => {
     if (!win?.maximized && preMaximize && rndRef.current) {
       const mouse = preMaximize.mouseOffset;
-      const newX = Math.max(0, (window.innerWidth / 2) - (preMaximize.size.width / 2));
-      const newY = Math.max(windowMargin, mouse.y - preMaximize.size.height / 2);
+      const newX = Math.max(
+        0,
+        window.innerWidth / 2 - preMaximize.size.width / 2,
+      );
+      const newY = Math.max(
+        windowMargin,
+        mouse.y - preMaximize.size.height / 2,
+      );
       rndRef.current.updatePosition({ x: newX, y: newY });
-      rndRef.current.updateSize({ width: preMaximize.size.width, height: preMaximize.size.height });
+      rndRef.current.updateSize({
+        width: preMaximize.size.width,
+        height: preMaximize.size.height,
+      });
       setPreMaximize(null);
       if (id && windowManager) {
         windowManager.updateWindow(id, {
           position: { x: newX, y: newY },
-          size: { width: preMaximize.size.width, height: preMaximize.size.height },
+          size: {
+            width: preMaximize.size.width,
+            height: preMaximize.size.height,
+          },
         });
       } else {
         setPosition({ x: newX, y: newY });
-        setSize({ width: preMaximize.size.width, height: preMaximize.size.height });
+        setSize({
+          width: preMaximize.size.width,
+          height: preMaximize.size.height,
+        });
       }
     }
-  }, [win?.maximized, preMaximize, id, windowManager, size.width, size.height, windowMargin]);
+  }, [
+    win?.maximized,
+    preMaximize,
+    id,
+    windowManager,
+    size.width,
+    size.height,
+    windowMargin,
+  ]);
   if (!shouldRender) return null;
   // 移动端下直接全屏
   const rndSize = isMobile
@@ -188,8 +211,12 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
           minWidth={minWidth}
           minHeight={minHeight}
           bounds="parent"
-          disableDragging={isMobile || !draggable || (win?.maximized ?? maximized)}
-          enableResizing={!isMobile && resizable && !(win?.maximized ?? maximized)}
+          disableDragging={
+            isMobile || !draggable || (win?.maximized ?? maximized)
+          }
+          enableResizing={
+            !isMobile && resizable && !(win?.maximized ?? maximized)
+          }
           style={{ zIndex: win?.zIndex ?? zIndex }}
           className="base-window"
           dragHandleClassName={dragHandleClassName}
