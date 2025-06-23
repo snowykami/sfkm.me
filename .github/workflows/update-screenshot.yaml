@@ -26,7 +26,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install Playwright and screenshot
         run: |
@@ -38,11 +38,10 @@ jobs:
         run: |
           git config --global user.name 'liteyuki-flow'
           git config --global user.email 'liteyuki-flow@liteyuki.org'
-          
+
           git checkout -- package.json || echo "No changes in package files"
           git checkout -- package-lock.json || echo "No changes in package lock files"
 
           git add images/preview-*.png
           git commit -m "chore: update preview screenshot [skip ci]" || echo "No changes"
           git push origin main
-

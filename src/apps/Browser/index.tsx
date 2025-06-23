@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 
 export default function Browser() {
   const STORAGE_KEY = "browser_url";
-  const [url, setUrl] = useState(() => localStorage.getItem(STORAGE_KEY) || "https://bot.liteyuki.org");
+  const [url, setUrl] = useState(
+    () => localStorage.getItem(STORAGE_KEY) || "https://bot.liteyuki.org",
+  );
   const [input, setInput] = useState(url);
 
   useEffect(() => {
@@ -15,7 +17,11 @@ export default function Browser() {
 
   const handleGo = (e: React.FormEvent) => {
     e.preventDefault();
-    setUrl(input.startsWith("http://") || input.startsWith("https://") ? input : `https://${input}`);
+    setUrl(
+      input.startsWith("http://") || input.startsWith("https://")
+        ? input
+        : `https://${input}`,
+    );
   };
 
   return (
@@ -32,7 +38,7 @@ export default function Browser() {
         <input
           type="text"
           value={input}
-          onChange={e => setInput(e.target.value)}
+          onChange={(e) => setInput(e.target.value)}
           placeholder="输入网址并回车"
           style={{
             flex: 1,

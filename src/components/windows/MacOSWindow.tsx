@@ -7,8 +7,6 @@ import BaseWindow from "./BaseWindow";
 import { Marquee } from "@/components/ui/Marquee";
 import { windowColorScheme } from "@/types/window";
 
-
-
 interface MacOSWindowProps extends Omit<BaseWindowProps, "children" | "title"> {
   id: string;
   children?: React.ReactNode;
@@ -27,11 +25,12 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
   colorScheme: propColorScheme = {},
   ...baseProps
 }) => {
-  const { windows, closeWindow, bringToFront, updateWindow } = useWindowManager();
-  const win = windows.find(w => w.id === id);
+  const { windows, closeWindow, bringToFront, updateWindow } =
+    useWindowManager();
+  const win = windows.find((w) => w.id === id);
   const [closing, setClosing] = useState(false);
   const [minimizing, setMinimizing] = useState(false);
-  const isTop = win?.zIndex === Math.max(...windows.map(w => w.zIndex));
+  const isTop = win?.zIndex === Math.max(...windows.map((w) => w.zIndex));
 
   if (!win) return null;
 
@@ -66,7 +65,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
   const scheme = {
     ...defaultScheme,
     ...win.colorScheme,
-    ...propColorScheme
+    ...propColorScheme,
   };
 
   // 处理关闭窗口逻辑
@@ -99,9 +98,9 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
     // 设置背景图片 (如果有)
     if (scheme.backgroundImage) {
       style.backgroundImage = `url(${scheme.backgroundImage})`;
-      style.backgroundSize = 'cover';
-      style.backgroundPosition = 'center';
-      style.backgroundRepeat = 'no-repeat';
+      style.backgroundSize = "cover";
+      style.backgroundPosition = "center";
+      style.backgroundRepeat = "no-repeat";
     }
 
     // 设置背景色 (如果有)
@@ -156,12 +155,14 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
         `}
       >
         {/* 背景层 - 背景图片或自定义背景色 */}
-        {(scheme.backgroundImage || scheme.backgroundColor || scheme.backgroundColorDark) && (
+        {(scheme.backgroundImage ||
+          scheme.backgroundColor ||
+          scheme.backgroundColorDark) && (
           <div
             className={`
               absolute inset-0 z-0
               ${scheme.backgroundClassName}
-              ${scheme.backgroundColorDark || ''}
+              ${scheme.backgroundColorDark || ""}
             `}
             style={getBackgroundStyle()}
           />
@@ -175,10 +176,11 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
             ${scheme.overlayColor || defaultScheme.overlayColor}
             ${scheme.overlayColorDark || defaultScheme.overlayColorDark}
             transition-colors duration-300
-            ${scheme.overlayGradient || ''}
+            ${scheme.overlayGradient || ""}
           `}
             style={{
-              mixBlendMode: (scheme.overlayBlendMode || 'normal') as React.CSSProperties['mixBlendMode'],
+              mixBlendMode: (scheme.overlayBlendMode ||
+                "normal") as React.CSSProperties["mixBlendMode"],
             }}
           />
         )}
@@ -210,7 +212,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
               ${scheme.titleBarBorderDark || defaultScheme.titleBarBorderDark}
               px-4 py-3 flex items-center select-none relative
               cursor-grab active:cursor-grabbing
-              ${scheme.titleBarClassName || ''}
+              ${scheme.titleBarClassName || ""}
               ${scheme.titleBarClassName}
             `}
           >
@@ -265,7 +267,9 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
 
             {/* 绝对居中标题 */}
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[60%] w-auto pointer-events-none z-0 overflow-hidden">
-              <span className={`${scheme.title} ${scheme.titleDark} text-sm font-medium block`}>
+              <span
+                className={`${scheme.title} ${scheme.titleDark} text-sm font-medium block`}
+              >
                 <Marquee pauseBeforeRepeatSec={1.5} speedPxPerSec={40}>
                   {t(win.title)}
                 </Marquee>

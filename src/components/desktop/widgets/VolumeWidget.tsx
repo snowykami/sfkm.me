@@ -1,6 +1,6 @@
-import { Volume2, VolumeX, Volume1 } from "lucide-react"
-import BaseWidget from "./BaseWidget"
-import { useMusic } from "@/contexts/MusicContext" // 从 MusicContext 导入 useMusic
+import { Volume2, VolumeX, Volume1 } from "lucide-react";
+import BaseWidget from "./BaseWidget";
+import { useMusic } from "@/contexts/MusicContext"; // 从 MusicContext 导入 useMusic
 
 // 移除 VOLUME_KEY 和 MUTE_KEY 常量，它们现在在 MusicContext 中定义
 
@@ -9,18 +9,18 @@ export function VolumeWidget() {
   const { volume, isMuted, handleVolumeChange, handleToggleMute } = useMusic();
   const getVolumeIcon = () => {
     if (isMuted || volume === 0) {
-      return <VolumeX className="h-5 text-slate-500 dark:text-slate-300" />
+      return <VolumeX className="h-5 text-slate-500 dark:text-slate-300" />;
     } else if (volume < 50) {
-      return <Volume1 className="h-5 text-slate-500 dark:text-slate-300" />
+      return <Volume1 className="h-5 text-slate-500 dark:text-slate-300" />;
     } else {
-      return <Volume2 className="h-5 text-slate-500 dark:text-slate-300" />
+      return <Volume2 className="h-5 text-slate-500 dark:text-slate-300" />;
     }
-  }
+  };
   // 修改 handleVolumeChange，调用 context 提供的 handleVolumeChange
   const handleVolumeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const v = Number(e.target.value)
+    const v = Number(e.target.value);
     handleVolumeChange(v); // 调用 context 的函数
-  }
+  };
 
   return (
     <BaseWidget title={isMuted ? "已静音" : `音量：${volume}`}>
@@ -42,5 +42,5 @@ export function VolumeWidget() {
         title="音量"
       />
     </BaseWidget>
-  )
+  );
 }

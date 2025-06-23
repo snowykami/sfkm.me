@@ -29,9 +29,9 @@ jobs:
       - name: Install playwright and run Python script
         run: |
           uv run ./scripts/issue_handler
-        env: 
+        env:
           GITHUB_EVENT_ISSUE_NUMBER: ${{ github.event.issue.number }}
-          GITHUB_EVENT_ACTION: ${{ github.event.action }}  # 
+          GITHUB_EVENT_ACTION: ${{ github.event.action }} #
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_TOKEN: ${{ secrets.LITEYUKI_FLOW_TOKEN }}

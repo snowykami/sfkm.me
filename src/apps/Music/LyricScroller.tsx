@@ -28,11 +28,13 @@ export default function LyricScroller({ wid }: { wid: string }) {
   // 切歌时更新主题色
   useEffect(() => {
     let mounted = true;
-    getAlbumCoverColor().then(color => {
+    getAlbumCoverColor().then((color) => {
       if (!mounted) return;
       setLyricTheme(deriveLyricThemeColors(color));
     });
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [getAlbumCoverColor]);
 
   useEffect(() => {
@@ -45,7 +47,9 @@ export default function LyricScroller({ wid }: { wid: string }) {
       const target = lineRefs.current[currentLrcLine];
       const containerHeight = container.clientHeight;
       const targetOffset =
-        (target?.offsetTop ?? 0) - containerHeight * 0.35 + (target?.clientHeight ?? 0) / 2;
+        (target?.offsetTop ?? 0) -
+        containerHeight * 0.35 +
+        (target?.clientHeight ?? 0) / 2;
 
       const start = container.scrollTop;
       const change = targetOffset - start;
@@ -56,9 +60,10 @@ export default function LyricScroller({ wid }: { wid: string }) {
         if (!startTime) startTime = timestamp;
         const elapsed = timestamp - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        const ease = progress < 0.5
-          ? 2 * progress * progress
-          : -1 + (4 - 2 * progress) * progress;
+        const ease =
+          progress < 0.5
+            ? 2 * progress * progress
+            : -1 + (4 - 2 * progress) * progress;
         container.scrollTop = start + change * ease;
         if (progress < 1) {
           requestAnimationFrame(animateScroll);
@@ -83,7 +88,9 @@ export default function LyricScroller({ wid }: { wid: string }) {
       `}
     >
       {lrcLines.length === 0 ? (
-        <div className="text-center text-slate-600 dark:text-slate-500">{t("music.nolyric")}</div>
+        <div className="text-center text-slate-600 dark:text-slate-500">
+          {t("music.nolyric")}
+        </div>
       ) : (
         lrcLines.map((line, idx) => {
           const offset = idx - currentLrcLine;
@@ -91,17 +98,28 @@ export default function LyricScroller({ wid }: { wid: string }) {
           if (offset === 0) {
             style = "opacity-100 scale-90 translate-y-0 z-10";
           } else if (Math.abs(offset) === 1) {
-            style = "opacity-80 scale-90 " + (offset > 0 ? "translate-y-4" : "-translate-y-4") + " z-0";
+            style =
+              "opacity-80 scale-90 " +
+              (offset > 0 ? "translate-y-4" : "-translate-y-4") +
+              " z-0";
           } else if (Math.abs(offset) === 2) {
-            style = "opacity-60 scale-90 " + (offset > 0 ? "translate-y-8" : "-translate-y-8") + " z-0";
+            style =
+              "opacity-60 scale-90 " +
+              (offset > 0 ? "translate-y-8" : "-translate-y-8") +
+              " z-0";
           } else {
-            style = "opacity-40 scale-90 " + (offset > 0 ? "translate-y-12" : "-translate-y-12") + " z-0";
+            style =
+              "opacity-40 scale-90 " +
+              (offset > 0 ? "translate-y-12" : "-translate-y-12") +
+              " z-0";
           }
           const isCurrent = idx === currentLrcLine;
           return (
             <div
               key={line.time + line.text + idx}
-              ref={el => { lineRefs.current[idx] = el; }}
+              ref={(el) => {
+                lineRefs.current[idx] = el;
+              }}
               className={`
                 ${isMobile ? "text-center" : "text-left"}
                 select-none px-2 py-0.5 rounded
@@ -112,13 +130,21 @@ export default function LyricScroller({ wid }: { wid: string }) {
               `}
               style={{
                 color: isCurrent
-                  ? (mode === "dark" ? lyricTheme.nightText : lyricTheme.dayText)
-                  : (mode === "dark" ? lyricTheme.nightOtherText : lyricTheme.dayOtherText),
+                  ? mode === "dark"
+                    ? lyricTheme.nightText
+                    : lyricTheme.dayText
+                  : mode === "dark"
+                    ? lyricTheme.nightOtherText
+                    : lyricTheme.dayOtherText,
                 background: isCurrent
-                  ? (mode === "dark" ? lyricTheme.nightBg : lyricTheme.dayBg)
+                  ? mode === "dark"
+                    ? lyricTheme.nightBg
+                    : lyricTheme.dayBg
                   : "transparent",
-                filter: isCurrent ? "drop-shadow(0 2px 8px #60a5fa44)" : undefined,
-                fontSize: isCurrent ? "1.35rem" : "1.25rem"
+                filter: isCurrent
+                  ? "drop-shadow(0 2px 8px #60a5fa44)"
+                  : undefined,
+                fontSize: isCurrent ? "1.35rem" : "1.25rem",
               }}
             >
               {t(line.text)}

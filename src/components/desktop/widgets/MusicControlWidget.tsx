@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useMusic } from "@/contexts/MusicContext";
 import Image from "next/image";
-import { CirclePlay, CirclePause, SkipForward, SkipBack, Repeat, Repeat1, Shuffle } from "lucide-react";
+import {
+  CirclePlay,
+  CirclePause,
+  SkipForward,
+  SkipBack,
+  Repeat,
+  Repeat1,
+  Shuffle,
+} from "lucide-react";
 import BaseWidget from "./BaseWidget";
 import { Song } from "@/types/music";
 import { useWindowManager } from "@/contexts/WindowManagerContext";
-import { WINDOW_ID as musicWindowId } from '@/apps/Music';
+import { WINDOW_ID as musicWindowId } from "@/apps/Music";
 import { t } from "i18next";
 
 type PlayMode = "order" | "repeat-one" | "shuffle";
@@ -16,14 +24,13 @@ const PLAY_MODE_ICONS: Record<PlayMode, React.ReactElement> = {
   shuffle: <Shuffle className="w-5 h-5 opacity-60" />,
 };
 
-function LyricBox({
-  onClick,
-}: {
-  onClick?: () => void;
-}) {
-  const { currentLrcLine, lrcLines, currentSongIndex, currentSong } = useMusic();
+function LyricBox({ onClick }: { onClick?: () => void }) {
+  const { currentLrcLine, lrcLines, currentSongIndex, currentSong } =
+    useMusic();
   // 当前显示的歌词
-  const [currentLrc, setCurrentLrc] = useState(currentSong?.title + " - " + currentSong?.artist || "Lyrics loading...");
+  const [currentLrc, setCurrentLrc] = useState(
+    currentSong?.title + " - " + currentSong?.artist || "Lyrics loading...",
+  );
   // 控制淡入淡出的状态
   const [fadeState, setFadeState] = useState<"fade-in" | "fade-out">("fade-in");
 
@@ -44,7 +51,9 @@ function LyricBox({
   // 切歌时，重置歌词和淡入状态
   useEffect(() => {
     if (currentSongIndex !== -1 && currentSong) {
-      setCurrentLrc(currentSong?.title + " - " + currentSong?.artist || "Lyrics loading...");
+      setCurrentLrc(
+        currentSong?.title + " - " + currentSong?.artist || "Lyrics loading...",
+      );
       setFadeState("fade-in");
     }
   }, [currentSongIndex, currentSong]);
@@ -52,7 +61,12 @@ function LyricBox({
   return (
     <div
       className="relative"
-      style={{ minWidth: "4rem", maxWidth: "40rem", cursor: "pointer", width: "100%" }}
+      style={{
+        minWidth: "4rem",
+        maxWidth: "40rem",
+        cursor: "pointer",
+        width: "100%",
+      }}
       onClick={onClick}
       title={currentSong?.title}
     >
@@ -125,7 +139,14 @@ function CoverBox({
   ) : (
     <div
       className="rounded-full bg-slate-200 dark:bg-slate-700 border border-slate-300 dark:border-slate-700"
-      style={{ width: 18, height: 18, minWidth: 18, minHeight: 18, marginRight: 4, cursor: "pointer" }}
+      style={{
+        width: 18,
+        height: 18,
+        minWidth: 18,
+        minHeight: 18,
+        marginRight: 4,
+        cursor: "pointer",
+      }}
       onClick={onClick}
       title={currentSong?.title}
     />
@@ -149,13 +170,26 @@ function ControlButtons({
 }) {
   return (
     <>
-      <button onClick={handlePrev} className="p-1 text-slate-500 dark:text-slate-300 rounded-full">
+      <button
+        onClick={handlePrev}
+        className="p-1 text-slate-500 dark:text-slate-300 rounded-full"
+      >
         <SkipBack className="w-5 h-5" />
       </button>
-      <button onClick={handlePlayPause} className="p-1 text-slate-500 dark:text-slate-300  rounded-full">
-        {isPlaying ? <CirclePause className="w-5 h-5" /> : <CirclePlay className="w-5 h-5" />}
+      <button
+        onClick={handlePlayPause}
+        className="p-1 text-slate-500 dark:text-slate-300  rounded-full"
+      >
+        {isPlaying ? (
+          <CirclePause className="w-5 h-5" />
+        ) : (
+          <CirclePlay className="w-5 h-5" />
+        )}
       </button>
-      <button onClick={handleNext} className="p-1 text-slate-500 dark:text-slate-300 rounded-full">
+      <button
+        onClick={handleNext}
+        className="p-1 text-slate-500 dark:text-slate-300 rounded-full"
+      >
         <SkipForward className="w-5 h-5" />
       </button>
       <button
@@ -191,20 +225,22 @@ export function MusicControlWidget() {
   const { openWindow } = useWindowManager();
 
   const handleOpenMusicApp = () => {
-    openWindow(musicWindowId)
+    openWindow(musicWindowId);
   };
 
   return (
     <BaseWidget
       className="px-0 py-0 bg-transparent hover:bg-transparent dark:hover:bg-transparent"
       style={{ minWidth: 0, width: "auto", padding: 0 }}
-      title={currentSong ? `${currentSong.title} - ${currentSong.artist ?? ""}` : "音乐播放器"}
+      title={
+        currentSong
+          ? `${currentSong.title} - ${currentSong.artist ?? ""}`
+          : "音乐播放器"
+      }
     >
       <div className="flex flex-col w-full">
         <div className="flex items-center space-x-2 px-2 py-1">
-          <LyricBox
-            onClick={handleOpenMusicApp}
-          />
+          <LyricBox onClick={handleOpenMusicApp} />
           <CoverBox
             currentSong={currentSong}
             coverRotate={coverRotate}

@@ -1,7 +1,7 @@
 name: 友链申请
 title: "友链申请 ${{name}}"
 description: "申请添加友链到Snowykami的主页"
-labels: [ "friend-link" ]
+labels: ["friend-link"]
 body:
   - type: input
     id: name
@@ -25,7 +25,7 @@ body:
     id: link
     attributes:
       label: 链接
-      description: 网站的链接 
+      description: 网站的链接
       placeholder: "例如: https://lts.blog"
     validations:
       required: true

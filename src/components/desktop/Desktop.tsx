@@ -9,295 +9,332 @@ import config from "@/config";
 import { BackgroundContext } from "@/types/background";
 import { mediumWindowState } from "@/apps";
 
-async function getBackground(ctx: BackgroundContext): Promise<string | undefined> {
-    const bg = config.background;
-    if (typeof bg === "function") {
-        try {
-            const result = bg(ctx);
-            if (result instanceof Promise) {
-                const awaitedResult = await result;
-                return awaitedResult;
-            } else {
-                return result;
-            }
-        } catch (error) {
-            console.error("Error executing config.background function:", error);
-            return "url('https://cdn.liteyuki.org/blog/background.png')"; // 函数执行出错时返回 undefined
-        }
-    } else {
-        return "url('https://cdn.liteyuki.org/blog/background.png')";
+async function getBackground(
+  ctx: BackgroundContext,
+): Promise<string | undefined> {
+  const bg = config.background;
+  if (typeof bg === "function") {
+    try {
+      const result = bg(ctx);
+      if (result instanceof Promise) {
+        const awaitedResult = await result;
+        return awaitedResult;
+      } else {
+        return result;
+      }
+    } catch (error) {
+      console.error("Error executing config.background function:", error);
+      return "url('https://cdn.liteyuki.org/blog/background.png')"; // 函数执行出错时返回 undefined
     }
+  } else {
+    return "url('https://cdn.liteyuki.org/blog/background.png')";
+  }
 }
-
 
 const WINDOW_MARGIN = 10; // 窗口移出后保留在视图内的边距
 const DOCK_HEIGHT = 120; // Dock 的大致高度，根据实际情况调整
 
 export function PCDesktop() {
-    const { windows, openWindow, bringToFront, updateWindow } = useWindowManager();
-    const { apps } = useApps();
-    const { isMobile } = useDevice(); // isMobile 似乎未在 PCDesktop 中直接使用，但保留以防未来需要
+  const { windows, openWindow, bringToFront, updateWindow } =
+    useWindowManager();
+  const { apps } = useApps();
+  const { isMobile } = useDevice(); // isMobile 似乎未在 PCDesktop 中直接使用，但保留以防未来需要
 
-    const dockWindows: DockWindowState[] = apps.map(app => {
-        const win = windows.find(w => w.id === app.id);
-        return {
-            id: app.id,
-            isVisible: !!win?.visible,
-            isMinimized: !!win?.minimized,
-        };
-    });
-
-    const focusWindow = (id: string) => bringToFront(id);
-    const restoreWindow = (id: string) => updateWindow(id, { minimized: false, visible: true });
-
-    const [background, setBackground] = useState<string | undefined>();
-    useEffect(() => {
-        getBackground({ isMobile: false }) // PCDesktop 明确 isMobile: false
-            .then(setBackground)
-            .catch(error => {
-                console.error("Error fetching PCDesktop background:", error);
-                setBackground(undefined);
-            });
-    }, []); // 空依赖数组，仅在挂载时运行
-
-    // 监听路由变化并打开对应窗口
-    useEffect(() => {
-        // 只在初始加载时检查哈希值并设置默认值
-        const checkInitialHash = () => {
-            let hash = window.location.hash.slice(1); // 去掉前面的 #
-            // 只有在初始加载且哈希为空时，才重定向到 #profile
-            if (!hash) {
-                // 设置默认哈希为 profile
-                window.location.hash = 'profile';
-                hash = 'profile';
-            }
-            openWindow(hash, apps.find(app => app.id === hash)?.windowState || mediumWindowState);
-        };
-        checkInitialHash();
-
-        // 哈希变化时的处理函数 - 不再设置默认哈希
-        const handleHashChange = () => {
-            const hash = window.location.hash.slice(1); // 去掉前面的 #
-            if (hash) {
-                openWindow(hash);
-            }
-        };
-        // 监听哈希变化
-        window.addEventListener('hashchange', handleHashChange);
-        // 组件卸载时移除监听器
-        return () => {
-            window.removeEventListener('hashchange', handleHashChange);
-        };
-    }, [openWindow, apps]);
-
-    // 点击贴边
-    const handleDesktopClick = (event: React.MouseEvent<HTMLDivElement>) => {
-        const targetElement = event.target as HTMLElement;
-        if (
-            targetElement.closest('.base-window') ||
-            targetElement.closest('.top-bar-component') ||
-            targetElement.closest('.dock-component')
-        ) {
-            return;
-        }
-
-        const windowAreaWidth = window.innerWidth;
-        const windowAreaHeight = window.innerHeight - TOPBAR_HEIGHT - DOCK_HEIGHT; // 考虑 Dock 区域
-
-        // 查找当前已隐藏到边缘的窗口
-        const windowsToRestore = windows.filter(w => w.isEdgeHidden && w.originalPositionBeforeEdgeHide);
-
-        if (windowsToRestore.length > 0) {
-            // 如果有任何窗口已隐藏到边缘，则恢复所有这些窗口
-            windowsToRestore.forEach(win => {
-                if (win.originalPositionBeforeEdgeHide) { // Type guard
-                    updateWindow(win.id, {
-                        position: win.originalPositionBeforeEdgeHide,
-                        isEdgeHidden: false,
-                        originalPositionBeforeEdgeHide: undefined,
-                        hiddenEdge: undefined,
-                        // 不改变其他属性，保持窗口原有层级
-                    });
-                    // 移除下面这行，避免恢复后改变窗口层级顺序
-                    // bringToFront(win.id);
-                }
-            });
-        } else {
-            // 如果没有窗口隐藏到边缘，则查找所有可见、非最小化、非最大化的窗口进行隐藏
-            const windowsToHide = windows.filter(w => w.visible && !w.minimized && !w.maximized);
-
-            windowsToHide.forEach(win => {
-                const originalPosition = { ...win.position }; // 保存原始位置
-                const { x, y } = win.position;
-                const { width, height } = win.size;
-
-                // 计算窗口中心点相对于窗口活动区域的坐标
-                const windowCenterX = x + width / 2;
-                const windowCenterY = y + height / 2;
-
-                // 计算窗口中心点到四个边缘的距离
-                const distToTop = windowCenterY;
-                const distToBottom = windowAreaHeight - windowCenterY;
-                const distToLeft = windowCenterX;
-                const distToRight = windowAreaWidth - windowCenterX;
-
-                let edgeToHide: 'top' | 'bottom' | 'left' | 'right';
-                const newPosition = { ...originalPosition };
-
-                // 确定最近的边缘
-                if (distToTop <= distToBottom && distToTop <= distToLeft && distToTop <= distToRight) {
-                    edgeToHide = 'top';
-                } else if (distToLeft <= distToTop && distToLeft <= distToBottom && distToLeft <= distToRight) {
-                    edgeToHide = 'left';
-                } else if (distToRight <= distToTop && distToRight <= distToBottom && distToRight <= distToLeft) {
-                    edgeToHide = 'right';
-                } else {
-                    edgeToHide = 'bottom';
-                }
-
-                // 计算隐藏后的新位置
-                switch (edgeToHide) {
-                    case 'top':
-                        newPosition.y = -height + WINDOW_MARGIN;
-                        // 隐藏到顶部或底部时，水平位置保持不变，但要确保不超出左右边界
-                        newPosition.x = Math.max(0, Math.min(originalPosition.x, windowAreaWidth - width));
-                        break;
-                    case 'bottom':
-                        newPosition.y = windowAreaHeight - WINDOW_MARGIN;
-                        // 隐藏到顶部或底部时，水平位置保持不变，但要确保不超出左右边界
-                        newPosition.x = Math.max(0, Math.min(originalPosition.x, windowAreaWidth - width));
-                        break;
-                    case 'left':
-                        newPosition.x = -width + WINDOW_MARGIN;
-                        // 隐藏到左侧或右侧时，垂直位置保持不变，但要确保不超出上下边界
-                        newPosition.y = Math.max(0, Math.min(originalPosition.y, windowAreaHeight - height));
-                        break;
-                    case 'right':
-                        newPosition.x = windowAreaWidth - WINDOW_MARGIN;
-                        // 隐藏到左侧或右侧时，垂直位置保持不变，但要确保不超出上下边界
-                        newPosition.y = Math.max(0, Math.min(originalPosition.y, windowAreaHeight - height));
-                        break;
-                }
-
-                // 更新窗口状态，标记为边缘隐藏，并保存原始位置和隐藏边缘
-                updateWindow(win.id, {
-                    position: newPosition,
-                    isEdgeHidden: true,
-                    originalPositionBeforeEdgeHide: originalPosition, // 保存隐藏前的原始位置
-                    hiddenEdge: edgeToHide,
-                });
-            });
-        }
+  const dockWindows: DockWindowState[] = apps.map((app) => {
+    const win = windows.find((w) => w.id === app.id);
+    return {
+      id: app.id,
+      isVisible: !!win?.visible,
+      isMinimized: !!win?.minimized,
     };
+  });
 
-    return (
-        <div
-            className="min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden"
-            style={{
-                backgroundImage: background ? `url('${background}')` : undefined,
-            }}
-            onClick={handleDesktopClick}
-        >
-            <TopBar className="z-10 top-bar-component" title="" />
-            <div
-                className="window-area absolute left-0 right-0"
-                style={{
-                    top: TOPBAR_HEIGHT,
-                    bottom: 0,
-                    position: "absolute",
-                    zIndex: 1,
-                    pointerEvents: "none",
-                }}
-            >
-                <div style={{ width: "100%", height: "100%", position: "relative", pointerEvents: "auto" }}>
-                    {windows.map(win =>
-                        win.visible && !win.minimized ? (
-                            (() => {
-                                // 修改: 优先使用 customRender 函数渲染临时窗口内容
-                                if (win.customRender) {
-                                    return (
-                                        <MacOSWindow
-                                            key={win.id}
-                                            id={win.id}
-                                            showClose={win.showClose}
-                                            showMinimize={win.showMinimize}
-                                            showMaximize={win.showMaximize}
-                                            windowMargin={WINDOW_MARGIN}
-                                            dockHeight={DOCK_HEIGHT + WINDOW_MARGIN} // 调整 Dock 高度以适应顶部栏
-                                        >
-                                            {win.customRender()}
-                                        </MacOSWindow>
-                                    );
-                                }
+  const focusWindow = (id: string) => bringToFront(id);
+  const restoreWindow = (id: string) =>
+    updateWindow(id, { minimized: false, visible: true });
 
-                                // 如果没有 customRender，则使用常规应用入口
-                                const app = apps.find(a => a.id === win.id);
-                                if (!app) return null;
-                                const Entry = app.entry;
+  const [background, setBackground] = useState<string | undefined>();
+  useEffect(() => {
+    getBackground({ isMobile: false }) // PCDesktop 明确 isMobile: false
+      .then(setBackground)
+      .catch((error) => {
+        console.error("Error fetching PCDesktop background:", error);
+        setBackground(undefined);
+      });
+  }, []); // 空依赖数组，仅在挂载时运行
 
-                                // 传递 appProps 到应用组件
-                                return (
-                                    <MacOSWindow
-                                        key={win.id}
-                                        id={win.id}
-                                        showClose={win.showClose}
-                                        showMinimize={win.showMinimize}
-                                        showMaximize={win.showMaximize}
-                                        windowMargin={WINDOW_MARGIN}
-                                        dockHeight={DOCK_HEIGHT + WINDOW_MARGIN} // 调整 Dock 高度以适应顶部栏
-                                    >
-                                        <Entry
-                                            windowId={win.id}
-                                            {...(win.appProps || {})}
-                                        />
-                                    </MacOSWindow>
-                                );
-                            })()
-                        ) : null
-                    )}
-                </div>
-            </div>
+  // 监听路由变化并打开对应窗口
+  useEffect(() => {
+    // 只在初始加载时检查哈希值并设置默认值
+    const checkInitialHash = () => {
+      let hash = window.location.hash.slice(1); // 去掉前面的 #
+      // 只有在初始加载且哈希为空时，才重定向到 #profile
+      if (!hash) {
+        // 设置默认哈希为 profile
+        window.location.hash = "profile";
+        hash = "profile";
+      }
+      openWindow(
+        hash,
+        apps.find((app) => app.id === hash)?.windowState || mediumWindowState,
+      );
+    };
+    checkInitialHash();
 
-            <div
-                className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-[99999] dock-component"
-            >
-                <Dock
-                    apps={apps}
-                    windows={dockWindows}
-                    isMobile={isMobile}
-                    mobileCurrentIndex={0}
-                    handleMobileWindowSelect={() => { }}
-                    focusWindow={focusWindow}
-                    restoreWindow={restoreWindow}
-                    openWindow={openWindow}
-                />
-            </div>
-        </div>
+    // 哈希变化时的处理函数 - 不再设置默认哈希
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1); // 去掉前面的 #
+      if (hash) {
+        openWindow(hash);
+      }
+    };
+    // 监听哈希变化
+    window.addEventListener("hashchange", handleHashChange);
+    // 组件卸载时移除监听器
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, [openWindow, apps]);
+
+  // 点击贴边
+  const handleDesktopClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const targetElement = event.target as HTMLElement;
+    if (
+      targetElement.closest(".base-window") ||
+      targetElement.closest(".top-bar-component") ||
+      targetElement.closest(".dock-component")
+    ) {
+      return;
+    }
+
+    const windowAreaWidth = window.innerWidth;
+    const windowAreaHeight = window.innerHeight - TOPBAR_HEIGHT - DOCK_HEIGHT; // 考虑 Dock 区域
+
+    // 查找当前已隐藏到边缘的窗口
+    const windowsToRestore = windows.filter(
+      (w) => w.isEdgeHidden && w.originalPositionBeforeEdgeHide,
     );
+
+    if (windowsToRestore.length > 0) {
+      // 如果有任何窗口已隐藏到边缘，则恢复所有这些窗口
+      windowsToRestore.forEach((win) => {
+        if (win.originalPositionBeforeEdgeHide) {
+          // Type guard
+          updateWindow(win.id, {
+            position: win.originalPositionBeforeEdgeHide,
+            isEdgeHidden: false,
+            originalPositionBeforeEdgeHide: undefined,
+            hiddenEdge: undefined,
+            // 不改变其他属性，保持窗口原有层级
+          });
+          // 移除下面这行，避免恢复后改变窗口层级顺序
+          // bringToFront(win.id);
+        }
+      });
+    } else {
+      // 如果没有窗口隐藏到边缘，则查找所有可见、非最小化、非最大化的窗口进行隐藏
+      const windowsToHide = windows.filter(
+        (w) => w.visible && !w.minimized && !w.maximized,
+      );
+
+      windowsToHide.forEach((win) => {
+        const originalPosition = { ...win.position }; // 保存原始位置
+        const { x, y } = win.position;
+        const { width, height } = win.size;
+
+        // 计算窗口中心点相对于窗口活动区域的坐标
+        const windowCenterX = x + width / 2;
+        const windowCenterY = y + height / 2;
+
+        // 计算窗口中心点到四个边缘的距离
+        const distToTop = windowCenterY;
+        const distToBottom = windowAreaHeight - windowCenterY;
+        const distToLeft = windowCenterX;
+        const distToRight = windowAreaWidth - windowCenterX;
+
+        let edgeToHide: "top" | "bottom" | "left" | "right";
+        const newPosition = { ...originalPosition };
+
+        // 确定最近的边缘
+        if (
+          distToTop <= distToBottom &&
+          distToTop <= distToLeft &&
+          distToTop <= distToRight
+        ) {
+          edgeToHide = "top";
+        } else if (
+          distToLeft <= distToTop &&
+          distToLeft <= distToBottom &&
+          distToLeft <= distToRight
+        ) {
+          edgeToHide = "left";
+        } else if (
+          distToRight <= distToTop &&
+          distToRight <= distToBottom &&
+          distToRight <= distToLeft
+        ) {
+          edgeToHide = "right";
+        } else {
+          edgeToHide = "bottom";
+        }
+
+        // 计算隐藏后的新位置
+        switch (edgeToHide) {
+          case "top":
+            newPosition.y = -height + WINDOW_MARGIN;
+            // 隐藏到顶部或底部时，水平位置保持不变，但要确保不超出左右边界
+            newPosition.x = Math.max(
+              0,
+              Math.min(originalPosition.x, windowAreaWidth - width),
+            );
+            break;
+          case "bottom":
+            newPosition.y = windowAreaHeight - WINDOW_MARGIN;
+            // 隐藏到顶部或底部时，水平位置保持不变，但要确保不超出左右边界
+            newPosition.x = Math.max(
+              0,
+              Math.min(originalPosition.x, windowAreaWidth - width),
+            );
+            break;
+          case "left":
+            newPosition.x = -width + WINDOW_MARGIN;
+            // 隐藏到左侧或右侧时，垂直位置保持不变，但要确保不超出上下边界
+            newPosition.y = Math.max(
+              0,
+              Math.min(originalPosition.y, windowAreaHeight - height),
+            );
+            break;
+          case "right":
+            newPosition.x = windowAreaWidth - WINDOW_MARGIN;
+            // 隐藏到左侧或右侧时，垂直位置保持不变，但要确保不超出上下边界
+            newPosition.y = Math.max(
+              0,
+              Math.min(originalPosition.y, windowAreaHeight - height),
+            );
+            break;
+        }
+
+        // 更新窗口状态，标记为边缘隐藏，并保存原始位置和隐藏边缘
+        updateWindow(win.id, {
+          position: newPosition,
+          isEdgeHidden: true,
+          originalPositionBeforeEdgeHide: originalPosition, // 保存隐藏前的原始位置
+          hiddenEdge: edgeToHide,
+        });
+      });
+    }
+  };
+
+  return (
+    <div
+      className="min-h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden"
+      style={{
+        backgroundImage: background ? `url('${background}')` : undefined,
+      }}
+      onClick={handleDesktopClick}
+    >
+      <TopBar className="z-10 top-bar-component" title="" />
+      <div
+        className="window-area absolute left-0 right-0"
+        style={{
+          top: TOPBAR_HEIGHT,
+          bottom: 0,
+          position: "absolute",
+          zIndex: 1,
+          pointerEvents: "none",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            position: "relative",
+            pointerEvents: "auto",
+          }}
+        >
+          {windows.map((win) =>
+            win.visible && !win.minimized
+              ? (() => {
+                  // 修改: 优先使用 customRender 函数渲染临时窗口内容
+                  if (win.customRender) {
+                    return (
+                      <MacOSWindow
+                        key={win.id}
+                        id={win.id}
+                        showClose={win.showClose}
+                        showMinimize={win.showMinimize}
+                        showMaximize={win.showMaximize}
+                        windowMargin={WINDOW_MARGIN}
+                        dockHeight={DOCK_HEIGHT + WINDOW_MARGIN} // 调整 Dock 高度以适应顶部栏
+                      >
+                        {win.customRender()}
+                      </MacOSWindow>
+                    );
+                  }
+
+                  // 如果没有 customRender，则使用常规应用入口
+                  const app = apps.find((a) => a.id === win.id);
+                  if (!app) return null;
+                  const Entry = app.entry;
+
+                  // 传递 appProps 到应用组件
+                  return (
+                    <MacOSWindow
+                      key={win.id}
+                      id={win.id}
+                      showClose={win.showClose}
+                      showMinimize={win.showMinimize}
+                      showMaximize={win.showMaximize}
+                      windowMargin={WINDOW_MARGIN}
+                      dockHeight={DOCK_HEIGHT + WINDOW_MARGIN} // 调整 Dock 高度以适应顶部栏
+                    >
+                      <Entry windowId={win.id} {...(win.appProps || {})} />
+                    </MacOSWindow>
+                  );
+                })()
+              : null,
+          )}
+        </div>
+      </div>
+
+      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-[99999] dock-component">
+        <Dock
+          apps={apps}
+          windows={dockWindows}
+          isMobile={isMobile}
+          mobileCurrentIndex={0}
+          handleMobileWindowSelect={() => {}}
+          focusWindow={focusWindow}
+          restoreWindow={restoreWindow}
+          openWindow={openWindow}
+        />
+      </div>
+    </div>
+  );
 }
 
 export default function Desktop() {
-    const { isMobile } = useDevice();
-    const [background, setBackground] = useState<string | undefined>();
-    useEffect(() => {
-        getBackground({ isMobile: isMobile })
-            .then(setBackground)
-            .catch(error => {
-                console.error("Error fetching Desktop wrapper background:", error);
-                setBackground(undefined);
-            });
-    }, [isMobile]);
+  const { isMobile } = useDevice();
+  const [background, setBackground] = useState<string | undefined>();
+  useEffect(() => {
+    getBackground({ isMobile: isMobile })
+      .then(setBackground)
+      .catch((error) => {
+        console.error("Error fetching Desktop wrapper background:", error);
+        setBackground(undefined);
+      });
+  }, [isMobile]);
 
-    return (
-        <div
-            className="desktop-container fixed inset-0 bg-slate-100/90 dark:bg-slate-900/95 backdrop-blur-md z-40 flex flex-col"
-            style={{
-                backgroundImage: background ? background : undefined,
-                backgroundSize: "cover",
-                backgroundPosition: "center"
-            }}
-        >
-            <PCDesktop />
-        </div>
-    );
+  return (
+    <div
+      className="desktop-container fixed inset-0 bg-slate-100/90 dark:bg-slate-900/95 backdrop-blur-md z-40 flex flex-col"
+      style={{
+        backgroundImage: background ? background : undefined,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <PCDesktop />
+    </div>
+  );
 }

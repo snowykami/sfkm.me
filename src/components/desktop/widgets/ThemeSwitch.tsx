@@ -1,8 +1,8 @@
-"use client"
-import { useCallback } from "react"
-import { Sun, Moon } from "lucide-react"
-import BaseWidget from "./BaseWidget"
-import { useDevice } from "@/contexts/DeviceContext"
+"use client";
+import { useCallback } from "react";
+import { Sun, Moon } from "lucide-react";
+import BaseWidget from "./BaseWidget";
+import { useDevice } from "@/contexts/DeviceContext";
 
 export function ThemeSwitch() {
   const { mode, toggleMode } = useDevice();
@@ -23,5 +23,5 @@ export function ThemeSwitch() {
         <Sun className="w-5 h-5 text-yellow-300" />
       )}
     </BaseWidget>
-  )
+  );
 }
