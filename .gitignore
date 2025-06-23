@@ -46,3 +46,7 @@ deploy.sh
 # python
 __pycache__/
 .venv/
+
+#vscode & jetbrains
+.vscode/
+.idea/

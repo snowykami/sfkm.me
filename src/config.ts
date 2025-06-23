@@ -81,7 +81,7 @@ const config: Config = {
     contacts: [
         { icon: Mail, label: "contacts.email", value: "a@sfkm.me", link: "mailto:a@sfkm.me" },
         { icon: Github, label: "GitHub", value: "github.com/snowykami", link: "https://github.com/snowykami" },
-        { icon: BiPlanet, label: "contacts.liteyukilab", value: "snowykami@lab.liteyuki.icu", link: "https://lab.liteyuki.icu/@snowykami" },
+        { icon: BiPlanet, label: "contacts.liteyukilab", value: "snowykami@lab.liteyuki.icu", link: "https://lab.liteyuki.org/@snowykami" },
         { icon: Tv, label: "bilibili", value: "snowykami", link: "https://space.bilibili.com/233938750" },
         { icon: RiQqLine, label: "QQ", value: "2751454815", link: "https://qm.qq.com/q/wjsV7ysAkS" },
         { icon: TbBrandNeteaseMusic, label: "contacts.ncm", value: "snowykami", link: "https://music.163.com/#/user/home?id=1491388449" },
