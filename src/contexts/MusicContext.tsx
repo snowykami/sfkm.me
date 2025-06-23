@@ -72,6 +72,19 @@ function getInitialState(totalSongs: number) {
             if (mi !== null) {
                 const index = parseInt(mi, 10);
                 if (!isNaN(index) && index >= 0 && index < totalSongs) {
+                    // 尝试从local中获取储存歌曲，若index一致则返回播放进度
+                    const saved = localStorage.getItem(STORAGE_KEY);
+                    if (saved) {
+                        const { index: savedIndex, time } = JSON.parse(saved);
+                        if (
+                            typeof savedIndex === "number" &&
+                            savedIndex === index &&
+                            typeof time === "number" &&
+                            time >= 0
+                        ) {
+                            return { index, time };
+                        }
+                    }
                     return { index, time: 0 };
                 }
             }
