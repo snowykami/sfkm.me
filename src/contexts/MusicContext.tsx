@@ -384,6 +384,11 @@ export function MusicProvider({ children }: MusicProviderProps) {
 
         if (track && track.status === 'loaded') {
             setCurrentSong(track.data);
+            if (typeof window !== "undefined") {
+                const url = new URL(window.location.href);
+                url.searchParams.set("mi", String(currentSongIndex));
+                window.history.replaceState({}, "", url.toString());
+            }
         } else if (!isLoadingSongs && resolvedSongs && resolvedSongs.length > 0) {
             // 如果当前索引的歌曲未加载，但有其他加载好的歌曲，则切换到第一首加载好的歌曲
             const firstLoadedTrack = tracks.find(t => t.status === 'loaded');
