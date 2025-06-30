@@ -277,5 +277,12 @@
         "link": "https://m.redrock.team/",
         "description": "一个从事互联网产品开发的学生组织，隶属于校团委",
         "avatar": "https://sre-docs.redrock.team/logo.png"
+    },
+    {
+        "issue_number": 33,
+        "name": "Pinpe的云端",
+        "link": "https://pinpe.top/",
+        "description": "一个属于自己的云朵。",
+        "avatar": "https://pinpe.top/head.jpg"
     }
 ]
