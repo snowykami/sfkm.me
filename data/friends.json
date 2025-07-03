@@ -291,5 +291,12 @@
         "link": "https://hxcn.cnies.org/",
         "description": "就是为了这点醋才包的这顿饺子",
         "avatar": "https://gastigado.cnies.org/d/elements/e69309ecdba41c53da4c9.png?sign=XYpTkPO62LztF34skZoYeA5SR-7KoNumVYnJggolhi4=:0"
+    },
+    {
+        "issue_number": 38,
+        "name": "Uptime Kuma",
+        "link": "https://uptime.liteyuki.org/dashboard",
+        "description": "服务监控",
+        "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png"
     }
 ]
