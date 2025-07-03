@@ -312,5 +312,12 @@
         "link": "https://blog.1wind.cn/",
         "description": "东风不与周郎便",
         "avatar": "https://github.com/WindyDante.png"
+    },
+    {
+        "issue_number": 36,
+        "name": "葱苓小筑",
+        "link": "https://blog.ciraos.top/",
+        "description": "Don't worry, be happy.",
+        "avatar": "https://mx.ciraos.top/api/v2/objects/avatar/ufh295h43mly31gmw0.avif"
     }
 ]
