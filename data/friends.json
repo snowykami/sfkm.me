@@ -298,5 +298,12 @@
         "link": "https://uptime.liteyuki.org/dashboard",
         "description": "服务监控",
         "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png"
+    },
+    {
+        "issue_number": 37,
+        "name": "清羽飞扬",
+        "link": "https://blog.liushen.fun/",
+        "description": "柳影曳曳，清酒孤灯，扬笔撒墨，心境如霜",
+        "avatar": "https://blog.liushen.fun/info/avatar.ico"
     }
 ]
