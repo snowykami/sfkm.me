@@ -294,8 +294,8 @@
     },
     {
         "issue_number": 38,
-        "name": "Uptime Kuma",
-        "link": "https://uptime.liteyuki.org/dashboard",
+        "name": "Uptime",
+        "link": "https://uptime.liteyuki.org/",
         "description": "服务监控",
         "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png"
     },
