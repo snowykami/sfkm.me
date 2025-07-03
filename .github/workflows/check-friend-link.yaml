@@ -27,8 +27,6 @@ jobs:
         run: |
           uv run ./scripts/issue_handler
         env:
-          HTTP_PROXY: ${{ secrets.PROXY }}
-          HTTPS_PROXY: ${{ secrets.PROXY }}
           GITHUB_EVENT_ISSUE_NUMBER: ${{ github.event.issue.number }}
           GITHUB_EVENT_ACTION: ${{ github.event.action }} #
           GITHUB_EVENT_NAME: ${{ github.event_name }}
