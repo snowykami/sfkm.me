@@ -110,50 +110,67 @@ async def fetch_webpage_content_with_playwright(url: str) -> tuple[LinkResponseI
                 user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
             )
 
-            page.set_default_timeout(30000)  # 设置默认超时时间为30秒
+            # 设置更短的超时时间
+            page.set_default_timeout(10000)  # 10秒
             
-            # 访问网页
-            await page.goto(url)
-            
-            # 等待网页加载完成
-            await page.wait_for_load_state("networkidle")
-            
-            # 获取标题
-            title = await page.title()
-            
-            # 获取描述
-            description = await page.evaluate("""
-                () => {
-                    const meta = document.querySelector('meta[name="description"]') || 
-                               document.querySelector('meta[property="og:description"]');
-                    return meta ? meta.getAttribute('content') : 'No Description Found';
-                }
-            """)
-            
-            # 获取完整的HTML
-            html_content = await page.content()
-            
-            # 关闭浏览器
-            await browser.close()
-            
-            # 计算响应时间（毫秒）使用httpx,head请求
-            async with httpx.AsyncClient() as client:
-                response = await client.head(url, timeout=30.0)
-                ping = int(response.elapsed.total_seconds() * 1000) if response.status_code == 200 else None
-            
-            return LinkResponseInfo(
-                title=title,
-                description=description,
-                body=html_content,
-                ping=ping
-            ), None
+            try:
+                # 访问网页，设置超时
+                await page.goto(url, timeout=10000)
+                
+                # 尝试等待网页加载，但不强制等待太久
+                try:
+                    await page.wait_for_load_state("networkidle", timeout=5000)  # 只等5秒
+                except:
+                    # 超时就跳过，继续处理
+                    print("网络空闲等待超时，继续处理当前页面内容")
+                    pass
+                
+                # 获取标题
+                title = await page.title()
+                
+                # 获取描述
+                description = await page.evaluate("""
+                    () => {
+                        const meta = document.querySelector('meta[name="description"]') || 
+                                   document.querySelector('meta[property="og:description"]');
+                        return meta ? meta.getAttribute('content') : 'No Description Found';
+                    }
+                """)
+                
+                # 获取完整的HTML
+                html_content = await page.content()
+                
+                # 关闭浏览器
+                await browser.close()
+                
+                # 计算响应时间（毫秒）使用httpx,head请求
+                ping = None
+                try:
+                    async with httpx.AsyncClient(timeout=5.0) as client:  # 减少ping超时时间
+                        response = await client.head(url)
+                        ping = int(response.elapsed.total_seconds() * 1000) if response.status_code == 200 else None
+                except:
+                    # ping失败也不影响主要功能
+                    pass
+                
+                return LinkResponseInfo(
+                    title=title,
+                    description=description,
+                    body=html_content,
+                    ping=ping
+                ), None
+                
+            except Exception as page_err:
+                # 确保浏览器被关闭
+                await browser.close()
+                raise page_err
             
     except Exception as err:
         import traceback
         print(f"Playwright 错误: {err}")
         traceback.print_exc()
         return None, err
-
+    
 async def ai_check_content(
     prompt: str, content: str, endpoint: str, key: str, model: str
 ) -> AICheckResponse:
