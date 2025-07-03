@@ -155,7 +155,7 @@ const config: Config = {
     {
       icon: BiPlanet,
       label: "contacts.liteyukilab",
-      value: "snowykami@lab.liteyuki.icu",
+      value: "snowykami@lab.liteyuki.org",
       link: "https://lab.liteyuki.org/@snowykami",
     },
     {
