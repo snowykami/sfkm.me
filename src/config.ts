@@ -15,6 +15,7 @@ import { SiNpm, SiPypi, SiDocker } from "react-icons/si";
 import { TbBrandNeteaseMusic } from "react-icons/tb";
 import { BiPlanet } from "react-icons/bi";
 import { RiQqLine } from "react-icons/ri";
+import { FaSteam } from "react-icons/fa";
 
 interface Config {
   // 网站元数据，此处大部分数据都支持填写常量或者i18n化函数
@@ -169,6 +170,12 @@ const config: Config = {
       label: "QQ",
       value: "2751454815",
       link: "https://qm.qq.com/q/wjsV7ysAkS",
+    },
+    {
+      icon: FaSteam,
+      label: "Steam",
+      value: "Snowykami",
+      link: "https://steamcommunity.com/id/sfkm/",
     },
     {
       icon: TbBrandNeteaseMusic,
