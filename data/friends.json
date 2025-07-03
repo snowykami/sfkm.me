@@ -89,8 +89,8 @@
     },
     {
         "name": "friends.轻雪社区.name",
-        "link": "https://lab.liteyuki.icu/",
-        "avatar": "https://cdn.liteyuki.icu/misskey/icon.svg",
+        "link": "https://lab.liteyuki.org/",
+        "avatar": "https://cdn.liteyuki.org/misskey/icon.svg",
         "description": "friends.轻雪社区.description",
         "tag": "CDN",
         "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
