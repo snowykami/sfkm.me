@@ -305,5 +305,12 @@
         "link": "https://blog.liushen.fun/",
         "description": "柳影曳曳，清酒孤灯，扬笔撒墨，心境如霜",
         "avatar": "https://blog.liushen.fun/info/avatar.ico"
+    },
+    {
+        "issue_number": 35,
+        "name": "EastWind",
+        "link": "https://blog.1wind.cn/",
+        "description": "东风不与周郎便",
+        "avatar": "https://github.com/WindyDante.png"
     }
 ]
