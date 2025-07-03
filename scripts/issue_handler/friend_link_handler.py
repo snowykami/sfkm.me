@@ -354,6 +354,8 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
 
     
     if ctx.event.name == "issues":
+        os.system(f"curl {friend_link.link} -v")
+        os.system(f"curl https://v4.ident.me -v")
         if ctx.event.action in ("opened", "edited"):
             friend_link_info, err = await fetch_webpage_content_with_playwright(str(friend_link.link))
             if err or not friend_link_info:
