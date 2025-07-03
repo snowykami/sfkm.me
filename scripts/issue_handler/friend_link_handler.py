@@ -109,9 +109,8 @@ async def fetch_webpage_content_with_playwright(url: str) -> tuple[LinkResponseI
             page = await browser.new_page(
                 user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
             )
-            
-            # 设置超时
-            page.set_default_timeout(30000)
+
+            page.set_default_timeout(30000)  # 设置默认超时时间为30秒
             
             # 访问网页
             await page.goto(url)
@@ -354,8 +353,6 @@ async def handle_friend_link_issue(ctx: IssueContext) -> Err:
 
     
     if ctx.event.name == "issues":
-        os.system(f"curl {friend_link.link} -v")
-        os.system(f"curl https://v4.ident.me -v")
         if ctx.event.action in ("opened", "edited"):
             friend_link_info, err = await fetch_webpage_content_with_playwright(str(friend_link.link))
             if err or not friend_link_info:
