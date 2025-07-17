@@ -5,6 +5,7 @@ import { CardContent } from "@/components/ui/Card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import config from "@/config";
+import { Divider } from "@/components/ui/Divider";
 
 const gradientClasses = [
   "bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400",
@@ -13,12 +14,47 @@ const gradientClasses = [
   "bg-gradient-to-r from-purple-400 via-fuchsia-400 to-pink-400",
 ];
 
+function calculateAge(birthDate: string): number {
+  const birth = new Date(birthDate);
+  const today = new Date();
+  
+  // 计算年龄差
+  let age = today.getFullYear() - birth.getFullYear();
+  
+  // 创建今年的生日日期
+  const thisYearBirthday = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
+  
+  // 如果今年的生日还没到，年龄减1
+  if (today < thisYearBirthday) {
+    age--;
+    // 使用去年的生日作为基准
+    const lastYearBirthday = new Date(today.getFullYear() - 1, birth.getMonth(), birth.getDate());
+    const daysSinceLastBirthday = Math.floor((today.getTime() - lastYearBirthday.getTime()) / (1000 * 60 * 60 * 24));
+    const daysInYear = isLeapYear(today.getFullYear() - 1) ? 366 : 365;
+    const fraction = daysSinceLastBirthday / daysInYear;
+    return Math.round((age + fraction) * 10) / 10;
+  } else {
+    // 今年的生日已经过了
+    const daysSinceBirthday = Math.floor((today.getTime() - thisYearBirthday.getTime()) / (1000 * 60 * 60 * 24));
+    const daysInYear = isLeapYear(today.getFullYear()) ? 366 : 365;
+    const fraction = daysSinceBirthday / daysInYear;
+    return Math.round((age + fraction) * 10) / 10;
+  }
+}
+
+// 辅助函数：判断是否为闰年
+function isLeapYear(year: number): boolean {
+  return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+}
+
 export default function ProfileContent() {
   const [descIndex, setDescIndex] = useState(0);
   const [gradientIndex, setGradientIndex] = useState(0); // 昵称背景渐变索引
   const [fade, setFade] = useState(true);
   // 添加引用以跟踪是否已装载
   const isMounted = useRef(true);
+
+  const age = calculateAge(config.profile.birthDate || "2000-01-01"); // 默认出生日期为2000年1月1日
 
   // 昵称背景渐变变化
   useEffect(() => {
@@ -57,7 +93,7 @@ export default function ProfileContent() {
             <div className="front">
               <Avatar className="w-full h-full">
                 <AvatarImage
-                  src="https://q.qlogo.cn/g?b=qq&nk=2751454815&s=640"
+                  src={config.profile.avatar}
                   alt="Snowykami Profile"
                 />
                 <AvatarFallback className="text-xl font-semibold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
@@ -72,7 +108,7 @@ export default function ProfileContent() {
                 style={{ transform: "scaleX(-1)" }}
               >
                 <AvatarImage
-                  src="https://q.qlogo.cn/g?b=qq&nk=2751454815&s=640"
+                  src={config.profile.avatar}
                   alt="Back Face"
                 />
                 <AvatarFallback className="text-xl font-semibold bg-gradient-to-br from-purple-600 to-blue-500 text-white">
@@ -91,7 +127,7 @@ export default function ProfileContent() {
             className={`text-2xl font-bold mb-1 ${gradientClasses[gradientIndex]} bg-clip-text text-transparent leading-relaxed py-1 min-w-[12rem] px-4 transition-colors duration-700`}
             style={{ fontFamily: "'Pacifico', cursive" }}
           >
-            Snowykami
+            {config.profile.nickname}
           </h1>
         </div>
 
@@ -121,10 +157,19 @@ export default function ProfileContent() {
           ))}
         </div>
       </div>
-      {/* 分割线 */}
-      <div className="mt-6 pt-6 border-t border-slate-300 dark:border-slate-700/50">
-        <div className="flex justify-center"></div>
+      <Divider />
+      {/* 简介 */}
+      <div className="mt-4 mb-4">
+        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3 text-center">
+          {t("profile.introduction")}
+        </h3>
+        <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed text-left"
+          dangerouslySetInnerHTML={{
+            __html: t('profile.introductionText', { age })
+          }}>
+        </p>
       </div>
+      <Divider />
       {/* 应用区域 */}
       <div className="mt-2 flex flex-col items-center">
         <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3">
@@ -151,12 +196,7 @@ export default function ProfileContent() {
           ))}
         </div>
       </div>
-      {/* 分割线 */}
-      <div className="mt-8 pt-6">
-        <div className="flex justify-center">
-          <div className="w-12 h-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"></div>
-        </div>
-      </div>
+      <Divider />
       {/* 头像动效 */}
       <style jsx>{`
         .flip-container {

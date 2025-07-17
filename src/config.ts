@@ -28,9 +28,12 @@ interface Config {
     favicon?: string; // 网站图标链接
   };
   profile: {
+    birthDate?: string; // 出生日期，格式为 YYYY-MM-DD
     descriptions: string[]; // 个人简介描述数组
     sites: Site[];
     skillBadges: SkillBadge[]; // 技能徽章数组
+    avatar: string; // 头像链接
+    nickname: string; // 昵称
   };
   contacts: Contact[];
   friends: Friend[];
@@ -56,6 +59,9 @@ const config: Config = {
     favicon: "https://q.qlogo.cn/g?b=qq&nk=2751454815&s=640",
   },
   profile: {
+    avatar: "https://cdn.liteyuki.org/snowykami/avatar.jpg",
+    birthDate: "2005-02-24", // 设置默认出生日期
+    nickname: "Snowykami",
     descriptions: [
       "profile.description1",
       "profile.description2",
@@ -367,6 +373,12 @@ const config: Config = {
           description4: "浮生若梦，为欢几何？",
           description5: "轻思若水，雪化生香。",
           description6: "用桌面端打开有更奇妙的体验哦",
+          introduction: "简单介绍",
+          introductionText: `这里是Snowykami，{{age}}岁，事学生。全栈开发 / 运维 / 家里云 / 云原生和云服务。<br>
+          <b>游戏偏好</b>： Minecraft / Factorio ...(沙盒/自动化/模拟经营/开放世界)。<br>
+          <b>音乐偏好</b>：二次元 / 术力口 / 鹿乃 / YOASOBI | 纯音乐 / J-Pop...。<br>
+          <b>地点</b>：常驻重庆，假期全国可飞。<br>
+          <b>团队</b>：轻雪工作室 / 红岩网校工作站`,
           location: "中国 重庆",
           sites: "网站索引",
           subname: "远野千束",
@@ -640,6 +652,12 @@ const config: Config = {
           description5:
             "Light thoughts like water, snow melts and fragrance arises.",
           description6: "Open on desktop for a more wonderful experience",
+          introduction: "Introduction",
+          introductionText: `This is Snowykami, {{age}} years old, a student. Full-stack developer / DevOps / Home Cloud / Cloud Native and Cloud Services.<br>
+          <b>Game Preferences</b>: Minecraft / Factorio ...(Sandbox/Automation/Simulation/ Open World).<br>
+          <b>Music Preferences</b>: Anime Songs / Vocaloid / Kano / YOASOBI | Pure Music / J-Pop...<br>
+          <b>Location</b>: Based in Chongqing, available nationwide during holidays.<br>
+          <b>Team</b>: Liteyuki Studio / Redrock Team`,
           location: "Chongqing, China",
           sites: "Site Index",
           subname: "Toono Chisato",
@@ -919,6 +937,12 @@ const config: Config = {
           description5: "軽い思いは水のように、雪は溶けて香りを生む。",
           description6:
             "デスクトップ版で開くと、もっと素晴らしい体験ができますよ",
+          introduction: "自己紹介",
+          introductionText: `ここはSnowykami、{{age}}歳の学生です。フルスタック開発者 / DevOps / 家庭用クラウド / クラウドネイティブとクラウドサービス。<br>
+          <b>ゲームの好み</b>：Minecraft / Factorio ...(サンドボックス/自動化/シミュレーション/オープンワールド)。<br>
+          <b>音楽の好み</b>：アニメソング / ボカロイド / 鹿乃 / YOASOBI | 純音楽 / J-Pop...<br>
+          <b>場所</b>：常駐地は重慶、休暇中は全国どこでも飛べます。<br>
+          <b>チーム</b>：Liteyuki Studio / Redrock Team`,
           location: "中国 重慶",
           sites: "サイトインデックス",
           subname: "遠野千束",
