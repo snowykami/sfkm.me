@@ -653,7 +653,7 @@ const config: Config = {
             "Light thoughts like water, snow melts and fragrance arises.",
           description6: "Open on desktop for a more wonderful experience",
           introduction: "Introduction",
-          introductionText: `This is Snowykami, {{age}} years old, a student. Full-stack developer / DevOps / Home Cloud / Cloud Native and Cloud Services.<br>
+          introductionText: `This is Snowykami, {{age}} y.o., a student. Full-stack developer / DevOps / Home Cloud / Cloud Native and Cloud Services.<br>
           <b>Game Preferences</b>: Minecraft / Factorio ...(Sandbox/Automation/Simulation/ Open World).<br>
           <b>Music Preferences</b>: Anime Songs / Vocaloid / Kano / YOASOBI | Pure Music / J-Pop...<br>
           <b>Location</b>: Based in Chongqing, available nationwide during holidays.<br>
