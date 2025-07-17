@@ -297,7 +297,7 @@
         "name": "Uptime",
         "link": "https://uptime.liteyuki.org/",
         "description": "服务监控",
-        "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png"
+        "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png-%20[x]%20%20%E6%9B%B4%E6%96%B0"
     },
     {
         "issue_number": 37,
@@ -319,5 +319,19 @@
         "link": "https://blog.ciraos.top/",
         "description": "Don't worry, be happy.",
         "avatar": "https://mx.ciraos.top/api/v2/objects/avatar/ufh295h43mly31gmw0.avif"
+    },
+    {
+        "issue_number": 39,
+        "name": "Leonxieの小窝",
+        "link": "https://www.leonxie.cn/",
+        "description": "保持热爱，奔赴山海！",
+        "avatar": "https://www.leonxie.cn/upload/avatar.jpg"
+    },
+    {
+        "issue_number": 40,
+        "name": "Hexzii",
+        "link": "https://nichijou.moe/",
+        "description": "Hexzii的个人主页",
+        "avatar": "https://avatars.githubusercontent.com/u/62250232?v=4"
     }
 ]
