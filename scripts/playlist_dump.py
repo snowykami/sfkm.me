@@ -18,7 +18,7 @@ REQUEST_DELAY = 0.5
 
 # 手动包直接解析playlist为列表，抓包在网易云是{}，qq音乐暂时没法抓，只能手动
 # 这里存放一些手动覆写数据，例如某首歌没有歌词时，可以在这里添加其他来源的歌词，以及歌词偏移量
-# https://interface.music.163.com/weapi/v6/playlist/detail?csrf_token=f285f8518c521fddc048480b0ad713d7
+# https://music.163.com/api/playlist/detail?id=2274812379
 PREDATA = {
     "16877261721": {
         "lrcmid": "16877261721",
