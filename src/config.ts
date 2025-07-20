@@ -217,7 +217,7 @@ const config: Config = {
   ],
   friends: [...(friendsJson as Friend[])],
   friendsApplyLink:
-    "https://github.com/snowykami/sfkm.me/issues/new?labels=friend-link&template=apply-friend-link-zh.yaml&title=友链申请: 你的站点名称",
+    "https://github.com/snowykami/sfkm.me/issues/new?labels=friend-link&template=apply-friend-link-zh.yaml",
   projects: [
     {
       name: "projects.liteyukibot.name",
