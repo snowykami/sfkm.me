@@ -38,12 +38,3 @@ body:
       placeholder: "例如: https://lts.blog/avatar.png"
     validations:
       required: true
-
-  - type: checkboxes
-    id: recheck
-    attributes:
-      label: 重新检查
-      description: 如需重新检查请勾选
-      options:
-        - label: 我同意遵循该项目的行为准则
-          required: true
