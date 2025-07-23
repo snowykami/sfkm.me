@@ -333,5 +333,12 @@
         "link": "https://nichijou.moe/",
         "description": "Hexzii的个人主页",
         "avatar": "https://avatars.githubusercontent.com/u/62250232?v=4"
+    },
+    {
+        "issue_number": 41,
+        "name": "Dogxi | 狗窝子",
+        "link": "https://blog.dogxi.me/",
+        "description": "oi, Dogxi 的笔记本",
+        "avatar": "https://avatar.dogxi.me/favicon.ico"
     }
 ]
