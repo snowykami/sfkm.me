@@ -61,7 +61,7 @@ async function fetchLyricFromNCM(mid: string): Promise<string> {
 async function fetchLyricFromQQ(mid: string): Promise<string> {
   try {
     const lrcResponse = await fetch(
-      `https://music.api.liteyuki.org/music/?action=qq&module=get_lyrc&mid=${mid}`,
+      `https://ffmpeg-music-api.072190.xyz/music/?action=qq&module=get_lyrc&mid=${mid}`,
     );
     if (!lrcResponse.ok) throw new Error("获取歌词失败: " + mid);
     const lrcData = await lrcResponse.json();
@@ -85,7 +85,7 @@ export async function fetchSongFromNCM(
 ): Promise<Song> {
   console.log(`Fetching song with mid: ${mid}, offset: ${offset}`);
   const songResponse = await fetch(
-    `https://music.api.liteyuki.org/music/?action=netease&module=get_url&mids=${mid}`,
+    `https://ffmpeg-music-api.072190.xyz/music/?action=netease&module=get_url&mids=${mid}`,
   );
   if (!songResponse.ok) throw new Error("获取歌曲信息失败");
   const songData = await songResponse.json();
@@ -113,7 +113,7 @@ export async function fetchSongFromQQMusic(
 ): Promise<Song> {
   console.log(`Fetching song with mid: ${mid}, offset: ${offset}`);
   const songResponse = await fetch(
-    `https://music.api.liteyuki.org/music/?action=qq&module=get_url&mids=${mid}`,
+    `https://ffmpeg-music-api.072190.xyz/music/?action=qq&module=get_url&mids=${mid}`,
   );
   if (!songResponse.ok) throw new Error("获取歌曲信息失败");
   const songData = await songResponse.json();
@@ -231,7 +231,7 @@ export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
     const fetchFromBackup = async (): Promise<string> => {
       const fetchUrl = async (): Promise<string> => {
         const response = await fetch(
-          `https://music.api.liteyuki.org/music/?action=netease&module=get_url&mids=${mid}`,
+          `https://ffmpeg-music-api.072190.xyz/music/?action=netease&module=get_url&mids=${mid}`,
         );
         if (!response.ok)
           throw new Error(
@@ -292,7 +292,7 @@ export function fetchSongSrcFromQQ(mid: string): () => Promise<string> {
     // 定义实际的请求函数
     const fetchUrl = async (): Promise<string> => {
       const response = await fetch(
-        `https://music.api.liteyuki.org/music/?action=qq&module=get_url&mids=${mid}`,
+        `https://ffmpeg-music-api.072190.xyz/music/?action=qq&module=get_url&mids=${mid}`,
       );
 
       if (!response.ok) {
