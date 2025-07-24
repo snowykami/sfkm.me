@@ -340,5 +340,12 @@
         "link": "https://blog.dogxi.me/",
         "description": "oi, Dogxi 的笔记本",
         "avatar": "https://avatar.dogxi.me/favicon.ico"
+    },
+    {
+        "issue_number": 42,
+        "name": "Teror的客栈",
+        "link": "https://blog.trfox.top/",
+        "description": "Teror的客栈，欢迎光临",
+        "avatar": "https://img.trfox.top/assets/avatar.jpg"
     }
 ]
