@@ -361,5 +361,12 @@
         "link": "https://sacredfeathers.online/",
         "description": "在虚拟世界中崛起的神圣帝国，以智慧与荣耀为基石，用羽毛般轻盈的梦想承载着无限的可能",
         "avatar": "https://sacredfeathers.online/icon"
+    },
+    {
+        "issue_number": 45,
+        "name": "Liteyuki Minecraft Server",
+        "link": "https://mc.liteyuki.org/",
+        "description": "由轻雪工作室团队运营的公益性质服务器",
+        "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png"
     }
 ]
