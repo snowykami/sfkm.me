@@ -347,5 +347,26 @@
         "link": "https://blog.trfox.top/",
         "description": "Teror的客栈，欢迎光临",
         "avatar": "https://img.trfox.top/assets/avatar.jpg"
+    },
+    {
+        "issue_number": 43,
+        "name": "芸汐酱的刷新点",
+        "link": "https://awa.2085.fun/",
+        "description": "人类的伟大在于面对死亡之时的崇高姿态",
+        "avatar": "https://wsrv.nl/?url=avatars.githubusercontent.com/u/140612774?v=4"
+    },
+    {
+        "issue_number": 44,
+        "name": "神圣羽毛帝国",
+        "link": "https://sacredfeathers.online/",
+        "description": "在虚拟世界中崛起的神圣帝国，以智慧与荣耀为基石，用羽毛般轻盈的梦想承载着无限的可能",
+        "avatar": "https://sacredfeathers.online/icon"
+    },
+    {
+        "issue_number": 45,
+        "name": "Liteyuki Minecraft Server",
+        "link": "https://mc.liteyuki.org/",
+        "description": "由轻雪工作室团队运营的公益性质服务器",
+        "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png"
     }
 ]
