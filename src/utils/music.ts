@@ -212,25 +212,8 @@ export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
       };
       return await fetchWithRetry(fetchUrl, 10, 100);
     };
-
-    // 检查CORS
-    try {
-      const url = await fetchFromYpm();
-      const headResp = await fetch(url, {
-        method: "HEAD",
-        mode: "cors",
-      });
-      // 只要能正常返回就认为支持CORS（部分云音乐服务器不会返回Access-Control-Allow-Origin头，但能正常播放）
-      if (headResp.status >= 400) {
-        throw new Error("网易云音乐音频URL不支持跨域(CORS)");
-      }
-      return url;
-    } catch (e) {
-      const message = e instanceof Error ? e.message : String(e);
-      throw new Error(
-        "网易云音乐音频URL不支持跨域(CORS)或网络错误: " + message,
-      );
-    }
+    // 直接返回URL，不做CORS检查
+    return await fetchFromYpm();
   };
 };
 
