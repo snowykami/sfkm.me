@@ -215,6 +215,7 @@ export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
 
     // 检查CORS
     try {
+      const url = await fetchFromYpm();
       const headResp = await fetch(url, {
         method: "HEAD",
         mode: "cors",
@@ -223,67 +224,15 @@ export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
       if (headResp.status >= 400) {
         throw new Error("网易云音乐音频URL不支持跨域(CORS)");
       }
+      return url;
     } catch (e) {
       const message = e instanceof Error ? e.message : String(e);
       throw new Error(
         "网易云音乐音频URL不支持跨域(CORS)或网络错误: " + message,
       );
     }
-    return url;
   };
-
-  // 第二个接口（带重试，不检测CORS）
-  const fetchFromBackup = async (): Promise<string> => {
-    const fetchUrl = async (): Promise<string> => {
-      const response = await fetch(
-        `https://ffmpeg-music-api.072190.xyz/music/?action=netease&module=get_url&mids=${mid}`,
-      );
-      if (!response.ok)
-        throw new Error(
-          `ffmpeg备用接口获取网易云音乐URL失败: HTTP ${response.status}`,
-        );
-      const data = await response.json();
-      if (!data || !data.data || !data.data[0] || !data.data[0].url)
-        throw new Error("备用接口获取网易云音乐URL失败: 数据结构不完整");
-      const url = data.data[0].url.replace("http://", "https://");
-      if (!url || typeof url !== "string" || !url.startsWith("http"))
-        throw new Error(`备用接口返回无效的音频 URL: ${url}`);
-      return url;
-    };
-    return await fetchWithRetry(fetchUrl, 3, 1000);
-  };
-
-  try {
-    // 只请求一次第一个接口
-    const url = await fetchFromYpm();
-    if (url.includes("music.126")) {
-      console.log(
-        `[Music] 网易云音乐URL加载成功: ${url.substring(0, 50)}...`,
-      );
-      return url;
-    } else {
-      // url 不包含 music.126，立即用备用接口
-      console.warn(
-        "[Music] liteyuki接口返回的URL不包含 music.126，尝试ffmpeg备用接口:",
-        url,
-      );
-      const backupUrl = await fetchFromBackup();
-      console.log(
-        `[Music] 网易云音乐URL(ffmpeg)加载成功: ${backupUrl.substring(0, 50)}...`,
-      );
-      return backupUrl;
-    }
-  } catch (error) {
-    // 第一个接口失败，直接用备用接口
-    console.warn("[Music] 第一个接口失败，尝试备用接口", error);
-    const backupUrl = await fetchFromBackup();
-    console.log(
-      `[Music] 网易云音乐URL(ffmpeg)加载成功: ${backupUrl.substring(0, 50)}...`,
-    );
-    return backupUrl;
-  }
 };
-}
 
 /**
  * 创建一个带重试功能的懒加载QQ音乐 URL 的函数
