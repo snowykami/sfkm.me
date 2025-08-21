@@ -1,4 +1,5 @@
 import { Song } from "@/types/music";
+import songs from "@/data/musics.json";
 
 type AnySongSource = {
   type: string;
@@ -190,32 +191,19 @@ async function fetchWithRetry<T>(
  */
 export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
   return async () => {
-    console.log(`[Music] 懒加载网易云音乐 URL: ${mid}`);
+    // 使用 find 方法查找匹配的歌曲
+    const song = songs.find(song => song.id === mid);
 
-    // 第一个接口（不重试，需检测CORS）
-    const fetchFromYpm = async (): Promise<string> => {
-      const fetchUrl = async (): Promise<string> => {
-        const response = await fetch(
-          `https://ypm.liteyuki.org/api/song/url?id=${mid}`,
-        );
-        if (!response.ok)
-          throw new Error(
-            `liteyuki获取网易云音乐URL失败: HTTP ${response.status}`,
-          );
-        const data = await response.json();
-        if (!data || !data.data || !data.data[0] || !data.data[0].url)
-          throw new Error("获取网易云音乐URL失败: 数据结构不完整");
-        const url = data.data[0].url.replace("http://", "https://");
-        if (!url || typeof url !== "string" || !url.startsWith("http"))
-          throw new Error(`无效的音频 URL: ${url}`);
-        return url;
-      };
-      return await fetchWithRetry(fetchUrl, 10, 100);
-    };
-    // 直接返回URL，不做CORS检查
-    return await fetchFromYpm();
+    if (song) {
+      const url = `https://cdn.liteyuki.org/snowykami/music/${encodeURIComponent(song.artist.replace("、", ",") + " - " + song.title)}.mp3`;
+      console.log(`[Music] 从本地数据加载音乐 URL: ${url}`);
+      return url;
+    }
+
+    console.warn(`[Music] 未在本地数据中找到歌曲 ID: ${mid}, 返回空 URL`);
+    return "";
   };
-};
+}
 
 /**
  * 创建一个带重试功能的懒加载QQ音乐 URL 的函数
