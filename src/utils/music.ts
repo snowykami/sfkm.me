@@ -195,7 +195,7 @@ export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
     const song = songs.find(song => song.id === mid);
 
     if (song) {
-      const url = `https://cdn.liteyuki.org/snowykami/music/${(song.artist.replace("、", ",") + " - " + song.title).normalize('NFD')}.mp3`;
+      const url = `https://cdn.liteyuki.org/snowykami/music/${(song.artist.replace(/、/g, ",") + " - " + song.title).normalize('NFD')}.mp3`;
       return url;
     }
 
@@ -211,44 +211,15 @@ export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
  */
 export function fetchSongSrcFromQQ(mid: string): () => Promise<string> {
   return async () => {
-    console.log(`[Music] 懒加载QQ音乐 URL: ${mid}`);
+    // 使用 find 方法查找匹配的歌曲
+    const song = songs.find(song => song.id === mid);
 
-    // 定义实际的请求函数
-    const fetchUrl = async (): Promise<string> => {
-      const response = await fetch(
-        `https://ffmpeg-music-api.072190.xyz/music/?action=qq&module=get_url&mids=${mid}`,
-      );
-
-      if (!response.ok) {
-        throw new Error(`获取QQ音乐URL失败: HTTP ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (!data || !data.data || !data.data[0] || !data.data[0].url) {
-        console.error("API返回数据结构不符合预期:", data);
-        throw new Error("获取QQ音乐URL失败: 数据结构不完整");
-      }
-
-      // 确保使用 HTTPS URL
-      const url = data.data[0].url.replace("http://", "https://");
-
-      if (!url || typeof url !== "string" || !url.startsWith("http")) {
-        console.error("API返回的URL无效:", url);
-        throw new Error(`无效的音频 URL: ${url}`);
-      }
-
+    if (song) {
+      const url = `https://cdn.liteyuki.org/snowykami/music/${(song.artist.replace(/、/g, ",") + " - " + song.title).normalize('NFD')}.mp3`;
       return url;
-    };
-
-    try {
-      // 使用重试函数执行请求
-      const url = await fetchWithRetry(fetchUrl, 3, 1000);
-      console.log(`[Music] QQ音乐URL加载成功: ${url.substring(0, 50)}...`);
-      return url;
-    } catch (error) {
-      console.error(`[Music] 获取QQ音乐URL失败(所有重试均失败):`, error);
-      throw error;
     }
+
+    console.warn(`[Music] 未在本地数据中找到歌曲 ID: ${mid}, 返回空 URL`);
+    return "";
   };
 }
