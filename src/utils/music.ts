@@ -195,8 +195,7 @@ export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
     const song = songs.find(song => song.id === mid);
 
     if (song) {
-      const url = `https://cdn.liteyuki.org/snowykami/music/${encodeURIComponent(song.artist.replace("、", ",") + " - " + song.title)}.mp3`;
-      console.log(`[Music] 从本地数据加载音乐 URL: ${url}`);
+      const url = `https://cdn.liteyuki.org/snowykami/music/${(song.artist.replace("、", ",") + " - " + song.title).normalize('NFD')}.mp3`;
       return url;
     }
 
