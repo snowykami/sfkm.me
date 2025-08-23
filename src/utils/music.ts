@@ -144,45 +144,6 @@ export async function fetchSongFromData(data: AnySongSource): Promise<Song> {
   }
 }
 
-/**
- * 通用的带重试功能的请求函数
- * @param fetchFn 执行请求的函数
- * @param maxRetries 最大重试次数
- * @param retryDelay 重试间隔(ms)
- * @returns 返回请求结果
- */
-async function fetchWithRetry<T>(
-  fetchFn: () => Promise<T>,
-  maxRetries: number = 10,
-  retryDelay: number = 100, // 初始为0.2秒
-): Promise<T> {
-  let lastError: unknown;
-
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await fetchFn();
-    } catch (error) {
-      lastError = error;
-
-      if (attempt === maxRetries) {
-        console.error(`达到最大重试次数(${maxRetries})，请求失败:`, error);
-        break;
-      }
-
-      console.warn(
-        `请求失败，${retryDelay / 1000}秒后进行第${attempt + 1}次重试...`,
-        error,
-      );
-
-      await new Promise((resolve) => setTimeout(resolve, retryDelay));
-
-      // 指数退避：每次乘以1.2的幂
-      retryDelay = Math.min(100 * Math.pow(1.2, attempt + 1), 10000);
-    }
-  }
-
-  throw lastError;
-}
 
 /**
  * 创建一个带重试功能的懒加载网易云音乐 URL 的函数
