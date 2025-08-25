@@ -16,6 +16,7 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.15.0",
     "i18next": "^25.2.1",
+    "liquid-glass-react": "^1.1.1",
     "lrc-file-parser": "^2.4.1",
     "lucide-react": "^0.511.0",
     "next": "15.3.3",

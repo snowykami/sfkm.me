@@ -1,5 +1,5 @@
 import { Marquee } from "@/components/ui/Marquee";
-import { Disc, ExternalLink, User } from "lucide-react";
+import { Disc, User } from "lucide-react";
 import { Album } from "./Album";
 import LyricScroller from "./LyricScroller";
 

@@ -255,29 +255,8 @@ export function PCDesktop() {
           {windows.map((win) =>
             win.visible && !win.minimized
               ? (() => {
-                  // 修改: 优先使用 customRender 函数渲染临时窗口内容
-                  if (win.customRender) {
-                    return (
-                      <MacOSWindow
-                        key={win.id}
-                        id={win.id}
-                        showClose={win.showClose}
-                        showMinimize={win.showMinimize}
-                        showMaximize={win.showMaximize}
-                        windowMargin={WINDOW_MARGIN}
-                        dockHeight={DOCK_HEIGHT + WINDOW_MARGIN} // 调整 Dock 高度以适应顶部栏
-                      >
-                        {win.customRender()}
-                      </MacOSWindow>
-                    );
-                  }
-
-                  // 如果没有 customRender，则使用常规应用入口
-                  const app = apps.find((a) => a.id === win.id);
-                  if (!app) return null;
-                  const Entry = app.entry;
-
-                  // 传递 appProps 到应用组件
+                // 修改: 优先使用 customRender 函数渲染临时窗口内容
+                if (win.customRender) {
                   return (
                     <MacOSWindow
                       key={win.id}
@@ -288,10 +267,31 @@ export function PCDesktop() {
                       windowMargin={WINDOW_MARGIN}
                       dockHeight={DOCK_HEIGHT + WINDOW_MARGIN} // 调整 Dock 高度以适应顶部栏
                     >
-                      <Entry windowId={win.id} {...(win.appProps || {})} />
+                      {win.customRender()}
                     </MacOSWindow>
                   );
-                })()
+                }
+
+                // 如果没有 customRender，则使用常规应用入口
+                const app = apps.find((a) => a.id === win.id);
+                if (!app) return null;
+                const Entry = app.entry;
+
+                // 传递 appProps 到应用组件
+                return (
+                  <MacOSWindow
+                    key={win.id}
+                    id={win.id}
+                    showClose={win.showClose}
+                    showMinimize={win.showMinimize}
+                    showMaximize={win.showMaximize}
+                    windowMargin={WINDOW_MARGIN}
+                    dockHeight={DOCK_HEIGHT + WINDOW_MARGIN} // 调整 Dock 高度以适应顶部栏
+                  >
+                    <Entry windowId={win.id} {...(win.appProps || {})} />
+                  </MacOSWindow>
+                );
+              })()
               : null,
           )}
         </div>
@@ -303,7 +303,7 @@ export function PCDesktop() {
           windows={dockWindows}
           isMobile={isMobile}
           mobileCurrentIndex={0}
-          handleMobileWindowSelect={() => {}}
+          handleMobileWindowSelect={() => { }}
           focusWindow={focusWindow}
           restoreWindow={restoreWindow}
           openWindow={openWindow}

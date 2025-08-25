@@ -1,5 +1,4 @@
 import React from "react";
-
 import { apps } from "@/apps"; // 路径按你的项目结构调整
 
 export interface DockApp {
@@ -47,7 +46,7 @@ export default function Dock({
     <div
       className={`absolute ${
         isMobile ? "bottom-3" : "bottom-3"
-      } left-1/2 transform -translate-x-1/2 bg-slate-100/90 dark:bg-slate-900/95 backdrop-blur-md rounded-2xl px-6 py-3 border border-slate-300/50 dark:border-slate-600/50 z-50`}
+      } left-1/2 transform -translate-x-1/2 backdrop-blur-md rounded-2xl px-6 py-3 border border-slate-300/50 dark:border-slate-600/50 z-50`}
     >
       <div className="flex items-center space-x-3">
         {apps.map((app, index) => {
