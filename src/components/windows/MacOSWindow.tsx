@@ -149,24 +149,28 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
         className={`
           relative
           rounded-3xl
+          shadow-3xl
           overflow-hidden
           w-full h-full
           ${closing ? "animate-window-close" : minimizing ? "animate-window-minimize" : "animate-window-open"}
         `}
+        style={{
+          boxShadow: "0 4px 16px 0 rgba(0,0,0,0.32), 0 1px 4px 0 rgba(0,0,0,0.28)",
+        }}
       >
         {/* 背景层 - 背景图片或自定义背景色 */}
         {(scheme.backgroundImage ||
           scheme.backgroundColor ||
           scheme.backgroundColorDark) && (
-          <div
-            className={`
+            <div
+              className={`
               absolute inset-0 z-0
               ${scheme.backgroundClassName}
               ${scheme.backgroundColorDark || ""}
             `}
-            style={getBackgroundStyle()}
-          />
-        )}
+              style={getBackgroundStyle()}
+            />
+          )}
 
         {/* 新增：背景蒙版层 */}
         {scheme.backgroundOverlay && (
@@ -190,7 +194,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
           className={`
             ${scheme.bg} ${scheme.bgDark}
             ${scheme.backdropBlur ? scheme.backdropBlurClass : ""}
-            ${scheme.shadow || "shadow-xl"}
+            shadow-2xl backdrop-blur-xl
             ${scheme.showBorder !== false ? `border ${scheme.border} ${scheme.borderDark}` : ""}
             overflow-hidden
             flex flex-col
@@ -200,6 +204,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
             relative z-10
             w-full h-full
           `}
+
         >
           {/* 标题栏 */}
           <div
