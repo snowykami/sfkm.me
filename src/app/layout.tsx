@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
 import "./globals.css";
 
 // Context
@@ -8,6 +9,7 @@ import { MusicProvider } from "@/contexts/MusicContext";
 import { TerminalProvider } from "@/contexts/TerminalCommandContext";
 import { WindowManagerProvider } from "@/contexts/WindowManagerContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import Script from "next/script";
 import config from "@/config";
 
 function getLang() {
@@ -50,6 +52,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Script src="https://cdn.liteyuki.org/js/cdn_info.js" />
         <MusicProvider>
           <TerminalProvider>
             <DeviceProvider>
