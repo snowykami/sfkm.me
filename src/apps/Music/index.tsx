@@ -34,7 +34,7 @@ export const getNewWindowColorScheme = (
     overlayColor: OVERLAYCOLOR,
     overlayColorDark: OVERLAYCOLORDARK,
     overlayBlendMode: "normal",
-    backgroundClassName: "transition-all duration-300",
+    backgroundClassName: "transition-all duration-600",
     ...colorScheme,
   };
 };
@@ -78,19 +78,15 @@ export default function Music({ windowId = WINDOW_ID }: AppProps) {
 
   return (
     <div className="flex flex-col h-full relative overflow-hidden">
-      {/* <div
-                className="absolute inset-0 z-0 bg-gradient-to-b from-black/20 to-black/30 dark:from-black/10 dark:to-black/20"
-            /> */}
-      {/* 移动端没有窗口 */}
       {isMobile && (
         <div
-          className={`absolute inset-0 z-5 ${OVERLAYCOLOR} ${OVERLAYCOLORDARK} transition-colors duration-300`}
+          className={`absolute inset-0 z-5 ${OVERLAYCOLOR} ${OVERLAYCOLORDARK} transition-colors duration-600`}
         />
       )}
       {/* 背景层 */}
       {isMobile && (
         <div
-          className="absolute inset-0 z-0 bg-cover bg-center transition-all duration-300 blur-3xl"
+          className="absolute inset-0 z-0 bg-cover bg-center transition-all duration-600 blur-3xl"
           style={{
             backgroundImage: `url(${currentCoverUrl})`,
           }}
