@@ -25,7 +25,7 @@ export const getNewWindowColorScheme = (
     titleBarBgDark: "dark:bg-transparent",
     titleBarBorder: "border-transparent",
     titleBarBorderDark: "dark:border-transparent",
-    showBorder: false,
+    showBorder: true,
     backdropBlur: true,
     backgroundOpacity: "0.8",
     backgroundBlendMode: "normal",
