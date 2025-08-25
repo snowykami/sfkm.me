@@ -50,34 +50,43 @@ async def fetch_lyric_from_ncm(song: ResolvedSong, max_retries: int = 5, base_de
 
 
 async def main():
+    existing_data: list[ResolvedSong] = []
+    async with aiofiles.open(TARGET_PATH, 'r', encoding='utf-8') as f:
+        content = await f.read()
+        existing_data = [ResolvedSong(**i) for i in json.loads(content)]
+        existing_ids = [song.id for song in existing_data]
+
     for file in os.listdir(SOURCES_PATH):
         if file.endswith(".json"):
             async with aiofiles.open(os.path.join(SOURCES_PATH, file), 'r', encoding='utf-8') as f:
                 content = await f.read()
                 json_data = json.loads(content)
-
                 resolved_songs: list[ResolvedSong] = []
                 count = 0
                 for song in json_data["playlist"]["tracks"]:
                     try:
-                        resolved_song = ResolvedSong(
-                            title=song.get("name", ""),
-                            artist=",".join(artist["name"] for artist in song.get("ar", [])),
-                            album=song.get("al", {}).get("name", ""),
-                            alias=song.get("alia", []),
-                            cover=song.get("al", {}).get("picUrl", ""),
-                            songLink=f"https://music.163.com/#/song?id={song.get('id', '')}",
-                            source="ncm",
-                            
-                            id=str(song.get("id", ""))
-                        )
-                        resolved_song.src = f"https://cdn.liteyuki.org/snowykami/music/{quote(resolved_song.artist)}%20-%20{quote(resolved_song.title)}.mp3"
-                        resolved_song.lrc = await fetch_lyric_from_ncm(resolved_song)
+                        cached = False
+                        if str(song.get("id", "")) in existing_ids:
+                            cached = True
+                            resolved_song = existing_data[existing_ids.index(str(song.get("id", "")))]
+                        else:
+                            resolved_song = ResolvedSong(
+                                title=song.get("name", ""),
+                                artist=",".join(artist["name"] for artist in song.get("ar", [])),
+                                album=song.get("al", {}).get("name", ""),
+                                alias=song.get("alia", []),
+                                cover=song.get("al", {}).get("picUrl", ""),
+                                songLink=f"https://music.163.com/#/song?id={song.get('id', '')}",
+                                source="ncm",
+                                id=str(song.get("id", ""))
+                            )
+                            resolved_song.src = f"https://cdn.liteyuki.org/snowykami/music/{quote(resolved_song.artist)}%20-%20{quote(resolved_song.title)}.mp3"
+                            resolved_song.lrc = await fetch_lyric_from_ncm(resolved_song)
                         resolved_songs.append(resolved_song)
                         count += 1
-                        print("Resolved:", count, resolved_song.title)
-                    except:
-                        pass
+                        print(f"Resolved: {count} - {"cached" if cached else "added"} - {resolved_song.title}")
+                    except Exception as e:
+                        print(f"Error resolving song {song.get('id', '')}: {e}")
                 async with aiofiles.open(TARGET_PATH, 'w', encoding='utf-8') as f:
                     await f.write(json.dumps([song.model_dump() for song in resolved_songs], ensure_ascii=False, indent=4))
 
