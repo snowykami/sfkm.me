@@ -148,7 +148,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
       <div
         className={`
           relative
-          rounded-2xl
+          rounded-3xl
           overflow-hidden
           w-full h-full
           ${closing ? "animate-window-close" : minimizing ? "animate-window-minimize" : "animate-window-open"}
@@ -194,7 +194,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
             ${scheme.showBorder !== false ? `border ${scheme.border} ${scheme.borderDark}` : ""}
             overflow-hidden
             flex flex-col
-            rounded-2xl
+            rounded-3xl
             will-change-transform
             transition-all duration-300
             relative z-10
@@ -216,57 +216,79 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
               ${scheme.titleBarClassName}
             `}
           >
-            <div className="window-controls flex items-center space-x-2 group">
+            <div className="window-controls flex items-center space-x-2.5 group">
               {/* 关闭按钮 */}
               {showClose && (
                 <div
                   className={`
-        w-3 h-3 rounded-full
+        w-3.5 h-3.5 rounded-full
         ${isTop ? "bg-red-500" : "bg-gray-400"}
         group-hover:bg-red-500
         hover:bg-red-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center relative
       `}
-                  onClick={isTop ? handleClose : undefined}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    bringToFront(id);
+                    setTimeout(() => handleClose(), 0);
+                  }}
                   style={{
-                    pointerEvents: isTop ? "auto" : "none",
+                    pointerEvents: "auto",
                   }}
                 >
-                  <div className="w-1.5 h-0.5 bg-red-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rotate-45 absolute"></div>
-                  <div className="w-1.5 h-0.5 bg-red-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200 -rotate-45 absolute"></div>
+                  {/* 悬停时显示X图标 */}
+                  <svg className="absolute inset-0 m-auto opacity-0 group-hover:opacity-100 transition-opacity duration-200" width="12" height="12" viewBox="0 0 12 12">
+                    <line x1="3" y1="3" x2="9" y2="9" stroke="#7f1d1d" strokeWidth="1.5" />
+                    <line x1="9" y1="3" x2="3" y2="9" stroke="#7f1d1d" strokeWidth="1.5" />
+                  </svg>
                 </div>
               )}
               {/* 最小化按钮 */}
               {showMinimize && (
                 <div
                   className={`
-        w-3 h-3 rounded-full
+        w-3.5 h-3.5 rounded-full
         ${isTop ? "bg-yellow-500" : "bg-gray-400"}
         group-hover:bg-yellow-500
         hover:bg-yellow-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center relative
       `}
-                  onClick={isTop ? handleMinimize : undefined}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    bringToFront(id);
+                    setTimeout(() => handleMinimize(), 0);
+                  }}
                   style={{
-                    pointerEvents: isTop ? "auto" : "none",
+                    pointerEvents: "auto",
                   }}
                 >
-                  <div className="w-1.5 h-0.5 bg-yellow-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                  {/* 悬停时显示横线图标 */}
+                  <svg className="absolute inset-0 m-auto opacity-0 group-hover:opacity-100 transition-opacity duration-200" width="12" height="12" viewBox="0 0 12 12">
+                    <line x1="3" y1="6" x2="9" y2="6" stroke="#92400e" strokeWidth="1.5" />
+                  </svg>
                 </div>
               )}
               {/* 最大化按钮 */}
               {showMaximize && (
                 <div
                   className={`
-        w-3 h-3 rounded-full
+        w-3.5 h-3.5 rounded-full
         ${isTop ? "bg-green-500" : "bg-gray-400"}
         group-hover:bg-green-500
         hover:bg-green-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center relative
       `}
-                  onClick={isTop ? handleMaximize : undefined}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    bringToFront(id);
+                    setTimeout(() => handleMaximize(), 0);
+                  }}
                   style={{
-                    pointerEvents: isTop ? "auto" : "none",
+                    pointerEvents: "auto",
                   }}
                 >
-                  <div className="w-1.5 h-1.5 border border-green-900 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                  {/* 悬停时显示加号图标 */}
+                  <svg className="absolute inset-0 m-auto opacity-0 group-hover:opacity-100 transition-opacity duration-200" width="12" height="12" viewBox="0 0 12 12">
+                    <line x1="6" y1="3" x2="6" y2="9" stroke="#166534" strokeWidth="1.5" />
+                    <line x1="3" y1="6" x2="9" y2="6" stroke="#166534" strokeWidth="1.5" />
+                  </svg>
                 </div>
               )}
             </div>
