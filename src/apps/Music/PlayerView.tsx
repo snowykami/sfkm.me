@@ -23,9 +23,9 @@ const PlayerView = ({ wid }: { wid: string }) => {
         <Album wid={wid} />
       </div>
       {/* 右边：歌曲信息/歌词区域 1/2 */}
-      <div className="flex-1 p-4 flex flex-col min-h-0 max-w-full overflow-hidden">
+      <div className="flex-1 p-2 flex flex-col min-h-0 max-w-full overflow-hidden">
         {/* 歌曲信息区（顶部） */}
-        <div className={`mb-4 ${isMobile ? "mt-0" : "mt-2"} max-w-full`}>
+        <div className={`mb-4 ${isMobile ? "mt-0" : "mt-0"} max-w-full`}>
           <div
             className={`text-2xl font-bold text-gray-900 dark:text-white mb-2 w-full overflow-hidden ${isMobile ? "text-center" : "text-left"}`}
           >
@@ -58,10 +58,10 @@ const PlayerView = ({ wid }: { wid: string }) => {
                 }
               }}
             >
-              <ExternalLink className="w-4 h-4 flex-shrink-0" />
+              {/* <ExternalLink className="w-4 h-4 flex-shrink-0" />
               <span className="truncate">
                 {t("music.from." + currentSong?.source || "unknown")}
-              </span>
+              </span> */}
             </span>
           </div>
         </div>
