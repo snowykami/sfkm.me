@@ -41,7 +41,7 @@ async def fetch_lyric_from_ncm(song: ResolvedSong, max_retries: int = 5, base_de
                     lyric = data.get("lyric", "")
                     nolyric = data.get("nolyric", False)
                     if nolyric:
-                        lyric = "music.pure"
+                        lyric = "[00:00.00]music.pure"
                     if lyric or nolyric:
                         return lyric
                 # 状态码异常或没有歌词且 nolyric 不为 True 时重试
