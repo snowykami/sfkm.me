@@ -262,7 +262,7 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
                 className="
                 base-window-container
                   absolute top-0 left-1/2 -translate-x-1/2
-                  bg-blue-500/50 text-white px-4 py-1 rounded-lg z-[9999] text
+                  bg-blue-500/50 text-white px-4 py-1 rounded-3xl z-[9999] text
                   text-sm pointer-events-none shadow-md select-none w-full h-full flex justify-center items-start
                 "
               >
