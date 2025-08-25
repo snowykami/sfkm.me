@@ -210,7 +210,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
               backdrop-blur-sm
               border-b ${scheme.titleBarBorder || defaultScheme.titleBarBorder} 
               ${scheme.titleBarBorderDark || defaultScheme.titleBarBorderDark}
-              px-4 py-3 flex items-center select-none relative
+              px-4 py-4 flex items-center select-none relative
               cursor-grab active:cursor-grabbing
               ${scheme.titleBarClassName || ""}
               ${scheme.titleBarClassName}

@@ -115,7 +115,7 @@ function getAdaptiveSize(
 // 基于2K屏幕设计的原始窗口尺寸
 // 自适应窗口状态
 export const phoneWindowState: Partial<WindowState> = {
-  size: getAdaptiveSize(450, 800), // 移动应用窗口
+  size: getAdaptiveSize(480, 800), // 移动应用窗口
 };
 
 export const smallWindowState: Partial<WindowState> = {
