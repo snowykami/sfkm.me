@@ -28,6 +28,7 @@ class ResolvedSong(BaseModel):
     songLink: str = ""
     alias: list[str] = []
     quality: str = ""
+    audio: str = ""
     id: str = ""
 
 async def fetch_lyric_from_ncm(song: ResolvedSong, max_retries: int = 5, base_delay: float = 0.5) -> str:
@@ -80,6 +81,7 @@ async def main():
                                 cover=song.get("al", {}).get("picUrl", ""),
                                 songLink=f"https://music.163.com/#/song?id={song.get('id', '')}",
                                 source="ncm",
+                                audio=song.get("audio", ""),
                                 id=str(song.get("id", ""))
                             )
                             resolved_song.src = f"https://cdn.liteyuki.org/snowykami/music/{quote(resolved_song.artist)}%20-%20{quote(resolved_song.title)}.mp3"
