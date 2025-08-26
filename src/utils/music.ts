@@ -156,7 +156,13 @@ export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
     const song = songs.find(song => song.id === mid);
 
     if (song) {
-      const url = `https://cdn.liteyuki.org/snowykami/music/${(song.artist.replace(/、/g, ",") + " - " + song.title).normalize('NFD')}.mp3`;
+      if (song?.audio) {
+        console.log(`[Music] 歌曲 ID: ${mid} 找到音频，返回 URL`);
+        return song.audio;
+      } else {
+        console.warn(`[Music] 歌曲 ID: ${mid} 缺少 audio 字段，返回空 URL`);
+      }
+      const url = `https://cdn.liteyuki.org/snowykami/music/${(encodeURIComponent(song.artist.normalize("NFKD")) + " - " + encodeURIComponent(song.title.normalize("NFKD")))}.mp3`;
       return url;
     }
 
@@ -174,12 +180,11 @@ export function fetchSongSrcFromQQ(mid: string): () => Promise<string> {
   return async () => {
     // 使用 find 方法查找匹配的歌曲
     const song = songs.find(song => song.id === mid);
-
     if (song) {
-      const url = `https://cdn.liteyuki.org/snowykami/music/${(song.artist.replace(/、/g, ",") + " - " + song.title).normalize('NFD')}.mp3`;
+
+      const url = `https://cdn.liteyuki.org/snowykami/music/${(song.artist + " - " + song.title.normalize("NFD"))}.mp3`;
       return url;
     }
-
     console.warn(`[Music] 未在本地数据中找到歌曲 ID: ${mid}, 返回空 URL`);
     return "";
   };
