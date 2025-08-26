@@ -105,27 +105,8 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
   const [showMaximizeHint, setShowMaximizeHint] = useState(false);
   const [preMaximize, setPreMaximize] = useState<PreMaximizeState | null>(null);
   const rndRef = useRef<RndType | null>(null);
-  const handleDrag: RndDragCallback = (e, d) => {
-    // 最大化时允许拖拽
-    if (win?.maximized ?? maximized) {
-      // 记录鼠标在窗口中的偏移
-      const mouseX = (e as MouseEvent).clientX;
-      const mouseY = (e as MouseEvent).clientY;
-      const widthVal = win?.size?.width ?? size.width;
-      const heightVal = win?.size?.height ?? size.height;
-      setPreMaximize({
-        size: { width: widthVal, height: heightVal },
-        position: { x: d.x, y: d.y },
-        mouseOffset: {
-          x: mouseX - (maximizedStyle.x ?? 0),
-          y: mouseY - (maximizedStyle.y ?? 0),
-        },
-      });
-      if (id && windowManager) {
-        windowManager.updateWindow(id, { maximized: false });
-      }
-      return;
-    }
+  const handleDrag: RndDragCallback = (_e, d) => {
+    if (win?.maximized ?? maximized) return;
     if (d.y <= windowMargin) {
       setShowMaximizeHint(true);
     } else {
@@ -149,19 +130,37 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
     onDragStop?.(e, d);
   };
   const handleDragStart: RndDragCallback = (e, d) => {
-    // 最大化时允许拖拽，逻辑已在 handleDrag 实现
+    if (win?.maximized ?? maximized) {
+      const mouseX = (e as MouseEvent).clientX;
+      const mouseY = (e as MouseEvent).clientY;
+      const widthVal = win?.size?.width ?? size.width;
+      const heightVal = win?.size?.height ?? size.height;
+      setPreMaximize({
+        size: { width: widthVal, height: heightVal },
+        position: { x: d.x, y: d.y },
+        mouseOffset: {
+          x: mouseX - (maximizedStyle.x ?? 0),
+          y: mouseY - (maximizedStyle.y ?? 0),
+        },
+      });
+      if (id && windowManager) {
+        windowManager.updateWindow(id, { maximized: false });
+      }
+    }
     onDragStart?.(e, d);
   };
 
   useEffect(() => {
     if (!win?.maximized && preMaximize && rndRef.current) {
       const mouse = preMaximize.mouseOffset;
-      // 鼠标相对于窗口左上角的偏移
-      let newX = mouse.x - preMaximize.size.width / 2;
-      let newY = mouse.y - preMaximize.size.height / 2;
-      // 不自动吸附边缘，仅保证窗口不超出屏幕
-      newX = Math.min(Math.max(newX, 0), window.innerWidth - preMaximize.size.width);
-      newY = Math.min(Math.max(newY, windowMargin), window.innerHeight - preMaximize.size.height);
+      const newX = Math.max(
+        0,
+        window.innerWidth / 2 - preMaximize.size.width / 2,
+      );
+      const newY = Math.max(
+        windowMargin,
+        mouse.y - preMaximize.size.height / 2,
+      );
       rndRef.current.updatePosition({ x: newX, y: newY });
       rndRef.current.updateSize({
         width: preMaximize.size.width,
@@ -213,7 +212,7 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
           minHeight={minHeight}
           bounds="parent"
           disableDragging={
-            isMobile || !draggable
+            isMobile || !draggable || (win?.maximized ?? maximized)
           }
           enableResizing={
             !isMobile && resizable && !(win?.maximized ?? maximized)
@@ -262,7 +261,7 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
                 className="
                 base-window-container
                   absolute top-0 left-1/2 -translate-x-1/2
-                  bg-blue-500/50 text-white px-4 py-1 rounded-3xl z-[9999] text
+                  bg-blue-500/50 text-white px-4 py-1 rounded-lg z-[9999] text
                   text-sm pointer-events-none shadow-md select-none w-full h-full flex justify-center items-start
                 "
               >
