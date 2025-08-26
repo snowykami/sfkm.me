@@ -44,7 +44,7 @@ interface MusicControlsProps {
   isMobile: boolean;
 }
 
-export default function MusicControls({}: MusicControlsProps) {
+export default function MusicControls({ }: MusicControlsProps) {
   // 记录用户是否手动滚动了播放列表
   const [userScrolled, setUserScrolled] = useState(false);
 
@@ -118,6 +118,38 @@ export default function MusicControls({}: MusicControlsProps) {
       mounted = false;
     };
   }, [getAlbumCoverColor]);
+
+  // 快捷键
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // 空格暂停/播放
+      if (e.code === "Space" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        handlePlayPause();
+      }
+      // 右箭头 下一首
+      if (e.code === "ArrowRight" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        handleNext();
+      }
+      // 左箭头 上一首
+      if (e.code === "ArrowLeft" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        handlePrev();
+      }
+      // Ctrl+上下箭头 音量（Ctrl+上增大，Ctrl+下减小，每次步进10）
+      if (e.code === "ArrowUp" && e.ctrlKey) {
+        e.preventDefault();
+        handleVolumeChange(Math.min(volume + 10, 100));
+      }
+      if (e.code === "ArrowDown" && e.ctrlKey) {
+        e.preventDefault();
+        handleVolumeChange(Math.max(volume - 10, 0));
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handlePlayPause, handleNext, handlePrev, handleVolumeChange, volume]);
 
   // 处理点击外部关闭播放列表
   useEffect(() => {
@@ -476,7 +508,7 @@ export default function MusicControls({}: MusicControlsProps) {
                 value={volume}
                 onChange={handleVolumeInputChange}
                 className="h-28 w-2 accent-blue-500 cursor-pointer"
-                style={{ writingMode: "vertical-lr" }}
+                style={{ writingMode: "vertical-lr", direction: "rtl" }}
               />
               <div className="text-xs mt-2 text-gray-700 dark:text-gray-200 select-none">
                 {volume}
@@ -537,11 +569,10 @@ export default function MusicControls({}: MusicControlsProps) {
                           if (origIdx !== undefined && origIdx >= 0)
                             playlistItemRefs.current[origIdx] = el;
                         }}
-                        className={`p-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                          isCurrentSong
-                            ? "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200"
-                            : "text-gray-800 dark:text-gray-200"
-                        }`}
+                        className={`p-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${isCurrentSong
+                          ? "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200"
+                          : "text-gray-800 dark:text-gray-200"
+                          }`}
                         onClick={() => {
                           // 需要用原始 songsList 的索引
                           const origIdx =
@@ -553,9 +584,9 @@ export default function MusicControls({}: MusicControlsProps) {
                           !isLoading
                             ? {}
                             : {
-                                opacity: 0.5,
-                                pointerEvents: "none",
-                              }
+                              opacity: 0.5,
+                              pointerEvents: "none",
+                            }
                         }
                       >
                         {isCurrentSong ? (
