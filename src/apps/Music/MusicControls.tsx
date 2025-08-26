@@ -452,7 +452,7 @@ export default function MusicControls({ }: MusicControlsProps) {
           >
             {playModeIcon}
           </button>
-          <span className="text-xs text-gray-400 dark:text-gray-500 font-mono select-none tabular-nums">
+          <span className="text-xs text-gray-600 dark:text-gray-400 font-mono select-none tabular-nums">
             {formatTime(currentTime)} / {formatTime(duration)}
           </span>
         </div>
