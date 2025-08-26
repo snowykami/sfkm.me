@@ -100,17 +100,17 @@ export default function LyricScroller({ wid }: { wid: string }) {
           } else if (Math.abs(offset) === 1) {
             style =
               "opacity-80 scale-90 " +
-              (offset > 0 ? "translate-y-4" : "-translate-y-4") +
+              (offset > 0 ? "translate-y-2" : "-translate-y-2") +
               " z-0";
           } else if (Math.abs(offset) === 2) {
             style =
               "opacity-60 scale-90 " +
-              (offset > 0 ? "translate-y-8" : "-translate-y-8") +
+              (offset > 0 ? "translate-y-4" : "-translate-y-4") +
               " z-0";
           } else {
             style =
               "opacity-40 scale-90 " +
-              (offset > 0 ? "translate-y-12" : "-translate-y-12") +
+              (offset > 0 ? "translate-y-6" : "-translate-y-6") +
               " z-0";
           }
           const isCurrent = idx === currentLrcLine;
@@ -144,7 +144,7 @@ export default function LyricScroller({ wid }: { wid: string }) {
                 filter: isCurrent
                   ? "drop-shadow(0 2px 8px #60a5fa44)"
                   : undefined,
-                fontSize: isCurrent ? "1.35rem" : "1.25rem",
+                fontSize: isCurrent ? "1.3rem" : "1.25rem",
               }}
             >
               {t(line.text)}
