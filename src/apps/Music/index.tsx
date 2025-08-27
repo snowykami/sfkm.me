@@ -30,7 +30,7 @@ export const getNewWindowColorScheme = (
     backgroundOpacity: "0.8",
     backgroundBlendMode: "normal",
     backgroundOverlay: true,
-    backdropBlurClass: "backdrop-blur-3xl",
+    backdropBlurClass: "backdrop-blur-6xl",
     overlayColor: OVERLAYCOLOR,
     overlayColorDark: OVERLAYCOLORDARK,
     overlayBlendMode: "normal",

@@ -123,7 +123,7 @@ export default function LyricScroller({ wid }: { wid: string }) {
               className={`
                 ${isMobile ? "text-center" : "text-left"}
                 select-none px-2 py-0.5 rounded
-                transition-all duration-800 ease-[cubic-bezier(.4,2,.6,1)]
+                transition-all duration-600 ease-[cubic-bezier(.4,2,.6,1)]
                 w-full
                 font-bold
                 ${style}
