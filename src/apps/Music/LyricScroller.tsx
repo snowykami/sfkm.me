@@ -123,7 +123,7 @@ export default function LyricScroller({ wid }: { wid: string }) {
               className={`
                 ${isMobile ? "text-center" : "text-left"}
                 select-none px-2 py-0.5 rounded
-                transition-all duration-500 ease-[cubic-bezier(.4,2,.6,1)]
+                transition-all duration-800 ease-[cubic-bezier(.4,2,.6,1)]
                 w-full
                 font-bold
                 ${style}
@@ -136,15 +136,11 @@ export default function LyricScroller({ wid }: { wid: string }) {
                   : mode === "dark"
                     ? lyricTheme.nightOtherText
                     : lyricTheme.dayOtherText,
-                background: isCurrent
-                  ? mode === "dark"
-                    ? lyricTheme.nightBg
-                    : lyricTheme.dayBg
-                  : "transparent",
+                background: "transparent",
                 filter: isCurrent
                   ? "drop-shadow(0 2px 8px #60a5fa44)"
                   : undefined,
-                fontSize: isCurrent ? "1.3rem" : "1.25rem",
+                fontSize: isCurrent ? "1.35rem" : "1.25rem",
               }}
             >
               {t(line.text)}

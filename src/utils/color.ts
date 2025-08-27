@@ -2,10 +2,10 @@ export function hexToRgb(hex: string) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-      }
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16),
+    }
     : null;
 }
 export function rgbToHsl(r: number, g: number, b: number) {
@@ -50,7 +50,7 @@ export function hslToHex(h: number, s: number, l: number) {
   else if (h < 180) [r, g, b] = [0, c, x];
   else if (h < 240) [r, g, b] = [0, x, c];
   else if (h < 300) [r, g, b] = [x, 0, c];
-  else [r, g, b] = [c, 0, x];
+  else[r, g, b] = [c, 0, x];
   const toHex = (v: number) => {
     const h = Math.round((v + m) * 255).toString(16);
     return h.length === 1 ? "0" + h : h;
@@ -81,21 +81,17 @@ export function deriveLyricThemeColors(themeColor: string) {
   }
   const [h, s, l] = rgbToHsl(r, g, b);
 
-  // 其他歌词（更深/更亮）
-  const dayText = hslToHex(h, Math.min(1, s * 1.5), 0.85);
-  const dayOtherText = hslToHex(h, Math.min(0.3, s * 0.3), 0.3);
-  const dayBg = hslToHex(h, s * 0.15, 0.4) + "80"; // 0.94透明度
-  const dayProgress = hslToHex(
-    h,
-    Math.min(0.8, s * 0.8),
-    Math.max(0.6, l * 0.6),
-  );
-
+  // 亮色模式
+  // 色相/饱和度/亮度
+  const dayText = hslToHex(h, Math.min(1, s * 1.5), 0.4);
+  const dayOtherText = hslToHex(h, Math.min(0.3, s * 0.3), 0.45);
+  const dayBg = hslToHex(h, s * 0.15, 0.4) + "80";
+  const dayProgress = hslToHex(h, Math.min(0.8, s * 0.8), Math.max(0.6, l * 0.6));
   // 深色模式
   const nightText = hslToHex(h, Math.min(1, s * 1.3), 0.7);
   const nightOtherText = hslToHex(h, Math.min(0.3, s * 0.3), 0.6);
-  const nightBg = hslToHex(h, s * 0.18, 0.4) + "50"; // 0.9透明度
-  const nightProgress = hslToHex(h, Math.min(1, s * 0.6), 0.65); // 0.9透明度
+  const nightBg = hslToHex(h, s * 0.18, 0.4) + "50";
+  const nightProgress = hslToHex(h, Math.min(1, s * 0.6), 0.65);
 
   return {
     dayText,
