@@ -140,7 +140,7 @@ export default function LyricScroller({ wid }: { wid: string }) {
                 filter: isCurrent
                   ? "drop-shadow(0 2px 8px #60a5fa44)"
                   : undefined,
-                fontSize: isCurrent ? "1.35rem" : "1.25rem",
+                fontSize: isCurrent ? "1.4rem" : "1.3rem",
               }}
             >
               {t(line.text)}
