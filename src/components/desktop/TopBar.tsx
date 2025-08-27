@@ -8,6 +8,7 @@ import { DatetimeWidget } from "./widgets/DatetimeWidget";
 import { MusicControlWidget } from "./widgets/MusicControlWidget";
 import { ThemeSwitch } from "./widgets/ThemeSwitch";
 import { VolumeWidget } from "./widgets/VolumeWidget";
+import { FullscreenSwitch } from "./widgets/FullscreenSwitch";
 
 import config from "@/config";
 import { t } from "i18next";
@@ -76,6 +77,7 @@ export function TopBar({
           <MusicControlWidget />
           <VolumeWidget />
           <ThemeSwitch />
+          <FullscreenSwitch />
           <DatetimeWidget />
         </div>
       </div>
