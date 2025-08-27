@@ -236,7 +236,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
                     bringToFront(id);
                     setTimeout(() => handleClose(), 0);
                   }}
-                  onPointerDown={(e) => {
+                  onTouchEnd={(e) => {
                     e.stopPropagation();
                     bringToFront(id);
                     setTimeout(() => handleClose(), 0);
@@ -266,7 +266,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
                     bringToFront(id);
                     setTimeout(() => handleMinimize(), 0);
                   }}
-                  onPointerDown={(e) => {
+                  onTouchEnd={(e) => {
                     e.stopPropagation();
                     bringToFront(id);
                     setTimeout(() => handleMinimize(), 0);
