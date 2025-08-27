@@ -295,7 +295,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
                     bringToFront(id);
                     setTimeout(() => handleMaximize(), 0);
                   }}
-                  onPointerDown={(e) => {
+                  onTouchEnd={(e) => {
                     e.stopPropagation();
                     bringToFront(id);
                     setTimeout(() => handleMaximize(), 0);
