@@ -236,6 +236,11 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
                     bringToFront(id);
                     setTimeout(() => handleClose(), 0);
                   }}
+                  onPointerDown={(e) => {
+                    e.stopPropagation();
+                    bringToFront(id);
+                    setTimeout(() => handleClose(), 0);
+                  }}
                   style={{
                     pointerEvents: "auto",
                   }}
@@ -261,6 +266,11 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
                     bringToFront(id);
                     setTimeout(() => handleMinimize(), 0);
                   }}
+                  onPointerDown={(e) => {
+                    e.stopPropagation();
+                    bringToFront(id);
+                    setTimeout(() => handleMinimize(), 0);
+                  }}
                   style={{
                     pointerEvents: "auto",
                   }}
@@ -281,6 +291,11 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
         hover:bg-green-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center relative
       `}
                   onClick={(e) => {
+                    e.stopPropagation();
+                    bringToFront(id);
+                    setTimeout(() => handleMaximize(), 0);
+                  }}
+                  onPointerDown={(e) => {
                     e.stopPropagation();
                     bringToFront(id);
                     setTimeout(() => handleMaximize(), 0);
