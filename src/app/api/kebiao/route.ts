@@ -4,7 +4,7 @@ import { getKebiao as getKebiao, getTransactions, loginToMagipoke } from "@/api/
 import type { Course } from "@/api/magipoke.server";
 import { NextResponse } from "next/server";
 
-let kebiaoList: Course[] = [];
+let kebiaoListCache: Course[] = []; // 该缓存不是为了减轻服务器负担，而是为了应对jwzx偶尔获取不到课表的情况
 
 type CourseSchedule = {
     begin: string,
@@ -75,7 +75,7 @@ export async function GET() {
     let kebiaoData: { data: Course[], nowWeek: number } = { data: [], nowWeek: Math.ceil((new Date().getTime() - termBegin.getTime()) / (1000 * 60 * 60 * 24 * 7)) };
     try {
         kebiaoData = await getKebiao({ token: tokenData.data.token, stuNum: process.env.MAGIPOKE_ID || "" });
-        kebiaoList = kebiaoData.data;
+        kebiaoListCache = kebiaoData.data;
     } catch {
         // jwzx晚上会获取不到课表，那就跳过用缓存的
     }
@@ -87,7 +87,7 @@ export async function GET() {
     const todayCourses: SimplifyCourse[] = [];
     const tomorrowCourses: SimplifyCourse[] = [];
 
-    for (const course of kebiaoList) {
+    for (const course of kebiaoListCache) {
         if (excludedCourseNums.includes(course.course_num)) continue;
         // 周筛
         for (const w of course.week) {
