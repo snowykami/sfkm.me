@@ -133,7 +133,7 @@ function CourseItem({ course, today=true }: { course: SimplifyCourse, today?: bo
   const { mode } = useDevice();
   const now = new Date();
   const current = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-  const isCurrent = current >= course.begin && current <= course.end;
+  const isCurrent = today && current >= course.begin && current <= course.end;
   const isPassed = today ? current > course.end : false;
   const progressPercent = calculateProgress(course.begin, course.end, current);
   const progressColorPassed = mode === "dark" ? "oklch(50.8% 0.118 165.612)" : "oklch(84.5% 0.143 164.978)";
