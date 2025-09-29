@@ -65,7 +65,7 @@ export async function getTransactions({ token }: { token: string }): Promise<{ d
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
-            'Api-Version': "74",
+            'App-Version': "74",
             'Content-Type': 'application/json',
         }
     });
