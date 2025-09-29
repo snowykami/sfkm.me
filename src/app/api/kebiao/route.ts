@@ -1,6 +1,6 @@
 // 郑重声明，这个命名用kebiao不是因为本人没有好的命名习惯，而是为了尊重原API的命名
 
-import { getKebiao as getKebiao, loginToMagipoke } from "@/api/magipoke.server";
+import { getKebiao as getKebiao, getTransactions, loginToMagipoke } from "@/api/magipoke.server";
 import type { Course } from "@/api/magipoke.server";
 import { NextResponse } from "next/server";
 
@@ -16,7 +16,7 @@ export type SimplifyCourse = {
     location: string,
 }
 
-function filterFields(course: Course): SimplifyCourse {
+function filterFieldsForCourse(course: Course): SimplifyCourse {
     return {
         name: course.course,
         begin: courseSchedules[course.begin_lesson - 1].start,
@@ -49,11 +49,14 @@ const excludedCourseNums = ["A2010561"]
 export async function GET() {
     const tokenData = await loginToMagipoke({ stuNum: process.env.MAGIPOKE_ID || "", password: process.env.MAGIPOKE_PASSWORD || "" });
     const kebiaoData = await getKebiao({ token: tokenData.data.token, stuNum: process.env.MAGIPOKE_ID || "" });
-    const now = new Date();
+    const transactionData = await getTransactions({ token: tokenData.data.token });
 
-    const currentCourses: Course[] = [];
-    const todayCourses: Course[] = [];
-    const tomorrowCourses: Course[] = [];
+    const now = new Date();
+    const current = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+    const currentCourses: SimplifyCourse[] = [];
+    const todayCourses: SimplifyCourse[] = [];
+    const tomorrowCourses: SimplifyCourse[] = [];
+
     for (const course of kebiaoData.data) {
         if (excludedCourseNums.includes(course.course_num)) continue;
         // 周筛
@@ -64,24 +67,65 @@ export async function GET() {
                 if (dayNumber === course.hash_day) {
                     // 节筛选
                     // 起止时间
-                    todayCourses.push(course);
+                    todayCourses.push(filterFieldsForCourse(course));
                     const begin = courseSchedules[course.begin_lesson - 1].start;
                     const end = courseSchedules[course.begin_lesson + course.period - 2].end;
-                    const current = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+                    
                     if (current >= begin && current <= end) {
-                        currentCourses.push(course);
+                        currentCourses.push(filterFieldsForCourse(course));
                     }
                 }
                 if (dayNumber + 1 === course.hash_day) {
-                    tomorrowCourses.push(course);
+                    tomorrowCourses.push(filterFieldsForCourse(course));
                 }
             }
         }
     }
+
+    for (const transaction of transactionData.data) { 
+        // 周筛，用课表的nowWeek
+        for (const date of transaction.date) {
+            if (date.week.includes(kebiaoData.nowWeek)) {
+                // 天筛选,返回数据0是星期一
+                const dayNumber = (now.getDay() + 6) % 7;
+                // 今天
+                if (dayNumber === date.day) {
+                    todayCourses.push({
+                        name: transaction.title,
+                        begin: courseSchedules[date.begin_lesson - 1].start,
+                        end: courseSchedules[date.begin_lesson + date.period - 2].end,
+                        location: transaction.content,
+                    })
+                    // 判断是否在上课时间内
+                    const begin = courseSchedules[date.begin_lesson - 1].start;
+                    const end = courseSchedules[date.begin_lesson + date.period - 2].end;
+                    if (current >= begin && current <= end) {
+                        currentCourses.push({
+                            name: transaction.title,
+                            begin: courseSchedules[date.begin_lesson - 1].start,
+                            end: courseSchedules[date.begin_lesson + date.period - 2].end,
+                            location: transaction.content,
+                        })
+                    }
+                }
+                // 明天
+                if (dayNumber + 1 === date.day) {
+                    tomorrowCourses.push({
+                        name: transaction.title,
+                        begin: courseSchedules[date.begin_lesson - 1].start,
+                        end: courseSchedules[date.begin_lesson + date.period - 2].end,
+                        location: transaction.content,
+                    })
+                }
+            }
+        }
+    }
+
+
     return NextResponse.json({
-        currentCourses: currentCourses.map(filterFields),
-        todayCourses: todayCourses.map(filterFields),
-        tomorrowCourses: tomorrowCourses.map(filterFields),
+        currentCourses: currentCourses,
+        todayCourses: todayCourses,
+        tomorrowCourses: tomorrowCourses,
         nowWeek: kebiaoData.nowWeek
     }, {
         status: 200
