@@ -55,7 +55,6 @@ export async function GET() {
     const todayCourses: Course[] = [];
     for (const course of kebiaoData.data) {
         if (excludedCourseNums.includes(course.course_num)) continue;
-
         // 周筛
         for (const w of course.week) {
             if (w === kebiaoData.nowWeek) {
