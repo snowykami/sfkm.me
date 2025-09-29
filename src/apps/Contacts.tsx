@@ -89,7 +89,7 @@ export default function ContactsContent() {
           <div className="mt-2">
             <span className="text-xs text-slate-500 dark:text-slate-400 italic">{t("contacts.todaycourses")}</span>
             <ul className="mt-1">
-              {todayCourses.length > 0 ? todayCourses.map(course => (
+              {todayCourses.length > 0 ? todayCourses.sort((a, b) => a.begin.localeCompare(b.begin)).map(course => (
                 <CourseItem key={`${course.name}-${course.begin}`} course={course} />
               )) : (
                 <li className="text-sm text-slate-500 dark:text-slate-400">{t("contacts.nocourse")}</li>
