@@ -22,7 +22,6 @@ export default function ContactsContent() {
 
   useEffect(() => {
     fetchCurrentCourses().then(data => {
-      console.log(data)
       setCurrentCourses(data.currentCourses);
       setTodayCourses(data.todayCourses);
     }).catch(() => { });
@@ -121,8 +120,6 @@ function CourseItem({ course }: { course: SimplifyCourse }) {
   const { mode } = useDevice();
   const now = new Date();
   const current = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-
-  // const current = "14:30"; // 测试数据
   const isCurrent = current >= course.begin && current <= course.end;
   const isPassed = current > course.end;
   const progressPercent = calculateProgress(course.begin, course.end, current);

@@ -157,13 +157,13 @@ export default function ProfileContent() {
           </h1>
         </div>
 
-        <div className="flex items-center text-slate-500 dark:text-slate-400 text-sm">
+        <div className="flex items-center text-slate-500 dark:text-slate-400 text-sm mb-2">
           <MapPin className="w-4 h-4 mr-1" />
           <span>{t("profile.location")}</span>
         </div>
         {/* 当前正在上的课 */}
         {(currentCourses.length > 0) && <div className="flex items-center text-green-600 dark:text-green-400 text-sm">
-          <span>{t("profile.currentinclass")}: {currentCourses.length > 0 ? currentCourses.map(course => `${course.name} (${course.begin}-${course.end})`).join("; ") : t("contacts.nocourse")}</span>
+          <span>{t("profile.currentinclass")}: {currentCourses.length > 0 ? currentCourses.map(course => `${course.name}`).join("; ") : t("contacts.nocourse")}</span>
         </div>}
       </div>
 
