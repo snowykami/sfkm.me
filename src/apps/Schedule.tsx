@@ -125,7 +125,7 @@ function CourseItem({ course, today = true }: { course: SimplifyCourse, today?: 
                 />
                 <div>
                     <h3
-                        className={`text-sm font-medium ${isCurrent ? "text-green-700 dark:text-green-300" : "text-slate-800 dark:text-slate-200"
+                        className={`text-base font-medium ${isCurrent ? "text-green-700 dark:text-green-300" : "text-slate-800 dark:text-slate-200"
                             }`}
                     >
                         {course.name}
