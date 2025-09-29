@@ -288,7 +288,6 @@ const config: Config = {
           email: "邮箱",
           ended: "已结束",
           github: "GitHub",
-          
           liteyukilab: "轻雪社区",
           ncm: "网易云音乐",
           nocourse: "无课程",
@@ -298,6 +297,7 @@ const config: Config = {
           onlinestatus: "在线状态",
           onlinetime: "通常在UTC+8时间 {{duration}} 在线",
           todaycourses: "今天的课程",
+          tomorrowcourses: "明天的课程",
           x: "X",
         },
         greeting: "你好，世界！",

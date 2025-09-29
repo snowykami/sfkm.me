@@ -53,6 +53,7 @@ export async function GET() {
 
     const currentCourses: Course[] = [];
     const todayCourses: Course[] = [];
+    const tomorrowCourses: Course[] = [];
     for (const course of kebiaoData.data) {
         if (excludedCourseNums.includes(course.course_num)) continue;
         // 周筛
@@ -71,12 +72,16 @@ export async function GET() {
                         currentCourses.push(course);
                     }
                 }
+                if (dayNumber + 1 === course.hash_day) {
+                    tomorrowCourses.push(course);
+                }
             }
         }
     }
     return NextResponse.json({
         currentCourses: currentCourses.map(filterFields),
         todayCourses: todayCourses.map(filterFields),
+        tomorrowCourses: tomorrowCourses.map(filterFields),
         nowWeek: kebiaoData.nowWeek
     }, {
         status: 200
