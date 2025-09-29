@@ -1,0 +1,19 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  gitea-trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Gitea Deploy Workflow
+        run: |
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: token ${{ secrets.GITEA_TOKEN }}" \
+            "https://git.liteyuki.org/api/v1/repos/liteyuki-docker/sfkm.me/mirror-sync" \
+            -d '{"branch": "main"}'
