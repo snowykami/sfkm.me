@@ -80,8 +80,7 @@ export async function GET() {
     const transactionData = await getTransactions({ token: tokenData.data.token });
     // 计算当前时间
     const now = new Date();
-    // const current = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-    const current = "08:55";
+    const current = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
     const currentCourses: SimplifyCourse[] = [];
     const todayCourses: SimplifyCourse[] = [];
     const tomorrowCourses: SimplifyCourse[] = [];
