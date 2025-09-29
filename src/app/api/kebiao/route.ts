@@ -4,6 +4,8 @@ import { getKebiao as getKebiao, getTransactions, loginToMagipoke } from "@/api/
 import type { Course } from "@/api/magipoke.server";
 import { NextResponse } from "next/server";
 
+let kebiaoList: Course[] = [];
+
 type CourseSchedule = {
     begin: string,
     end: string,
@@ -61,7 +63,6 @@ function getScheduleStartAndEnd(beginLesson: number, period: number): { begin: s
     } else {
         begin = courseSchedules[beginLesson - 1].begin;
     }
-
     end = courseSchedules[beginLesson + period - 2].end;
     return { begin, end };
 }
@@ -74,8 +75,9 @@ export async function GET() {
     let kebiaoData: { data: Course[], nowWeek: number } = { data: [], nowWeek: Math.ceil((new Date().getTime() - termBegin.getTime()) / (1000 * 60 * 60 * 24 * 7)) };
     try {
         kebiaoData = await getKebiao({ token: tokenData.data.token, stuNum: process.env.MAGIPOKE_ID || "" });
+        kebiaoList = kebiaoData.data;
     } catch {
-        // 晚上会获取不到课表，那就跳过
+        // jwzx晚上会获取不到课表，那就跳过用缓存的
     }
     const transactionData = await getTransactions({ token: tokenData.data.token });
     // 计算当前时间
@@ -85,7 +87,7 @@ export async function GET() {
     const todayCourses: SimplifyCourse[] = [];
     const tomorrowCourses: SimplifyCourse[] = [];
 
-    for (const course of kebiaoData.data) {
+    for (const course of kebiaoList) {
         if (excludedCourseNums.includes(course.course_num)) continue;
         // 周筛
         for (const w of course.week) {
