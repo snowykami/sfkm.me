@@ -312,6 +312,7 @@ const config: Config = {
           online: "当前在线",
           onlinestatus: "在线状态",
           onlinetime: "通常在UTC+8时间 {{duration}} 在线",
+          todaycourses: "今天的课程",
           x: "X",
         },
         greeting: "你好，世界！",

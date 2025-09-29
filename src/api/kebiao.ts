@@ -1,5 +1,8 @@
+import type { SimplifyCourse } from "@/app/api/kebiao/route";
+
 export async function fetchCurrentCourse(): Promise<{
-    currentCourses: { name: string, begin: string, end: string, location: string }[], nowWeek: number
+    currentCourses: SimplifyCourse[], nowWeek: number
+    todayCourses: SimplifyCourse[]
 }> {
     const res = await fetch('/api/kebiao', { cache: 'no-store' });
     if (!res.ok) {

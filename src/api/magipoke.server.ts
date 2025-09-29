@@ -34,7 +34,7 @@ export type Course = {
     week_end: number
 }
 
-export async function getTimeTable({ token, stuNum }: { token: string, stuNum: string }): Promise<{ data: Course[], nowWeek: number }> {
+export async function getKebiao({ token, stuNum }: { token: string, stuNum: string }): Promise<{ data: Course[], nowWeek: number }> {
     const res = await fetch('https://be-prod.redrock.cqupt.edu.cn/magipoke-jwzx/kebiao', {
         method: 'POST',
         headers: {
@@ -43,8 +43,6 @@ export async function getTimeTable({ token, stuNum }: { token: string, stuNum: s
         },
         body: JSON.stringify({stuNum})
     });
-
-    // console.log(res.status, await res.text());
 
     return await res.json();
 }
