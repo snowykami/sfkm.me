@@ -68,4 +68,4 @@ jobs:
           docker pull ${{ env.CONTAINER_TAG }}
           docker stop ${{ env.CONTAINER_NAME }} || true
           docker rm ${{ env.CONTAINER_NAME }} || true
-          docker run -d --name ${{ env.CONTAINER_NAME }} ${{ env.CONTAINER_OPTIONS }} ${{ env.CONTAINER_TAG }} ${{ secrets.DOCKER_ARGS }}
+          docker run -d --name ${{ env.CONTAINER_NAME }} ${{ env.CONTAINER_OPTIONS }} ${{ secrets.DOCKER_ARGS }} ${{ env.CONTAINER_TAG }} 
