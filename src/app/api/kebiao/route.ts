@@ -1,12 +1,28 @@
 // 郑重声明，这个命名用kebiao不是因为本人没有好的命名习惯，而是为了尊重原API的命名
 
-import { getTimeTable as getKebiao, loginToMagipoke } from "@/api/magipoke.server";
+import { getKebiao as getKebiao, loginToMagipoke } from "@/api/magipoke.server";
 import type { Course } from "@/api/magipoke.server";
 import { NextResponse } from "next/server";
 
 type CourseSchedule = {
     start: string,
     end: string,
+}
+
+export type SimplifyCourse = {
+    name: string,
+    begin: string,
+    end: string,
+    location: string,
+}
+
+function filterFields(course: Course): SimplifyCourse {
+    return {
+        name: course.course,
+        begin: courseSchedules[course.begin_lesson - 1].start,
+        end: courseSchedules[course.begin_lesson + course.period - 2].end,
+        location: course.classroom,
+    }
 }
 
 const courseSchedules: CourseSchedule[] = [
@@ -36,8 +52,10 @@ export async function GET() {
     const now = new Date();
 
     const currentCourses: Course[] = [];
-
+    const todayCourses: Course[] = [];
     for (const course of kebiaoData.data) {
+        if (excludedCourseNums.includes(course.course_num)) continue;
+
         // 周筛
         for (const w of course.week) {
             if (w === kebiaoData.nowWeek) {
@@ -46,26 +64,20 @@ export async function GET() {
                 if (dayNumber === course.hash_day) {
                     // 节筛选
                     // 起止时间
+                    todayCourses.push(course);
                     const begin = courseSchedules[course.begin_lesson - 1].start;
                     const end = courseSchedules[course.begin_lesson + course.period - 2].end;
                     const current = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
                     if (current >= begin && current <= end) {
-                        if (!excludedCourseNums.includes(course.course_num)) {
-                            currentCourses.push(course);
-                        }
+                        currentCourses.push(course);
                     }
                 }
             }
         }
     }
     return NextResponse.json({
-        currentCourses: currentCourses.map(course => ({
-            // 根据实际字段名调整
-            name: course.course,
-            begin: courseSchedules[course.begin_lesson - 1].start,
-            end: courseSchedules[course.begin_lesson + course.period - 2].end,
-            location: course.classroom,
-        })),
+        currentCourses: currentCourses.map(filterFields),
+        todayCourses: todayCourses.map(filterFields),
         nowWeek: kebiaoData.nowWeek
     }, {
         status: 200

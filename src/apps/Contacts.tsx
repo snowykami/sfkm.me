@@ -8,6 +8,7 @@ import config from "@/config";
 import { Calendar, ExternalLink, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchCurrentCourse } from "@/api/kebiao";
+import type { SimplifyCourse } from "@/app/api/kebiao/route";
 
 export default function ContactsContent() {
   // 统一判断在线状态
@@ -15,10 +16,14 @@ export default function ContactsContent() {
   const endHour = 24; // 在线结束时间
   const hour = new Date().getHours();
   const isOnline = hour >= startHour && hour < endHour;
-  const [currentCourses, setCurrentCourses] = useState<{ name: string, begin: string, end: string, location: string }[]>([]);
+  const [currentCourses, setCurrentCourses] = useState<SimplifyCourse[]>([]);
+  const [todayCourses, setTodayCourses] = useState<SimplifyCourse[]>([]);
 
   useEffect(() => {
-    fetchCurrentCourse().then(data => { setCurrentCourses(data.currentCourses); }).catch(() => { });
+    fetchCurrentCourse().then(data => {
+      setCurrentCourses(data.currentCourses);
+      setTodayCourses(data.todayCourses);
+    }).catch(() => { });
   }, []);
 
   return (
@@ -31,28 +36,7 @@ export default function ContactsContent() {
           </h2>
         </div>
 
-        {/* 在线状态 */}
-        <div className="mt-6 p-4 bg-gradient-to-r from-blue-100/40 to-purple-100/40 dark:from-blue-500/10 dark:to-purple-500/10 rounded-lg border border-blue-200 dark:border-blue-500/20">
-          <div className="flex items-center mb-2">
-            <Calendar className="w-4 h-4 text-blue-500 dark:text-blue-400 mr-2" />
-            <span className="text-blue-600 dark:text-blue-300 font-medium">
-              {t("contacts.onlinestatus")}
-            </span>
-          </div>
-          <p className={`text-sm ${currentCourses.length === 0 ? "italic" : "text-green-600 dark:text-green-400"}`}>
-            
-          </p>
-          <div className="flex items-center mt-2">
-            <div
-              className={`w-2 h-2 ${isOnline ? "bg-green-500 dark:bg-green-400" : "bg-gray-400"} rounded-full mr-2`}
-            ></div>
-            <span
-              className={`text-sm ${isOnline ? "text-green-600 dark:text-green-400" : "text-gray-400"}`}
-            >
-              {t("contacts.current")}: {currentCourses.length > 0 ? currentCourses.map(course => `${course.name} (${course.begin}-${course.end})`).join("; ") : t("contacts.nocourse")}
-            </span>
-          </div>
-        </div>
+
 
         {config.contacts.map((contact, index) => (
           <div
@@ -81,8 +65,57 @@ export default function ContactsContent() {
           </div>
         ))}
 
-        
+        {/* 在线状态 */}
+        <div className="mt-6 p-4 bg-gradient-to-r from-blue-100/40 to-purple-100/40 dark:from-blue-500/10 dark:to-purple-500/10 rounded-lg border border-blue-200 dark:border-blue-500/20">
+          <div className="flex items-center mb-2">
+            <Calendar className="w-4 h-4 text-blue-500 dark:text-blue-400 mr-2" />
+            <span className="text-blue-600 dark:text-blue-300 font-medium">
+              {t("contacts.onlinestatus")}
+            </span>
+          </div>
+          <div className="flex items-center mt-2">
+            <div
+              className={`w-2 h-2 ${isOnline ? "bg-green-500 dark:bg-green-400" : "bg-gray-400"} rounded-full mr-2`}
+            ></div>
+            <span
+              className={`text-sm ${isOnline ? "text-green-600 dark:text-green-400" : "text-gray-400"}`}
+            >
+              {t("contacts.current")}: {currentCourses.length > 0 ? currentCourses.map(course => `${course.name} (${course.begin}-${course.end})`).join("; ") : t("contacts.nocourse")}
+            </span>
+
+          </div>
+          {/* 今天的课程 */}
+          <div className="mt-2">
+            <span className="text-xs text-slate-500 dark:text-slate-400 italic">{t("contacts.todaycourses")}</span>
+            <ul className="mt-1">
+              {todayCourses.length > 0 ? todayCourses.map(course => (
+                <CourseItem key={`${course.name}-${course.begin}`} course={course} />
+              )) : (
+                <li className="text-sm text-slate-500 dark:text-slate-400">{t("contacts.nocourse")}</li>
+              )}
+            </ul>
+          </div>
+        </div>
+
       </div>
     </CardContent>
+  );
+}
+
+function CourseItem({ course }: { course: SimplifyCourse }) {
+  return (
+    <div className="flex items-center justify-between py-4 border-b border-slate-200 dark:border-slate-700">
+      <div>
+        <h3 className="text-sm font-medium text-slate-800 dark:text-slate-200">
+          {course.name}
+        </h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          {course.begin} - {course.end}
+        </p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          {course.location}
+        </p>
+      </div>
+    </div>
   );
 }
