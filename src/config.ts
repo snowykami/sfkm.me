@@ -302,10 +302,12 @@ const config: Config = {
         contacts: {
           title: "联系方式",
           bilibili: "Bilibili",
+          current: "当前",
           email: "邮箱",
           github: "GitHub",
           liteyukilab: "轻雪社区",
           ncm: "网易云音乐",
+          nocourse: "无课程",
           offline: "当前离线",
           online: "当前在线",
           onlinestatus: "在线状态",

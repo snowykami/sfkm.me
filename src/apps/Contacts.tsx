@@ -1,3 +1,4 @@
+"use client";
 import type React from "react";
 import { Button } from "@/components/ui/Button";
 import { CardContent } from "@/components/ui/Card";
@@ -5,6 +6,8 @@ import { CardContent } from "@/components/ui/Card";
 import { t } from "i18next";
 import config from "@/config";
 import { Calendar, ExternalLink, MessageCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { fetchCurrentCourse } from "@/api/kebiao";
 
 export default function ContactsContent() {
   // 统一判断在线状态
@@ -12,6 +15,12 @@ export default function ContactsContent() {
   const endHour = 24; // 在线结束时间
   const hour = new Date().getHours();
   const isOnline = hour >= startHour && hour < endHour;
+  const [currentCourses, setCurrentCourses] = useState<{ name: string, begin: string, end: string, location: string }[]>([]);
+
+  useEffect(() => {
+    fetchCurrentCourse().then(data => { setCurrentCourses(data.currentCourses); }).catch(() => { });
+  }, []);
+
   return (
     <CardContent className="p-6 transition-colors">
       <div className="space-y-4">
@@ -20,6 +29,29 @@ export default function ContactsContent() {
           <h2 className="text-lg font-semibold text-slate-800 dark:text-white">
             {t("contacts.title")}
           </h2>
+        </div>
+
+        {/* 在线状态 */}
+        <div className="mt-6 p-4 bg-gradient-to-r from-blue-100/40 to-purple-100/40 dark:from-blue-500/10 dark:to-purple-500/10 rounded-lg border border-blue-200 dark:border-blue-500/20">
+          <div className="flex items-center mb-2">
+            <Calendar className="w-4 h-4 text-blue-500 dark:text-blue-400 mr-2" />
+            <span className="text-blue-600 dark:text-blue-300 font-medium">
+              {t("contacts.onlinestatus")}
+            </span>
+          </div>
+          <p className={`text-sm ${currentCourses.length === 0 ? "italic" : "text-green-600 dark:text-green-400"}`}>
+            
+          </p>
+          <div className="flex items-center mt-2">
+            <div
+              className={`w-2 h-2 ${isOnline ? "bg-green-500 dark:bg-green-400" : "bg-gray-400"} rounded-full mr-2`}
+            ></div>
+            <span
+              className={`text-sm ${isOnline ? "text-green-600 dark:text-green-400" : "text-gray-400"}`}
+            >
+              {t("contacts.current")}: {currentCourses.length > 0 ? currentCourses.map(course => `${course.name} (${course.begin}-${course.end})`).join("; ") : t("contacts.nocourse")}
+            </span>
+          </div>
         </div>
 
         {config.contacts.map((contact, index) => (
@@ -49,29 +81,7 @@ export default function ContactsContent() {
           </div>
         ))}
 
-        <div className="mt-6 p-4 bg-gradient-to-r from-blue-100/40 to-purple-100/40 dark:from-blue-500/10 dark:to-purple-500/10 rounded-lg border border-blue-200 dark:border-blue-500/20">
-          <div className="flex items-center mb-2">
-            <Calendar className="w-4 h-4 text-blue-500 dark:text-blue-400 mr-2" />
-            <span className="text-blue-600 dark:text-blue-300 font-medium">
-              {t("contacts.onlinestatus")}
-            </span>
-          </div>
-          <p className="text-slate-600 dark:text-slate-300 text-sm">
-            {t("contacts.onlinetime", {
-              duration: `${startHour}:00-${endHour}:00`,
-            })}
-          </p>
-          <div className="flex items-center mt-2">
-            <div
-              className={`w-2 h-2 ${isOnline ? "bg-green-500 dark:bg-green-400" : "bg-gray-400"} rounded-full mr-2`}
-            ></div>
-            <span
-              className={`text-sm ${isOnline ? "text-green-600 dark:text-green-400" : "text-gray-400"}`}
-            >
-              {isOnline ? t("contacts.online") : t("contacts.offline")}
-            </span>
-          </div>
-        </div>
+        
       </div>
     </CardContent>
   );

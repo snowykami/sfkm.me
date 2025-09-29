@@ -4,7 +4,6 @@ import {
   Users,
   Music,
   SquareChevronRight,
-  Code,
   Send,
 } from "lucide-react";
 import ProfileApp from "@/apps/Profile";
@@ -20,14 +19,11 @@ import Terminal from "./Terminal";
 import Ech0 from "./Echo";
 import { AppProps } from "./BaseApp";
 import { WindowState } from "@/contexts/WindowManagerContext";
-import VSCode from "./VSCode";
 import LiteyukiLab from "./LiteyukiLab";
 import { MdOutlineWorkspaces } from "react-icons/md";
 import { LiaAtomSolid } from "react-icons/lia";
 // 临时活动限定APP
-import Traceroute from "./Temp/Traceroute";
 import { BiPlanet } from "react-icons/bi";
-import { SiSvgtrace } from "react-icons/si";
 
 // 参考屏幕尺寸 - 2K屏幕
 const REFERENCE_WIDTH = 2560;
@@ -218,22 +214,6 @@ export const apps: AppMeta[] = [
     icon: <SquareChevronRight className={iconClassName} />,
     label: "terminal.title",
     entry: Terminal,
-    windowState: mediumWindowState,
-    showInDock: true,
-  },
-  {
-    id: "vscode",
-    icon: <Code className={iconClassName} />,
-    label: "vscode.title",
-    entry: VSCode,
-    windowState: mediumWindowState,
-    showInDock: true,
-  },
-  {
-    id: "traceroute",
-    icon: <SiSvgtrace className={iconClassName} />,
-    label: "traceroute.title",
-    entry: Traceroute,
     windowState: mediumWindowState,
     showInDock: true,
   },
