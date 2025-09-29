@@ -41,8 +41,33 @@ export async function getKebiao({ token, stuNum }: { token: string, stuNum: stri
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({stuNum})
+        body: JSON.stringify({ stuNum })
     });
 
+    return await res.json();
+}
+
+export type Transaction = {
+    id: number,
+    time: number,
+    title: string,
+    content: string,
+    date: [{
+        begin_lesson: number,
+        period: number,
+        day: number,
+        week: number[],
+    }],
+}
+
+export async function getTransactions({ token }: { token: string }): Promise<{ data: Transaction[] }> {
+    const res = await fetch('https://be-prod.redrock.cqupt.edu.cn/magipoke-reminder/Person/getTransaction', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Api-Version': "74",
+            'Content-Type': 'application/json',
+        }
+    });
     return await res.json();
 }
