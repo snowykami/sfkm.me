@@ -3,7 +3,7 @@ name: Update readme screenshot
 
 on:
   workflow_run:
-    workflows: ["deploy"]
+    workflows: ["gitea-trigger"]
     types:
       - completed
     branches:
