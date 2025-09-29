@@ -1,35 +1,30 @@
-name: deploy
+name: Build and Push Docker Images
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  build-and-push-frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v3
         with:
-          node-version: "20"
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # - name: Setup uv
-      #   uses: astral-sh/setup-uv@v5
-      #   with:
-      #     version: "latest"
-
-      # - name: Sync musics
-      #   run: |
-      #     uv run ./scripts/playlist_dump.py -f -n
-
-      - name: Install and build
-        run: |
-          npm install
-          npm run build
-
-      - name: Deploy to server
-        run: npx -p "@getmeli/cli" meli upload out --url "https://dash.apage.dev" --site "e8b39e8e-2a87-4866-9580-c2323317b4c0" --token "${{ secrets.PAGE_TOKEN }}" --branch "main"
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/sfkm-me:latest
