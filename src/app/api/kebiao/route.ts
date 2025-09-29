@@ -19,8 +19,7 @@ export type SimplifyCourse = {
 function filterFieldsForCourse(course: Course): SimplifyCourse {
     return {
         name: course.course,
-        begin: courseSchedules[course.begin_lesson - 1].begin,
-        end: courseSchedules[course.begin_lesson + course.period - 2].end,
+        ...getScheduleStartAndEnd(course.begin_lesson, course.period),
         location: course.classroom,
     }
 }
