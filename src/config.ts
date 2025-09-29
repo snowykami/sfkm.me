@@ -403,6 +403,9 @@ const config: Config = {
             beta: "测试中",
           },
         },
+        schedule:{
+          title: "日程",
+        },
         skills: {
           title: "技能详情",
           backend: "后端",

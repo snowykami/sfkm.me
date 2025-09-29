@@ -5,6 +5,7 @@ import {
   Music,
   SquareChevronRight,
   Send,
+  Calendar,
 } from "lucide-react";
 import ProfileApp from "@/apps/Profile";
 import ProjectsApp from "@/apps/Projects";
@@ -24,6 +25,7 @@ import { MdOutlineWorkspaces } from "react-icons/md";
 import { LiaAtomSolid } from "react-icons/lia";
 // 临时活动限定APP
 import { BiPlanet } from "react-icons/bi";
+import ScheduleApp from "./Schedule";
 
 // 参考屏幕尺寸 - 2K屏幕
 const REFERENCE_WIDTH = 2560;
@@ -166,6 +168,14 @@ export const apps: AppMeta[] = [
     icon: <MessageCircle className={iconClassName} />,
     label: "contacts.title",
     entry: ContactApp,
+    windowState: phoneWindowState,
+    showInDock: true,
+  },
+  {
+    id: "schedule",
+    icon: <Calendar className={iconClassName} />,
+    label: "schedule.title",
+    entry: ScheduleApp,
     windowState: phoneWindowState,
     showInDock: true,
   },
