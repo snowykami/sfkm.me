@@ -47,10 +47,15 @@ const courseSchedules: CourseSchedule[] = [
 const excludedCourseNums = ["A2010561"]
 
 export async function GET() {
+    const termBegin = new Date(2025, 9-1, 8); 
     const tokenData = await loginToMagipoke({ stuNum: process.env.MAGIPOKE_ID || "", password: process.env.MAGIPOKE_PASSWORD || "" });
-    const kebiaoData = await getKebiao({ token: tokenData.data.token, stuNum: process.env.MAGIPOKE_ID || "" });
+    let kebiaoData: { data: Course[], nowWeek: number } = { data: [], nowWeek: Math.ceil((new Date().getTime() - termBegin.getTime()) / (1000 * 60 * 60 * 24 * 7)) };
+    try {
+        kebiaoData = await getKebiao({ token: tokenData.data.token, stuNum: process.env.MAGIPOKE_ID || "" });
+    } catch {
+        // 晚上会获取不到课表，那就跳过
+    }
     const transactionData = await getTransactions({ token: tokenData.data.token });
-
     const now = new Date();
     const current = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
     const currentCourses: SimplifyCourse[] = [];
@@ -89,6 +94,7 @@ export async function GET() {
                 // 天筛选,返回数据0是星期一
                 const dayNumber = (now.getDay() + 6) % 7;
                 // 今天
+                console.log("Date:", date);
                 if (dayNumber === date.day) {
                     todayCourses.push({
                         name: transaction.title,
