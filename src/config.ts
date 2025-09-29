@@ -11,7 +11,6 @@ import { Song, SongOrPromise } from "@/types/music";
 import { BackgroundContext } from "@/types/background";
 import { ExternalLink, Github, Mail, Tv, Twitter } from "lucide-react";
 import { fetchSongSrcFromNCM, fetchSongSrcFromQQ } from "./utils/music";
-import { SiNpm, SiPypi, SiDocker } from "react-icons/si";
 import { TbBrandNeteaseMusic } from "react-icons/tb";
 import { BiPlanet } from "react-icons/bi";
 import { RiQqLine } from "react-icons/ri";
@@ -194,24 +193,6 @@ const config: Config = {
       label: "X",
       value: "@snowykami1145",
       link: "https://x.com/snowykami1145",
-    },
-    {
-      icon: SiNpm,
-      label: "NPM",
-      value: "snowykami",
-      link: "https://www.npmjs.com/~snowykami",
-    },
-    {
-      icon: SiPypi,
-      label: "Pypi",
-      value: "SnowyKami",
-      link: "https://pypi.org/user/SnowyKami/",
-    },
-    {
-      icon: SiDocker,
-      label: "Docker Hub",
-      value: "snowykami",
-      link: "https://hub.docker.com/u/snowykami",
     },
     ...(contactsJson as Contact[]),
   ],
