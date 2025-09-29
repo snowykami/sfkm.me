@@ -115,6 +115,8 @@ export async function GET() {
 
     for (const transaction of transactionData.data) {
         // 周筛，用课表的nowWeek
+        if (transaction.title.includes("private") || transaction.title.includes("私有")) continue;
+        if (transaction.content.includes("private") || transaction.content.includes("私有")) continue;
         for (const date of transaction.date) {
             if (date.week.includes(kebiaoData.nowWeek)) {
                 // 天筛选,返回数据0是星期一
