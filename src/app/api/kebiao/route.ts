@@ -31,13 +31,15 @@ const courseSchedules: CourseSchedule[] = [
     { begin: "08:55", end: "09:40" },
     { begin: "10:15", end: "11:00" },
     { begin: "11:10", end: "11:55" },
-
+    // 中午
+    { begin: "11:55", end: "14:00" },   // -1
     // 下午
     { begin: "14:00", end: "14:45" },
     { begin: "14:55", end: "15:40" },
     { begin: "16:15", end: "17:00" },
     { begin: "17:10", end: "17:55" },
-
+    // 晚休
+    { begin: "17:55", end: "19:00" },   // -2
     // 晚课
     { begin: "19:00", end: "19:45" },
     { begin: "19:55", end: "20:40" },
@@ -45,54 +47,23 @@ const courseSchedules: CourseSchedule[] = [
     { begin: "21:45", end: "22:30" },
 ]
 
-const specialSchedules: CourseSchedule[] = [
-    // 中午休息
-    { begin: "11:55", end: "14:00" },   // -1
-    // 晚上休息
-    { begin: "17:55", end: "19:00" },   // -2
-
-]
-
 function getScheduleStartAndEnd(beginLesson: number, period: number): { begin: string, end: string } {
-    // 处理特殊时间段（负数表示休息时间）
-    if (beginLesson < 1) {
-        const specialIndex = -beginLesson - 1;
-        const begin = specialSchedules[specialIndex].begin;
-        
-        // 计算结束时间的索引
-        let endIndex: number;
-        if (beginLesson === -1) {
-            // 中午休息时间段
-            if (period === 1) {
-                endIndex = 0; // specialSchedules[0].end
-            } else if (period === 6) {
-                endIndex = 1; // specialSchedules[1].end  
-            } else if (period <= 5) {
-                endIndex = period + 3; // courseSchedules[4-7].end
-            } else {
-                endIndex = period + 1; // courseSchedules[8-11].end
-            }
-        } else if (beginLesson === -2) {
-            // 晚上休息时间段
-            if (period === 1) {
-                endIndex = 1; // specialSchedules[1].end
-            } else {
-                endIndex = period + 6; // courseSchedules[8-11].end
-            }
-        } else {
-            endIndex = 0; // 默认情况
-        }
-        const end = (beginLesson === -1 && (period === 1 || period === 6)) ||
-                   (beginLesson === -2 && period === 1) ||
-                   (beginLesson < -2)
-                   ? specialSchedules[endIndex].end
-                   : courseSchedules[endIndex].end;
-        return { begin, end };
+    let begin = "00:00";
+    let end = "00:00";
+    if (beginLesson === -1) {
+        begin = courseSchedules[4].begin;
+    } else if (beginLesson === -2) {
+        begin = courseSchedules[9].begin;
+    } else if (beginLesson >= 9) {
+        beginLesson += 1;
+        begin = courseSchedules[beginLesson].begin;
+    } else if (beginLesson >= 5) {
+        begin = courseSchedules[beginLesson].begin;
+    } else {
+        begin = courseSchedules[beginLesson - 1].begin;
     }
-    
-    // 处理正常课程时间段
-    const begin = courseSchedules[beginLesson - 1].begin;
-    const end = courseSchedules[beginLesson + period - 2].end;
+
+    end = courseSchedules[beginLesson + period - 2].end;
     return { begin, end };
 }
 
@@ -128,9 +99,7 @@ export async function GET() {
                         // 节筛选
                         // 起止时间
                         todayCourses.push(filterFieldsForCourse(course));
-                        const begin = courseSchedules[course.begin_lesson - 1].begin;
-                        const end = courseSchedules[course.begin_lesson + course.period - 2].end;
-
+                        const { begin, end } = getScheduleStartAndEnd(course.begin_lesson, course.period);
                         if (current >= begin && current <= end) {
                             currentCourses.push(filterFieldsForCourse(course));
                         }
