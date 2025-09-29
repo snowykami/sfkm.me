@@ -1,6 +1,6 @@
 import type { SimplifyCourse } from "@/app/api/kebiao/route";
 
-export async function fetchCurrentCourse(): Promise<{
+export async function fetchCurrentCourses(): Promise<{
     currentCourses: SimplifyCourse[], nowWeek: number
     todayCourses: SimplifyCourse[]
 }> {

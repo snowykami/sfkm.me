@@ -1,3 +1,5 @@
+"use client";
+
 import { MapPin } from "lucide-react";
 import { t } from "i18next";
 import { useEffect, useState, useRef } from "react";
@@ -6,6 +8,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import config from "@/config";
 import { Divider } from "@/components/ui/Divider";
+import { SimplifyCourse } from "@/app/api/kebiao/route";
+import { fetchCurrentCourses } from "@/api/kebiao";
 
 const gradientClasses = [
   "bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400",
@@ -17,13 +21,13 @@ const gradientClasses = [
 function calculateAge(birthDate: string): number {
   const birth = new Date(birthDate);
   const today = new Date();
-  
+
   // 计算年龄差
   let age = today.getFullYear() - birth.getFullYear();
-  
+
   // 创建今年的生日日期
   const thisYearBirthday = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
-  
+
   // 如果今年的生日还没到，年龄减1
   if (today < thisYearBirthday) {
     age--;
@@ -51,8 +55,15 @@ export default function ProfileContent() {
   const [descIndex, setDescIndex] = useState(0);
   const [gradientIndex, setGradientIndex] = useState(0); // 昵称背景渐变索引
   const [fade, setFade] = useState(true);
-  // 添加引用以跟踪是否已装载
-  const isMounted = useRef(true);
+  const [currentCourses, setCurrentCourses] = useState<SimplifyCourse[]>([]);
+  // 添加引用以跟踪是否已装载（在挂载/卸载时维护状态）
+  const isMounted = useRef(false);
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const age = calculateAge(config.profile.birthDate || "2000-01-01"); // 默认出生日期为2000年1月1日
 
@@ -83,6 +94,21 @@ export default function ProfileContent() {
       clearTimeout(fadeTimer);
     };
   }, []); // 保持空依赖数组
+
+  // 获取当前的课（只在挂载时执行一次）
+  useEffect(() => {
+    let mounted = true;
+    fetchCurrentCourses()
+      .then((data: { currentCourses: SimplifyCourse[] }) => {
+        if (mounted && isMounted.current) {
+          setCurrentCourses(data.currentCourses);
+        }
+      })
+      .catch(() => { });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <CardContent className="p-8 transition-colors">
@@ -131,13 +157,17 @@ export default function ProfileContent() {
           </h1>
         </div>
 
-        <div className="flex items-center text-slate-500 dark:text-slate-400 text-sm mb-4">
+        <div className="flex items-center text-slate-500 dark:text-slate-400 text-sm">
           <MapPin className="w-4 h-4 mr-1" />
           <span>{t("profile.location")}</span>
         </div>
+        {/* 当前正在上的课 */}
+        {(currentCourses.length > 0) && <div className="flex items-center text-green-600 dark:text-green-400 text-sm">
+          <span>{t("profile.currentinclass")}: {currentCourses.length > 0 ? currentCourses.map(course => `${course.name} (${course.begin}-${course.end})`).join("; ") : t("contacts.nocourse")}</span>
+        </div>}
       </div>
 
-      <div className="mb-6 min-h-[40px]">
+      <div className="mb-2 min-h-[40px]">
         <p
           className={`text-slate-600 dark:text-slate-300 text-sm leading-relaxed text-center transition-opacity duration-400 ${fade ? "opacity-100" : "opacity-0"}`}
         >

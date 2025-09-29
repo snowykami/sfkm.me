@@ -370,6 +370,7 @@ const config: Config = {
         },
         profile: {
           title: "个人资料",
+          currentinclass: "现正上课",
           description1: "你好呀！",
           description2: "欢迎来到我的主页",
           description3: "山高月小，水落石出。",

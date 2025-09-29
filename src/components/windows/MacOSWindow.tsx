@@ -1,5 +1,7 @@
+"use client";
+
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useWindowManager } from "@/contexts/WindowManagerContext";
 import type { BaseWindowProps } from "./BaseWindow";
 import { t } from "i18next";
@@ -30,7 +32,17 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
   const win = windows.find((w) => w.id === id);
   const [closing, setClosing] = useState(false);
   const [minimizing, setMinimizing] = useState(false);
-  const isTop = win?.zIndex === Math.max(...windows.map((w) => w.zIndex));
+
+  // Only compute UI state that depends on browser globals or
+  // potentially changing client-only context after mount to avoid
+  // SSR/CSR mismatches (Math.max on an empty array, i18n differences, etc)
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const maxZ = windows.length ? Math.max(...windows.map((w) => w.zIndex)) : 0;
+  const isTop = isMounted ? win?.zIndex === maxZ : false;
 
   if (!win) return null;
 
