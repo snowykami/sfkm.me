@@ -9,6 +9,7 @@ import { Calendar, ExternalLink, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchCurrentCourses } from "@/api/kebiao";
 import type { SimplifyCourse } from "@/app/api/kebiao/route";
+import { useDevice } from "@/contexts/DeviceContext";
 
 export default function ContactsContent() {
   // 统一判断在线状态
@@ -103,17 +104,40 @@ export default function ContactsContent() {
   );
 }
 
+// 计算"HH:MM"格式时间的分钟数差
+function calculateDuration(begin: string, end: string): number {
+  const [beginHour, beginMinute] = begin.split(":").map(Number);
+  const [endHour, endMinute] = end.split(":").map(Number);
+  return (endHour - beginHour) * 60 + (endMinute - beginMinute);
+}
+
+function calculateProgress(begin: string, end: string, current: string): number {
+  const totalMinutes = calculateDuration(begin, end);
+  const elapsedMinutes = calculateDuration(begin, current);
+  return Math.min(Math.max((elapsedMinutes / totalMinutes) * 100, 0), 100);
+}
+
 function CourseItem({ course }: { course: SimplifyCourse }) {
+  const { mode } = useDevice();
   const now = new Date();
   const current = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+
   // const current = "14:30"; // 测试数据
   const isCurrent = current >= course.begin && current <= course.end;
+  const isPassed = current > course.end;
+  const progressPercent = calculateProgress(course.begin, course.end, current);
+  const progressColorPassed = mode === "dark" ? "oklch(50.8% 0.118 165.612)" : "oklch(84.5% 0.143 164.978)";
+  const progressColorRemaining = "oklch(90.5% 0.093 164.15)";
+  const remainDuration = calculateDuration(current, course.end);
   return (
     <div
-      className={`flex items-center justify-between py-4 border-b border-slate-200 dark:border-slate-700 ${isCurrent
-          ? "bg-green-50 dark:bg-green-900/20 rounded-xl border-green-200 dark:border-green-400/30"
-          : ""
-        }`}
+      className={`flex rounded-xl items-center justify-between mt-3 py-2 border-1
+        ${isCurrent ? "border-emerald-300" :
+          isPassed ? "bg-slate-300/80 dark:bg-slate-800/50 border-slate-300 dark:border-slate-600" :
+            " bg-slate-100/80 dark:bg-slate-800/50 border-slate-200 dark:border-slate-600"} 
+      `}
+      style={isCurrent ? { background: `linear-gradient(90deg, ${progressColorPassed} ${progressPercent}%, ${progressColorRemaining} ${progressPercent}%)` } : {
+      }}
     >
       <div className="flex items-center">
         <span
@@ -128,11 +152,12 @@ function CourseItem({ course }: { course: SimplifyCourse }) {
             {course.name}
           </h3>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            {course.begin} - {course.end}
+            {course.begin} - {course.end} ({isCurrent ? t("contacts.durationEndClass", { duration: remainDuration + "min" }) : isPassed ? t("contacts.ended") : t("contacts.notStarted")})
           </p>
           <p className="text-sm text-slate-500 dark:text-slate-400">
             {course.location}
           </p>
+
         </div>
       </div>
     </div>
