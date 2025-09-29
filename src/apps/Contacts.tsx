@@ -104,18 +104,36 @@ export default function ContactsContent() {
 }
 
 function CourseItem({ course }: { course: SimplifyCourse }) {
+  const now = new Date();
+  const current = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+  // const current = "14:30"; // 测试数据
+  const isCurrent = current >= course.begin && current <= course.end;
   return (
-    <div className="flex items-center justify-between py-4 border-b border-slate-200 dark:border-slate-700">
-      <div>
-        <h3 className="text-sm font-medium text-slate-800 dark:text-slate-200">
-          {course.name}
-        </h3>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          {course.begin} - {course.end}
-        </p>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          {course.location}
-        </p>
+    <div
+      className={`flex items-center justify-between py-4 border-b border-slate-200 dark:border-slate-700 ${isCurrent
+          ? "bg-green-50 dark:bg-green-900/20 rounded-xl border-green-200 dark:border-green-400/30"
+          : ""
+        }`}
+    >
+      <div className="flex items-center">
+        <span
+          className={`w-2 h-2 rounded-full mr-2 ${isCurrent ? "bg-green-500 dark:bg-green-400" : "bg-transparent"
+            }`}
+        />
+        <div>
+          <h3
+            className={`text-sm font-medium ${isCurrent ? "text-green-700 dark:text-green-300" : "text-slate-800 dark:text-slate-200"
+              }`}
+          >
+            {course.name}
+          </h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            {course.begin} - {course.end}
+          </p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            {course.location}
+          </p>
+        </div>
       </div>
     </div>
   );
