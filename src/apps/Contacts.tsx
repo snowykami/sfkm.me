@@ -7,7 +7,7 @@ import { t } from "i18next";
 import config from "@/config";
 import { Calendar, ExternalLink, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-import { fetchCurrentCourse } from "@/api/kebiao";
+import { fetchCurrentCourses } from "@/api/kebiao";
 import type { SimplifyCourse } from "@/app/api/kebiao/route";
 
 export default function ContactsContent() {
@@ -20,7 +20,8 @@ export default function ContactsContent() {
   const [todayCourses, setTodayCourses] = useState<SimplifyCourse[]>([]);
 
   useEffect(() => {
-    fetchCurrentCourse().then(data => {
+    fetchCurrentCourses().then(data => {
+      console.log(data)
       setCurrentCourses(data.currentCourses);
       setTodayCourses(data.todayCourses);
     }).catch(() => { });

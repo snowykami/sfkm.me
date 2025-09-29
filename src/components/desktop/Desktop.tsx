@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import { TopBar, TOPBAR_HEIGHT } from "./TopBar"; // 确保 TOPBAR_HEIGHT 已导出
 import Dock, { DockWindowState } from "./Dock";

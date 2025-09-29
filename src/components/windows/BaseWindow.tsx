@@ -66,6 +66,15 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
 
   const { isMobile } = useDevice();
 
+  // Avoid rendering window-dependent layout on server to prevent
+  // hydration mismatch (window.innerWidth / innerHeight and other
+  // dynamic values differ between server and client). Only render
+  // the interactive Rnd after the component has mounted on client.
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const [position, setPosition] = useState({ x, y });
   const [size, setSize] = useState({ width, height });
 
@@ -192,6 +201,7 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
     size.height,
     windowMargin,
   ]);
+  if (!isMounted) return null;
   if (!shouldRender) return null;
   // 移动端下直接全屏
   const rndSize = isMobile

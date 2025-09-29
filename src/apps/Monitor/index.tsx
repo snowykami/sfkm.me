@@ -17,8 +17,9 @@ export default function EmptyApp({}: AppProps) {
 
     // 使用窗口计数作为偏移系数
 
+    const generatedId = `empty-window-${Date.now()}`;
     createTempWindow({
-      id: `empty-window-${Date.now()}`,
+      id: generatedId,
       title: `新建窗口 #${newCount}`,
       size: { width: 400, height: 300 },
       // 不指定位置，让系统智能计算位置
@@ -46,7 +47,7 @@ export default function EmptyApp({}: AppProps) {
                 这是通过 createTempWindow 创建的临时窗口
               </p>
               <div className="p-4 bg-slate-100 dark:bg-slate-700/50 rounded-lg text-sm text-slate-500 dark:text-slate-400">
-                <code>窗口 ID: empty-window-{Date.now()}</code>
+                <code>窗口 ID: {generatedId}</code>
               </div>
               <Button
                 onClick={() => {
