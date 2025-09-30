@@ -48,21 +48,20 @@ const courseSchedules: CourseSchedule[] = [
     { begin: "21:45", end: "22:30" },
 ]
 
+// beginLesson从1开始，-1表示中午休息，-2表示晚休
 function getScheduleStartAndEnd(beginLesson: number, period: number): { begin: string, end: string } {
     let begin = "00:00";
     let end = "00:00";
     if (beginLesson === -1) {
-        begin = courseSchedules[4].begin;
+        beginLesson = 5;
     } else if (beginLesson === -2) {
-        begin = courseSchedules[9].begin;
+        beginLesson = 10;
     } else if (beginLesson >= 9) {
-        beginLesson += 1;
-        begin = courseSchedules[beginLesson].begin;
+        beginLesson += 2;
     } else if (beginLesson >= 5) {
-        begin = courseSchedules[beginLesson].begin;
-    } else {
-        begin = courseSchedules[beginLesson - 1].begin;
+        beginLesson += 1;
     }
+    begin = courseSchedules[beginLesson - 1].begin;
     end = courseSchedules[beginLesson + period - 2].end;
     return { begin, end };
 }
