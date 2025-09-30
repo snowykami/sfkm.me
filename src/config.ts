@@ -9,7 +9,7 @@ import projectsJson from "@/data/projects.json";
 import skillsJson from "@/data/skills.json";
 import { Song, SongOrPromise } from "@/types/music";
 import { BackgroundContext } from "@/types/background";
-import { ExternalLink, Github, Mail, Tv, Twitter } from "lucide-react";
+import { ExternalLink, Github, Mail, Radio, Tv, Twitter } from "lucide-react";
 import { fetchSongSrcFromNCM, fetchSongSrcFromQQ } from "./utils/music";
 import { TbBrandNeteaseMusic } from "react-icons/tb";
 import { BiPlanet } from "react-icons/bi";
@@ -177,6 +177,12 @@ const config: Config = {
       link: "https://qm.qq.com/q/wjsV7ysAkS",
     },
     {
+      icon: Radio,
+      label: "contacts.amateurradio",
+      value: "BH8HAC",
+      link: "https://forum.hamcq.cn/u/8725",
+    },
+    {
       icon: FaSteam,
       label: "Steam",
       value: "Snowykami",
@@ -282,6 +288,7 @@ const config: Config = {
         },
         contacts: {
           title: "联系方式",
+          amateurradio: "业余无线电",
           bilibili: "Bilibili",
           current: "当前",
           durationEndClass: "{{duration}}后下课",
@@ -568,6 +575,7 @@ const config: Config = {
         },
         contacts: {
           title: "Contacts",
+          amateurradio: "Amateur Radio",
           bilibili: "Bilibili",
           email: "Email",
           github: "GitHub",
@@ -853,6 +861,7 @@ const config: Config = {
         },
         contacts: {
           title: "連絡先",
+          amateurradio: "アマチュア無線",
           bilibili: "ビリビリ",
           email: "メール",
           github: "GitHub",
