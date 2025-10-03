@@ -375,5 +375,12 @@
         "link": "https://blog.knlde.top/",
         "description": "LOVE&PEACE",
         "avatar": "https://cdn.jsdmirror.com/gh/Kindle-deep/picx-images-hosting@master/avatar.avif"
+    },
+    {
+        "issue_number": 47,
+        "name": "ErrOrO's Space",
+        "link": "https://blog.erroro.moe/",
+        "description": "OrO?OrO!",
+        "avatar": "https://blog.erroro.moe/assets/avatar.jpg"
     }
 ]
