@@ -382,5 +382,12 @@
         "link": "https://blog.erroro.moe/",
         "description": "OrO?OrO!",
         "avatar": "https://blog.erroro.moe/assets/avatar.jpg"
+    },
+    {
+        "issue_number": 48,
+        "name": "Eternltyの小宇宙",
+        "link": "https://blog.eternlty.top/",
+        "description": "偶尔更新，经常摆烂，永远在记录的路上",
+        "avatar": "https://blog.eternlty.top/favicon2.webp"
     }
 ]
