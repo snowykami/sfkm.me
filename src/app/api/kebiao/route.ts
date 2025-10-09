@@ -4,6 +4,8 @@ import { getKebiao as getKebiao, getTransactions, loginToMagipoke } from "@/api/
 import type { Course } from "@/api/magipoke.server";
 import { NextResponse } from "next/server";
 
+const excludedCourseNums = ["A2010561", "A1050260"]
+
 let kebiaoListCache: Course[] = []; // 该缓存不是为了减轻服务器负担，而是为了应对jwzx偶尔获取不到课表的情况
 
 type CourseSchedule = {
@@ -65,8 +67,6 @@ function getScheduleStartAndEnd(beginLesson: number, period: number): { begin: s
     end = courseSchedules[beginLesson + period - 2].end;
     return { begin, end };
 }
-
-const excludedCourseNums = ["A2010561"]
 
 export async function GET() {
     const termBegin = new Date(2025, 9 - 1, 8);
