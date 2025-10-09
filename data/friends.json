@@ -389,5 +389,12 @@
         "link": "https://blog.eternlty.top/",
         "description": "偶尔更新，经常摆烂，永远在记录的路上",
         "avatar": "https://blog.eternlty.top/favicon2.webp"
+    },
+    {
+        "issue_number": 49,
+        "name": "圣堂",
+        "link": "http://118.31.39.238:3000/home",
+        "description": "一个成熟的铠甲勇士是不会被困难打倒的",
+        "avatar": "http://118.31.39.238:3000/static/media/avatar.42aa139fd9fb158ec89c.png"
     }
 ]
