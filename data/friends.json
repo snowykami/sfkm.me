@@ -375,5 +375,33 @@
         "link": "https://blog.knlde.top/",
         "description": "LOVE&PEACE",
         "avatar": "https://cdn.jsdmirror.com/gh/Kindle-deep/picx-images-hosting@master/avatar.avif"
+    },
+    {
+        "issue_number": 47,
+        "name": "ErrOrO's Space",
+        "link": "https://blog.erroro.moe/",
+        "description": "OrO?OrO!",
+        "avatar": "https://blog.erroro.moe/assets/avatar.jpg"
+    },
+    {
+        "issue_number": 48,
+        "name": "Eternltyの小宇宙",
+        "link": "https://blog.eternlty.top/",
+        "description": "偶尔更新，经常摆烂，永远在记录的路上",
+        "avatar": "https://blog.eternlty.top/favicon2.webp"
+    },
+    {
+        "issue_number": 49,
+        "name": "圣堂",
+        "link": "http://118.31.39.238:3000/home",
+        "description": "一个成熟的铠甲勇士是不会被困难打倒的",
+        "avatar": "http://118.31.39.238:3000/static/media/avatar.42aa139fd9fb158ec89c.png"
+    },
+    {
+        "issue_number": 50,
+        "name": "纸鹿摸鱼处",
+        "link": "https://blog.zhilu.site/",
+        "description": "纸鹿至麓不知路，支炉制露不止漉",
+        "avatar": "https://weavatar.com/avatar/47c0f2e82b76d9b10eb3023df9e02e4e3fdbeaf5b74b842063f207971e7fbe7b?s=160"
     }
 ]
