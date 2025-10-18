@@ -162,7 +162,7 @@ export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
       } else {
         console.warn(`[Music] 歌曲 ID: ${mid} 缺少 audio 字段，返回空 URL`);
       }
-      const url = `https://cdn.liteyuki.org/snowykami/music/${(encodeURIComponent(song.artist.normalize("NFKD")) + " - " + encodeURIComponent(song.title.normalize("NFKD")))}.mp3`;
+      const url = `https://cdn.liteyuki.org/snowykami/playlist/${encodeURIComponent(song.id)}.mp3`;
       return url;
     }
 
