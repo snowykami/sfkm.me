@@ -150,25 +150,8 @@ export async function fetchSongFromData(data: AnySongSource): Promise<Song> {
  * @param mid 音乐ID
  * @returns 返回一个函数，调用该函数时才会请求实际的音乐URL
  */
-export function fetchSongSrcFromNCM(mid: string): () => Promise<string> {
-  return async () => {
-    // 使用 find 方法查找匹配的歌曲
-    const song = songs.find(song => song.id === mid);
-
-    if (song) {
-      if (song?.audio) {
-        console.log(`[Music] 歌曲 ID: ${mid} 找到音频，返回 URL`);
-        return song.audio;
-      } else {
-        console.warn(`[Music] 歌曲 ID: ${mid} 缺少 audio 字段，返回空 URL`);
-      }
-      const url = `https://cdn.liteyuki.org/snowykami/playlist/${encodeURIComponent(song.id)}.mp3`;
-      return url;
-    }
-
-    console.warn(`[Music] 未在本地数据中找到歌曲 ID: ${mid}, 返回空 URL`);
-    return "";
-  };
+export function fetchSongSrcFromNCM(mid: string): string {
+  return `https://cdn.liteyuki.org/snowykami/playlist/${encodeURIComponent(mid)}.mp3`;
 }
 
 /**
