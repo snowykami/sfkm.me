@@ -151,7 +151,7 @@ export async function fetchSongFromData(data: AnySongSource): Promise<Song> {
  * @returns 返回一个函数，调用该函数时才会请求实际的音乐URL
  */
 export function fetchSongSrcFromNCM(mid: string): string {
-  return `https://cdn.liteyuki.org/snowykami/playlist/${encodeURIComponent(mid)}.mp3`;
+  return `https://cdn.liteyuki.org/snowykami/music/songs/${encodeURIComponent(mid)}.mp3`;
 }
 
 /**
