@@ -26,7 +26,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  CONTAINER_TAG: git.liteyuki.org/snowykami/sfkm.me:latest
+  CONTAINER_TAG: git.liteyuki.org/liteyuki-docker/sfkm.me:latest
   CONTAINER_NAME: sfkm-me
   CONTAINER_OPTIONS: --network liteyuki-network --network liteyuki6-network --restart=always
 
