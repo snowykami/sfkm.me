@@ -1,3 +1,3 @@
 export interface AppProps {
-  windowId: string;
+  windowId: string
 }

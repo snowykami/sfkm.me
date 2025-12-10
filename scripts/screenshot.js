@@ -1,5 +1,5 @@
+import path from 'node:path'
 import { chromium } from 'playwright'
-import path from 'path'
 
 async function screenshotWithTheme(theme, filename) {
   const browser = await chromium.launch()

@@ -1,37 +1,37 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata } from 'next'
+import { Geist, Geist_Mono } from 'next/font/google'
 
-import "./globals.css";
+import Script from 'next/script'
 
+import config from '@/config'
 // Context
-import { DeviceProvider } from "@/contexts/DeviceContext";
-import { MusicProvider } from "@/contexts/MusicContext";
-import { TerminalProvider } from "@/contexts/TerminalCommandContext";
-import { WindowManagerProvider } from "@/contexts/WindowManagerContext";
-import { ThemeProvider } from "@/contexts/ThemeContext";
-import Script from "next/script";
-import config from "@/config";
+import { DeviceProvider } from '@/contexts/DeviceContext'
+import { MusicProvider } from '@/contexts/MusicContext'
+import { TerminalProvider } from '@/contexts/TerminalCommandContext'
+import { ThemeProvider } from '@/contexts/ThemeContext'
+import { WindowManagerProvider } from '@/contexts/WindowManagerContext'
+import './globals.css'
 
 function getLang() {
-  if (typeof navigator !== "undefined" && navigator.language) {
-    return navigator.language.split("-")[0];
+  if (typeof navigator !== 'undefined' && navigator.language) {
+    return navigator.language.split('-')[0]
   }
-  if (typeof window !== "undefined" && window.navigator.language) {
-    return window.navigator.language.split("-")[0];
+  if (typeof window !== 'undefined' && window.navigator.language) {
+    return window.navigator.language.split('-')[0]
   }
   // fallback
-  return "en";
+  return 'en'
 }
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
+})
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+})
 
 export const metadata: Metadata = {
   title: config.meta.title,
@@ -40,12 +40,12 @@ export const metadata: Metadata = {
   icons: {
     icon: config.meta.favicon,
   },
-};
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang={getLang()}>
@@ -64,5 +64,5 @@ export default function RootLayout({
         </MusicProvider>
       </body>
     </html>
-  );
+  )
 }

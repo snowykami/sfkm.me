@@ -1,284 +1,284 @@
 {
-    "zh": {
-        "friends": {
-            "title": "朋友们",
-            "apply": "申请友链",
-            "aicorein": {
-                "name": "GlowMem",
-                "description": "GlowMem是一个专注于AI和机器学习的个人网站，提供各种资源和信息。"
-            },
-            "churanneko": {
-                "name": "Churanneko的个人网站",
-                "description": "Churanneko是一个专注于技术和编程的个人网站，提供各种资源和信息。"
-            },
-            "cysnies": {
-                "name": "CYS2004的个人网站",
-                "description": "CYS2004是一个专注于技术和编程的个人网站，提供各种资源和信息。"
-            },
-            "daoge的github主页": {
-                "name": "道哥的GitHub主页",
-                "description": "道哥的GitHub主页是一个专注于开源项目和技术分享的个人网站，提供各种资源和信息。"
-            },
-            "edream": {
-                "name": "EDream的个人博客",
-                "description": "EDream是一个专注于技术和编程的个人博客，提供各种资源和信息。"
-            },
-            "Executor-Cheng": {
-                "name": "Executor-Cheng的个人网站",
-                "description": "Executor-Cheng是一个专注于技术和编程的个人网站，提供各种资源和信息。"
-            },
-            "eya46": {
-                "name": "Eya46的个人网站",
-                "description": "Eya46是一个专注于技术和编程的个人网站，提供各种资源和信息。"
-            },
-            "hch": {
-                "name": "Hcheng的个人网站",
-                "description": "Hcheng是一个专注于技术和编程的个人网站，提供各种资源和信息。"
-            },
-            "Inkar Suki": {
-                "name": "Inkar Suki Bot",
-                "description": "Inkar Suki是一个非常牛逼的剑网3信息整合机器人，有非常庞大的用户群体和活跃度。它提供了丰富的剑网3游戏信息和社区互动功能，是剑网3玩家的好帮手。"
-            },
-            "liteyukiIndexSite": {
-                "name": "轻雪工作室主页",
-                "description": "轻雪工作室是一个专注于开源项目和技术分享的团队，致力于为开发者提供高质量的资源和工具。"
-            },
-            "naloveyuki": {
-                "name": "Naloveyuki的个人网站",
-                "description": "Naloveyuki是一个专注于技术和编程的个人网站，提供各种资源和信息。"
-            },
-            "redrockteam": {
-                "name": "红岩网校工作站",
-                "description": "红岩网校工作站是学校唯一一个从事互联网产品开发运营的校级学生组织，在校团委的指导下，走出了一大批优秀的IT互联网人才，深受腾讯、阿里巴巴、字节跳动、华为等知名互联网企业的青睐。"
-            },
-            "Twisui喵～♡": {
-                "name": "Twisui的个人网站",
-                "description": "Twisui是一个视频平台，提供各种电视剧、电影和综艺节目。"
-            },
-            "viki": {
-                "name": "Viki的个人网站",
-                "description": "Viki 是一个视频平台，提供各种电视剧、电影和综艺节目。"
-            },
-            "艾拉酱小屋": {
-                "name": "艾拉酱小屋",
-                "description": "艾拉酱小屋是一个专注于二次元文化和个人生活的博客，提供各种资源和信息。"
-            },
-            "笨蛋弥生的平行世界": {
-                "name": "笨蛋弥生的平行世界",
-                "description": "笨蛋弥生的平行世界是一个专注于二次元文化和个人生活的博客，提供各种资源和信息。"
-            },
-            "轻雪社区": {
-                "name": "轻雪社区",
-                "description": "轻雪社区是一个专注于技术和编程的个人网站，提供各种资源和信息。"
-            },
-            "三瓶可乐不过岗": {
-                "name": "三瓶可乐不过岗的个人网站",
-                "description": "三瓶可乐不过岗是一个专注于技术和编程的个人网站，提供各种资源和信息。"
-            },
-            "逝与逢博客": {
-                "name": "释然的博客",
-                "description": "释然的博客是一个专注于开源项目和技术分享的个人网站，提供各种资源和信息。"
-            },
-            "小涵のGithub主页": {
-                "name": "小涵的Github主页",
-                "description": "小涵的Github主页是一个专注于开源项目和技术分享的个人网站，提供各种资源和信息。"
-            },
-            "一楼没太阳": {
-                "name": "一楼没太阳",
-                "description": "一楼没太阳是一个专注于个人生活和技术分享的博客，提供各种资源和信息。"
-            },
-            "「氯离子实验室」门户网站": {
-                "name": "「氯离子实验室」门户网站",
-                "description": "「氯离子实验室」是一个专注于化学和科学研究的个人网站，提供各种资源和信息。"
-            }
-        }
-    },
-    "en": {
-        "friends": {
-            "title": "Friends",
-            "apply": "Apply",
-            "aicorein": {
-                "name": "GlowMem",
-                "description": "GlowMem is a personal website focused on AI and machine learning, providing various resources and information."
-            },
-            "churanneko": {
-                "name": "Churanneko's Personal Website",
-                "description": "Churanneko is a personal website focused on technology and programming, providing various resources and information."
-            },
-            "cysnies": {
-                "name": "CYS2004's Personal Website",
-                "description": "CYS2004 is a personal website focused on technology and programming, providing various resources and information."
-            },
-            "daoge的github主页": {
-                "name": "Daoge's GitHub Page",
-                "description": "Daoge's GitHub Page is a personal website focused on open source projects and technology sharing, providing various resources and information."
-            },
-            "edream": {
-                "name": "EDream's Personal Blog",
-                "description": "EDream is a personal blog focused on technology and programming, providing various resources and information."
-            },
-            "Executor-Cheng": {
-                "name": "Executor-Cheng's Personal Website",
-                "description": "Executor-Cheng is a personal website focused on technology and programming, providing various resources and information."
-            },
-            "eya46": {
-                "name": "Eya46's Personal Website",
-                "description": "Eya46 is a personal website focused on technology and programming, providing various resources and information."
-            },
-            "hch": {
-                "name": "Hcheng's Personal Website",
-                "description": "Hcheng is a personal website focused on technology and programming, providing various resources and information."
-            },
-            "Inkar Suki": {
-                "name": "Inkar Suki Bot",
-                "description": "Inkar Suki is a very powerful Sword of Legends 3 information integration bot with a large user base and high activity. It provides rich game information and community interaction features, making it a great helper for Sword of Legends 3 players."
-            },
-            "naloveyuki": {
-                "name": "Naloveyuki's Personal Website",
-                "description": "Naloveyuki is a personal website focused on technology and programming, providing various resources and information."
-            },
-            "liteyukiIndexSite": {
-                "name": "Liteyuki Index Site",
-                "description": "Liteyuki Index Site is a personal website that provides various resources and information related to technology and programming."
-            },
-            "redrockteam": {
-                "name": "Redrock Team",
-                "description": "Redrock Team is the only student organization at the university engaged in internet product development and operation, guided by the school’s Youth League Committee. It has produced many outstanding IT talents who are highly sought after by well-known internet companies such as Tencent, Alibaba, ByteDance, and Huawei."
-            },
-            "viki": {
-                "name": "Viki's Personal Website",
-                "description": "Viki is a video platform that offers a variety of TV shows, movies, and variety programs."
-            },
-            "Twisui喵～♡": {
-                "name": "Twisui's Personal Website",
-                "description": "Twisui is a video platform that offers a variety of TV shows, movies, and variety programs."
-            },
-            "艾拉酱小屋": {
-                "name": "Isla's Cottage",
-                "description": "Isla's Cottage is a blog focused on anime culture and personal life, providing various resources and information."
-            },
-            "笨蛋弥生的平行世界": {
-                "name": "Baka Yayoi's Parallel World",
-                "description": "Baka Yayoi's Parallel World is a blog focused on anime culture and personal life, providing various resources and information."
-            },
-            "轻雪社区": {
-                "name": "Liteyuki Community",
-                "description": "Liteyuki Community is a personal website focused on technology and programming, providing various resources and information."
-            },
-            "三瓶可乐不过岗": {
-                "name": "Threkork's Personal Website",
-                "description": "Threkork is a personal website that provides various resources and information related to technology and programming."
-            },
-            "逝与逢博客": {
-                "name": "Shi Ran's Blog",
-                "description": "Shi Ran's Blog is a personal website focused on open source projects and technology sharing, providing various resources and information."
-            },
-            "小涵のGithub主页": {
-                "name": "Xiaohan's GitHub Page",
-                "description": "Xiaohan's GitHub Page is a personal website focused on open source projects and technology sharing, providing various resources and information."
-            },
-            "一楼没太阳": {
-                "name": "One Floor No Sun",
-                "description": "One Floor No Sun is a blog focused on personal life and technology sharing, providing various resources and information."
-            },
-            "「氯离子实验室」门户网站": {
-                "name": "Chloridep Lab Portal",
-                "description": "Chloridep Lab is a personal website focused on chemistry and scientific research, providing various resources and information."
-            }
-        }
-    },
-    "ja": {
-        "friends": {
-            "title": "友達",
-            "apply": "申請",
-            "aicorein": {
-                "name": "GlowMem",
-                "description": "GlowMemは、AIと機械学習に焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
-            },
-            "churanneko": {
-                "name": "Churannekoの個人ウェブサイト",
-                "description": "Churannekoは、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
-            },
-            "cysnies": {
-                "name": "CYS2004の個人ウェブサイト",
-                "description": "CYS2004は、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
-            },
-            "daoge的github主页": {
-                "name": "道哥のGitHubページ",
-                "description": "道哥のGitHubページは、オープンソースプロジェクトと技術共有に焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
-            },
-            "edream": {
-                "name": "EDreamの個人ブログ",
-                "description": "EDreamは、技術とプログラミングに焦点を当てた個人ブログで、さまざまなリソースと情報を提供しています。"
-            },
-            "Executor-Cheng": {
-                "name": "Executor-Chengの個人ウェブサイト",
-                "description": "Executor-Chengは、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
-            },
-            "eya46": {
-                "name": "Eya46の個人ウェブサイト",
-                "description": "Eya46は、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
-            },
-            "hch": {
-                "name": "Hchengの個人ウェブサイト",
-                "description": "Hchengは、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
-            },
-            "Inkar Suki": {
-                "name": "Inkar Suki Bot",
-                "description": "Inkar Sukiは、非常に強力な剑网3情報統合ボットであり、非常に大規模なユーザーグループと活発な活動を持っています。剑网3プレイヤーのための豊富なゲーム情報とコミュニティインタラクション機能を提供し、プレイヤーの良き助けとなります。"
-            },
-            "naloveyuki": {
-                "name": "Naloveyukiの個人ウェブサイト",
-                "description": "Naloveyukiは、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
-            },
-            "liteyukiIndexSite": {
-                "name": "Liteyukiインデックスサイト",
-                "description": "Liteyukiインデックスサイトは、技術とプログラミングに関連するさまざまなリソースと情報を提供する個人ウェブサイトです。"
-            },
-            "redrockteam": {
-                "name": "レッドロックチーム",
-                "description": "レッドロックチームは、大学で唯一インターネット製品の開発と運営を行う学生組織であり、学校の青年団委員会の指導の下で活動しています。Tencent、Alibaba、ByteDance、Huaweiなどの有名なインターネット企業から高く評価される多くの優秀なIT人材を輩出しています。"
-            },
-            "Twisui喵～♡": {
-                "name": "Twisuiの個人ウェブサイト",
-                "description": "Twisuiは、さまざまなテレビ番組、映画、バラエティ番組を提供するビデオプラットフォームです。"
-            },
-            "viki": {
-                "name": "Vikiの個人ウェブサイト",
-                "description": "Vikiは、さまざまなテレビ番組、映画、バラエティ番組を提供するビデオプラットフォームです。"
-            },
-            "艾拉酱小屋": {
-                "name": "アイラのコテージ",
-                "description": "アイラのコテージは、アニメ文化と個人生活に焦点を当てたブログで、さまざまなリソースと情報を提供しています。"
-            },
-            "笨蛋弥生的平行世界": {
-                "name": "バカヤヨイの平行世界",
-                "description": "バカヤヨイの平行世界は、アニメ文化と個人生活に焦点を当てたブログで、さまざまなリソースと情報を提供しています。"
-            },
-            "轻雪社区": {
-                "name": "Liteyukiコミュニティ",
-                "description": "Liteyukiコミュニティは、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
-            },
-            "三瓶可乐不过岗": {
-                "name": "Threkorkの個人ウェブサイト",
-                "description": "Threkorkは、技術とプログラミングに関連するさまざまなリソースと情報を提供する個人ウェブサイトです。"
-            },
-            "逝与逢博客": {
-                "name": "释然与逢のブログ",
-                "description": "释然与逢のブログは、オープンソースプロジェクトと技術共有に焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
-            },
-            "小涵のGithub主页": {
-                "name": "小涵のGitHubページ",
-                "description": "小涵のGitHubページは、オープンソースプロジェクトと技術共有に焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
-            },
-            "一楼没太阳": {
-                "name": "一楼没太阳",
-                "description": "一楼没太阳は、個人生活と技術共有に焦点を当てたブログで、さまざまなリソースと情報を提供しています。"
-            },
-            "「氯离子实验室」门户网站": {
-                "name": "クロライド実験室ポータル",
-                "description": "クロライド実験室は、化学と科学研究に焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
-            }
-        }
+  "zh": {
+    "friends": {
+      "title": "朋友们",
+      "apply": "申请友链",
+      "aicorein": {
+        "name": "GlowMem",
+        "description": "GlowMem是一个专注于AI和机器学习的个人网站，提供各种资源和信息。"
+      },
+      "churanneko": {
+        "name": "Churanneko的个人网站",
+        "description": "Churanneko是一个专注于技术和编程的个人网站，提供各种资源和信息。"
+      },
+      "cysnies": {
+        "name": "CYS2004的个人网站",
+        "description": "CYS2004是一个专注于技术和编程的个人网站，提供各种资源和信息。"
+      },
+      "daoge的github主页": {
+        "name": "道哥的GitHub主页",
+        "description": "道哥的GitHub主页是一个专注于开源项目和技术分享的个人网站，提供各种资源和信息。"
+      },
+      "edream": {
+        "name": "EDream的个人博客",
+        "description": "EDream是一个专注于技术和编程的个人博客，提供各种资源和信息。"
+      },
+      "Executor-Cheng": {
+        "name": "Executor-Cheng的个人网站",
+        "description": "Executor-Cheng是一个专注于技术和编程的个人网站，提供各种资源和信息。"
+      },
+      "eya46": {
+        "name": "Eya46的个人网站",
+        "description": "Eya46是一个专注于技术和编程的个人网站，提供各种资源和信息。"
+      },
+      "hch": {
+        "name": "Hcheng的个人网站",
+        "description": "Hcheng是一个专注于技术和编程的个人网站，提供各种资源和信息。"
+      },
+      "Inkar Suki": {
+        "name": "Inkar Suki Bot",
+        "description": "Inkar Suki是一个非常牛逼的剑网3信息整合机器人，有非常庞大的用户群体和活跃度。它提供了丰富的剑网3游戏信息和社区互动功能，是剑网3玩家的好帮手。"
+      },
+      "liteyukiIndexSite": {
+        "name": "轻雪工作室主页",
+        "description": "轻雪工作室是一个专注于开源项目和技术分享的团队，致力于为开发者提供高质量的资源和工具。"
+      },
+      "naloveyuki": {
+        "name": "Naloveyuki的个人网站",
+        "description": "Naloveyuki是一个专注于技术和编程的个人网站，提供各种资源和信息。"
+      },
+      "redrockteam": {
+        "name": "红岩网校工作站",
+        "description": "红岩网校工作站是学校唯一一个从事互联网产品开发运营的校级学生组织，在校团委的指导下，走出了一大批优秀的IT互联网人才，深受腾讯、阿里巴巴、字节跳动、华为等知名互联网企业的青睐。"
+      },
+      "Twisui喵～♡": {
+        "name": "Twisui的个人网站",
+        "description": "Twisui是一个视频平台，提供各种电视剧、电影和综艺节目。"
+      },
+      "viki": {
+        "name": "Viki的个人网站",
+        "description": "Viki 是一个视频平台，提供各种电视剧、电影和综艺节目。"
+      },
+      "艾拉酱小屋": {
+        "name": "艾拉酱小屋",
+        "description": "艾拉酱小屋是一个专注于二次元文化和个人生活的博客，提供各种资源和信息。"
+      },
+      "笨蛋弥生的平行世界": {
+        "name": "笨蛋弥生的平行世界",
+        "description": "笨蛋弥生的平行世界是一个专注于二次元文化和个人生活的博客，提供各种资源和信息。"
+      },
+      "轻雪社区": {
+        "name": "轻雪社区",
+        "description": "轻雪社区是一个专注于技术和编程的个人网站，提供各种资源和信息。"
+      },
+      "三瓶可乐不过岗": {
+        "name": "三瓶可乐不过岗的个人网站",
+        "description": "三瓶可乐不过岗是一个专注于技术和编程的个人网站，提供各种资源和信息。"
+      },
+      "逝与逢博客": {
+        "name": "释然的博客",
+        "description": "释然的博客是一个专注于开源项目和技术分享的个人网站，提供各种资源和信息。"
+      },
+      "小涵のGithub主页": {
+        "name": "小涵的Github主页",
+        "description": "小涵的Github主页是一个专注于开源项目和技术分享的个人网站，提供各种资源和信息。"
+      },
+      "一楼没太阳": {
+        "name": "一楼没太阳",
+        "description": "一楼没太阳是一个专注于个人生活和技术分享的博客，提供各种资源和信息。"
+      },
+      "「氯离子实验室」门户网站": {
+        "name": "「氯离子实验室」门户网站",
+        "description": "「氯离子实验室」是一个专注于化学和科学研究的个人网站，提供各种资源和信息。"
+      }
     }
+  },
+  "en": {
+    "friends": {
+      "title": "Friends",
+      "apply": "Apply",
+      "aicorein": {
+        "name": "GlowMem",
+        "description": "GlowMem is a personal website focused on AI and machine learning, providing various resources and information."
+      },
+      "churanneko": {
+        "name": "Churanneko's Personal Website",
+        "description": "Churanneko is a personal website focused on technology and programming, providing various resources and information."
+      },
+      "cysnies": {
+        "name": "CYS2004's Personal Website",
+        "description": "CYS2004 is a personal website focused on technology and programming, providing various resources and information."
+      },
+      "daoge的github主页": {
+        "name": "Daoge's GitHub Page",
+        "description": "Daoge's GitHub Page is a personal website focused on open source projects and technology sharing, providing various resources and information."
+      },
+      "edream": {
+        "name": "EDream's Personal Blog",
+        "description": "EDream is a personal blog focused on technology and programming, providing various resources and information."
+      },
+      "Executor-Cheng": {
+        "name": "Executor-Cheng's Personal Website",
+        "description": "Executor-Cheng is a personal website focused on technology and programming, providing various resources and information."
+      },
+      "eya46": {
+        "name": "Eya46's Personal Website",
+        "description": "Eya46 is a personal website focused on technology and programming, providing various resources and information."
+      },
+      "hch": {
+        "name": "Hcheng's Personal Website",
+        "description": "Hcheng is a personal website focused on technology and programming, providing various resources and information."
+      },
+      "Inkar Suki": {
+        "name": "Inkar Suki Bot",
+        "description": "Inkar Suki is a very powerful Sword of Legends 3 information integration bot with a large user base and high activity. It provides rich game information and community interaction features, making it a great helper for Sword of Legends 3 players."
+      },
+      "naloveyuki": {
+        "name": "Naloveyuki's Personal Website",
+        "description": "Naloveyuki is a personal website focused on technology and programming, providing various resources and information."
+      },
+      "liteyukiIndexSite": {
+        "name": "Liteyuki Index Site",
+        "description": "Liteyuki Index Site is a personal website that provides various resources and information related to technology and programming."
+      },
+      "redrockteam": {
+        "name": "Redrock Team",
+        "description": "Redrock Team is the only student organization at the university engaged in internet product development and operation, guided by the school’s Youth League Committee. It has produced many outstanding IT talents who are highly sought after by well-known internet companies such as Tencent, Alibaba, ByteDance, and Huawei."
+      },
+      "viki": {
+        "name": "Viki's Personal Website",
+        "description": "Viki is a video platform that offers a variety of TV shows, movies, and variety programs."
+      },
+      "Twisui喵～♡": {
+        "name": "Twisui's Personal Website",
+        "description": "Twisui is a video platform that offers a variety of TV shows, movies, and variety programs."
+      },
+      "艾拉酱小屋": {
+        "name": "Isla's Cottage",
+        "description": "Isla's Cottage is a blog focused on anime culture and personal life, providing various resources and information."
+      },
+      "笨蛋弥生的平行世界": {
+        "name": "Baka Yayoi's Parallel World",
+        "description": "Baka Yayoi's Parallel World is a blog focused on anime culture and personal life, providing various resources and information."
+      },
+      "轻雪社区": {
+        "name": "Liteyuki Community",
+        "description": "Liteyuki Community is a personal website focused on technology and programming, providing various resources and information."
+      },
+      "三瓶可乐不过岗": {
+        "name": "Threkork's Personal Website",
+        "description": "Threkork is a personal website that provides various resources and information related to technology and programming."
+      },
+      "逝与逢博客": {
+        "name": "Shi Ran's Blog",
+        "description": "Shi Ran's Blog is a personal website focused on open source projects and technology sharing, providing various resources and information."
+      },
+      "小涵のGithub主页": {
+        "name": "Xiaohan's GitHub Page",
+        "description": "Xiaohan's GitHub Page is a personal website focused on open source projects and technology sharing, providing various resources and information."
+      },
+      "一楼没太阳": {
+        "name": "One Floor No Sun",
+        "description": "One Floor No Sun is a blog focused on personal life and technology sharing, providing various resources and information."
+      },
+      "「氯离子实验室」门户网站": {
+        "name": "Chloridep Lab Portal",
+        "description": "Chloridep Lab is a personal website focused on chemistry and scientific research, providing various resources and information."
+      }
+    }
+  },
+  "ja": {
+    "friends": {
+      "title": "友達",
+      "apply": "申請",
+      "aicorein": {
+        "name": "GlowMem",
+        "description": "GlowMemは、AIと機械学習に焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
+      },
+      "churanneko": {
+        "name": "Churannekoの個人ウェブサイト",
+        "description": "Churannekoは、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
+      },
+      "cysnies": {
+        "name": "CYS2004の個人ウェブサイト",
+        "description": "CYS2004は、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
+      },
+      "daoge的github主页": {
+        "name": "道哥のGitHubページ",
+        "description": "道哥のGitHubページは、オープンソースプロジェクトと技術共有に焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
+      },
+      "edream": {
+        "name": "EDreamの個人ブログ",
+        "description": "EDreamは、技術とプログラミングに焦点を当てた個人ブログで、さまざまなリソースと情報を提供しています。"
+      },
+      "Executor-Cheng": {
+        "name": "Executor-Chengの個人ウェブサイト",
+        "description": "Executor-Chengは、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
+      },
+      "eya46": {
+        "name": "Eya46の個人ウェブサイト",
+        "description": "Eya46は、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
+      },
+      "hch": {
+        "name": "Hchengの個人ウェブサイト",
+        "description": "Hchengは、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
+      },
+      "Inkar Suki": {
+        "name": "Inkar Suki Bot",
+        "description": "Inkar Sukiは、非常に強力な剑网3情報統合ボットであり、非常に大規模なユーザーグループと活発な活動を持っています。剑网3プレイヤーのための豊富なゲーム情報とコミュニティインタラクション機能を提供し、プレイヤーの良き助けとなります。"
+      },
+      "naloveyuki": {
+        "name": "Naloveyukiの個人ウェブサイト",
+        "description": "Naloveyukiは、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
+      },
+      "liteyukiIndexSite": {
+        "name": "Liteyukiインデックスサイト",
+        "description": "Liteyukiインデックスサイトは、技術とプログラミングに関連するさまざまなリソースと情報を提供する個人ウェブサイトです。"
+      },
+      "redrockteam": {
+        "name": "レッドロックチーム",
+        "description": "レッドロックチームは、大学で唯一インターネット製品の開発と運営を行う学生組織であり、学校の青年団委員会の指導の下で活動しています。Tencent、Alibaba、ByteDance、Huaweiなどの有名なインターネット企業から高く評価される多くの優秀なIT人材を輩出しています。"
+      },
+      "Twisui喵～♡": {
+        "name": "Twisuiの個人ウェブサイト",
+        "description": "Twisuiは、さまざまなテレビ番組、映画、バラエティ番組を提供するビデオプラットフォームです。"
+      },
+      "viki": {
+        "name": "Vikiの個人ウェブサイト",
+        "description": "Vikiは、さまざまなテレビ番組、映画、バラエティ番組を提供するビデオプラットフォームです。"
+      },
+      "艾拉酱小屋": {
+        "name": "アイラのコテージ",
+        "description": "アイラのコテージは、アニメ文化と個人生活に焦点を当てたブログで、さまざまなリソースと情報を提供しています。"
+      },
+      "笨蛋弥生的平行世界": {
+        "name": "バカヤヨイの平行世界",
+        "description": "バカヤヨイの平行世界は、アニメ文化と個人生活に焦点を当てたブログで、さまざまなリソースと情報を提供しています。"
+      },
+      "轻雪社区": {
+        "name": "Liteyukiコミュニティ",
+        "description": "Liteyukiコミュニティは、技術とプログラミングに焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
+      },
+      "三瓶可乐不过岗": {
+        "name": "Threkorkの個人ウェブサイト",
+        "description": "Threkorkは、技術とプログラミングに関連するさまざまなリソースと情報を提供する個人ウェブサイトです。"
+      },
+      "逝与逢博客": {
+        "name": "释然与逢のブログ",
+        "description": "释然与逢のブログは、オープンソースプロジェクトと技術共有に焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
+      },
+      "小涵のGithub主页": {
+        "name": "小涵のGitHubページ",
+        "description": "小涵のGitHubページは、オープンソースプロジェクトと技術共有に焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
+      },
+      "一楼没太阳": {
+        "name": "一楼没太阳",
+        "description": "一楼没太阳は、個人生活と技術共有に焦点を当てたブログで、さまざまなリソースと情報を提供しています。"
+      },
+      "「氯离子实验室」门户网站": {
+        "name": "クロライド実験室ポータル",
+        "description": "クロライド実験室は、化学と科学研究に焦点を当てた個人ウェブサイトで、さまざまなリソースと情報を提供しています。"
+      }
+    }
+  }
 }

@@ -1,22 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useMusic } from "@/contexts/MusicContext";
-import { motion } from "framer-motion";
-import { BaseWindow } from "@/components/windows/BaseWindow";
+import { motion } from 'framer-motion'
+import React, { useEffect, useRef, useState } from 'react'
+import { BaseWindow } from '@/components/windows/BaseWindow'
+import { useMusic } from '@/contexts/MusicContext'
 
 export interface DesktopLyricWidgetProps {
-  id?: string;
-  visible?: boolean;
-  draggable?: boolean;
-  resizable?: boolean;
-  width?: number;
-  height?: number;
-  fontSize?: number;
-  color?: string;
-  shadow?: boolean;
+  id?: string
+  visible?: boolean
+  draggable?: boolean
+  resizable?: boolean
+  width?: number
+  height?: number
+  fontSize?: number
+  color?: string
+  shadow?: boolean
 }
 
 export const LyricWindow: React.FC<DesktopLyricWidgetProps> = ({
-  id = "desktop-lyric",
+  id = 'desktop-lyric',
   visible = true,
   draggable = true,
   resizable = false,
@@ -26,23 +26,24 @@ export const LyricWindow: React.FC<DesktopLyricWidgetProps> = ({
   // color = "#fff",
   shadow = true,
 }) => {
-  const { displayLrc, currentSong } = useMusic();
-  const lyricRef = useRef<HTMLDivElement>(null);
+  const { currentLyric, currentTrack } = useMusic()
+  const lyricRef = useRef<HTMLDivElement>(null)
 
   // 新增：本地维护位置
-  const [position, setPosition] = useState({ x: 200, y: 200 });
-  const [size, setSize] = useState({ width, height });
+  const [position, setPosition] = useState({ x: 200, y: 200 })
+  const [size, setSize] = useState({ width, height })
 
   useEffect(() => {
     if (lyricRef.current) {
       lyricRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
+        behavior: 'smooth',
+        block: 'center',
+      })
     }
-  }, [displayLrc]);
+  }, [currentLyric])
 
-  if (!currentSong) return null;
+  if (!currentTrack)
+    return null
 
   return (
     <BaseWindow
@@ -57,10 +58,10 @@ export const LyricWindow: React.FC<DesktopLyricWidgetProps> = ({
       onDragStop={(_, d) => setPosition({ x: d.x, y: d.y })}
       onResizeStop={(_, __, ref, ___, pos) => {
         setSize({
-          width: parseInt(ref.style.width, 10),
-          height: parseInt(ref.style.height, 10),
-        });
-        setPosition({ x: pos.x, y: pos.y });
+          width: Number.parseInt(ref.style.width, 10),
+          height: Number.parseInt(ref.style.height, 10),
+        })
+        setPosition({ x: pos.x, y: pos.y })
       }}
       zIndex={9999}
     >
@@ -72,7 +73,7 @@ export const LyricWindow: React.FC<DesktopLyricWidgetProps> = ({
         className={`
     w-full h-full flex items-center justify-center
     font-semibold tracking-wide cursor-move whitespace-pre-line text-center leading-tight overflow-hidden bg-transparent select-none
-    ${shadow ? "drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]" : ""}
+    ${shadow ? 'drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]' : ''}
     bg-gradient-to-r from-pink-400 via-blue-400 to-green-400
     bg-clip-text text-transparent
   `}
@@ -81,8 +82,8 @@ export const LyricWindow: React.FC<DesktopLyricWidgetProps> = ({
           // color 不再需要，渐变色用 text-transparent + bg-clip-text
         }}
       >
-        {displayLrc || currentSong.title}
+        {currentLyric || currentTrack.name}
       </motion.div>
     </BaseWindow>
-  );
-};
+  )
+}

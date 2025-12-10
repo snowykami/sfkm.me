@@ -1,25 +1,22 @@
-"use client";
-import type React from "react";
-import { Button } from "@/components/ui/Button";
-import { CardContent } from "@/components/ui/Card";
+'use client'
+import type React from 'react'
+import { t } from 'i18next'
+import { ExternalLink, MessageCircle } from 'lucide-react'
 
-import { t } from "i18next";
-import config from "@/config";
-import { ExternalLink, MessageCircle } from "lucide-react";
+import { Button } from '@/components/ui/Button'
+import { CardContent } from '@/components/ui/Card'
+import config from '@/config'
 
 export default function ContactsContent() {
-
   return (
     <CardContent className="p-6 transition-colors">
       <div className="space-y-4">
         <div className="flex items-center mb-4">
           <MessageCircle className="w-5 h-5 text-slate-500 dark:text-slate-400 mr-2" />
           <h2 className="text-lg font-semibold text-slate-800 dark:text-white">
-            {t("contacts.title")}
+            {t('contacts.title')}
           </h2>
         </div>
-
-
 
         {config.contacts.map((contact, index) => (
           <div
@@ -50,5 +47,5 @@ export default function ContactsContent() {
 
       </div>
     </CardContent>
-  );
+  )
 }

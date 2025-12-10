@@ -1,18 +1,18 @@
-import React from "react";
+import React from 'react'
 
 export interface BaseWidgetProps {
-  className?: string;
-  style?: React.CSSProperties;
-  children?: React.ReactNode;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
-  title?: string; // 新增
+  className?: string
+  style?: React.CSSProperties
+  children?: React.ReactNode
+  onClick?: React.MouseEventHandler<HTMLDivElement>
+  title?: string // 新增
 }
 
 /**
  * BaseWidget 作为所有顶栏小部件的基础组件，统一样式和交互。
  */
 const BaseWidget: React.FC<BaseWidgetProps> = ({
-  className = "",
+  className = '',
   style,
   children,
   onClick,
@@ -27,7 +27,7 @@ const BaseWidget: React.FC<BaseWidgetProps> = ({
     >
       {children}
     </div>
-  );
-};
+  )
+}
 
-export default BaseWidget;
+export default BaseWidget

@@ -1,127 +1,135 @@
-import { useState, useEffect, useRef } from "react";
-import { Card, CardContent } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
-import { Users, ExternalLink } from "lucide-react";
-import Image from "next/image";
-import Friends from "@/data/friends.json";
-import { useTranslation } from "react-i18next";
-import config from "@/config";
+import { ExternalLink, Users } from 'lucide-react'
+import Image from 'next/image'
+import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Badge } from '@/components/ui/Badge'
+import { Button } from '@/components/ui/Button'
+import { Card, CardContent } from '@/components/ui/Card'
+import config from '@/config'
+import Friends from '@/data/friends.json'
 
 interface Friend {
-  name: string;
-  link: string;
-  avatar: string;
-  description?: string;
-  tag?: string;
-  tagClass?: string; // 可选的标签样式类
+  name: string
+  link: string
+  avatar: string
+  description?: string
+  tag?: string
+  tagClass?: string // 可选的标签样式类
 }
 
-const friends: Friend[] = Friends;
+const friends: Friend[] = Friends
 
 function shuffle<T>(arr: T[]): T[] {
-  const a = arr.slice();
+  const a = arr.slice()
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
+    [a[i], a[j]] = [a[j], a[i]]
   }
-  return a;
+  return a
 }
 
 // 跑马灯组件
 function Marquee({
   text,
-  className = "",
+  className = '',
   speed = 60, // px/s
   delay = 1200, // ms
 }: {
-  text: string;
-  className?: string;
-  speed?: number;
-  delay?: number;
+  text: string
+  className?: string
+  speed?: number
+  delay?: number
 }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  const [shouldScroll, setShouldScroll] = useState(false);
-  const [offset, setOffset] = useState(0);
-  const [isScrolling, setIsScrolling] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null)
+  const textRef = useRef<HTMLDivElement>(null)
+  const [shouldScroll, setShouldScroll] = useState(false)
+  const [offset, setOffset] = useState(0)
+  const [isScrolling, setIsScrolling] = useState(false)
 
   useEffect(() => {
-    const container = containerRef.current;
-    const textEl = textRef.current;
-    if (!container || !textEl) return;
+    const container = containerRef.current
+    const textEl = textRef.current
+    if (!container || !textEl)
+      return
 
-    const containerWidth = container.offsetWidth;
-    const textWidth = textEl.scrollWidth;
+    const containerWidth = container.offsetWidth
+    const textWidth = textEl.scrollWidth
 
     if (textWidth > containerWidth) {
-      setShouldScroll(true);
-      setOffset(textWidth - containerWidth);
-    } else {
-      setShouldScroll(false);
-      setOffset(0);
+      setShouldScroll(true)
+      setOffset(textWidth - containerWidth)
     }
-  }, [text]);
+    else {
+      setShouldScroll(false)
+      setOffset(0)
+    }
+  }, [text])
 
   useEffect(() => {
-    if (!shouldScroll) return;
-    let raf: number;
-    let start: number;
-    let stopped = false;
+    if (!shouldScroll)
+      return
+    let raf: number
+    let start: number
+    let stopped = false
 
     const animate = (timestamp: number) => {
-      if (stopped) return;
-      if (!start) start = timestamp;
-      const elapsed = timestamp - start;
-      const container = containerRef.current;
-      if (!container) return;
+      if (stopped)
+        return
+      if (!start)
+        start = timestamp
+      const elapsed = timestamp - start
+      const container = containerRef.current
+      if (!container)
+        return
 
       // 动画总时长
-      const duration = (offset / speed) * 1000;
+      const duration = (offset / speed) * 1000
       // 计算当前偏移
-      const x = Math.min((elapsed / duration) * offset, offset);
-      container.scrollLeft = x;
+      const x = Math.min((elapsed / duration) * offset, offset)
+      container.scrollLeft = x
 
       if (x < offset) {
-        raf = requestAnimationFrame(animate);
-      } else {
+        raf = requestAnimationFrame(animate)
+      }
+      else {
         // 到头后停一会再回到开头，然后重新开始
         setTimeout(() => {
-          if (container) container.scrollLeft = 0;
+          if (container)
+            container.scrollLeft = 0
           // 再次初始停顿后重新开始动画
           setTimeout(() => {
-            start = undefined as unknown as number;
-            raf = requestAnimationFrame(animate);
-          }, delay);
-        }, delay);
+            start = undefined as unknown as number
+            raf = requestAnimationFrame(animate)
+          }, delay)
+        }, delay)
       }
-    };
+    }
 
     // 初始停顿
-    setIsScrolling(true);
+    setIsScrolling(true)
     const timer = setTimeout(() => {
-      raf = requestAnimationFrame(animate);
-    }, delay);
+      raf = requestAnimationFrame(animate)
+    }, delay)
 
     return () => {
-      stopped = true;
-      clearTimeout(timer);
-      cancelAnimationFrame(raf);
-    };
-  }, [shouldScroll, offset, speed, delay, text]);
+      stopped = true
+      clearTimeout(timer)
+      cancelAnimationFrame(raf)
+    }
+  }, [shouldScroll, offset, speed, delay, text])
 
   // 重新开始动画
   useEffect(() => {
     if (!shouldScroll && containerRef.current) {
-      containerRef.current.scrollLeft = 0;
+      containerRef.current.scrollLeft = 0
     }
-  }, [shouldScroll, text]);
+  }, [shouldScroll, text])
 
   return (
     <div
       ref={containerRef}
       className={`relative overflow-hidden whitespace-nowrap ${className}`}
-      style={{ cursor: shouldScroll ? "pointer" : undefined }}
+      style={{ cursor: shouldScroll ? 'pointer' : undefined }}
       onMouseEnter={() => shouldScroll && !isScrolling && setIsScrolling(true)}
       onMouseLeave={() => shouldScroll && setIsScrolling(false)}
     >
@@ -129,24 +137,24 @@ function Marquee({
         ref={textRef}
         className="inline-block"
         style={{
-          transition: "none",
-          willChange: "transform",
+          transition: 'none',
+          willChange: 'transform',
         }}
       >
         {text}
       </div>
     </div>
-  );
+  )
 }
 
 export default function FriendsContent() {
-  const { t } = useTranslation();
-  const [list, setList] = useState(friends);
+  const { t } = useTranslation()
+  const [list, setList] = useState(friends)
 
   // 只在客户端打乱，避免 hydration mismatch
   useEffect(() => {
-    setList(shuffle(friends));
-  }, []);
+    setList(shuffle(friends))
+  }, [])
 
   return (
     <CardContent className="p-6 transition-colors h-full flex flex-col">
@@ -154,7 +162,7 @@ export default function FriendsContent() {
       <div className="flex items-center mb-4 flex-shrink-0">
         <Users className="w-5 h-5 text-slate-500 dark:text-slate-400 mr-2" />
         <h2 className="text-lg font-semibold text-slate-800 dark:text-white flex-1">
-          {t("friends.title")}
+          {t('friends.title')}
         </h2>
         <Button
           className="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 transition-colors h-8 px-3"
@@ -166,16 +174,16 @@ export default function FriendsContent() {
             rel="noopener noreferrer"
           >
             <ExternalLink className="w-4 h-4 mr-2" />
-            {t("friends.apply")}
+            {t('friends.apply')}
           </a>
         </Button>
       </div>
       {/* 列表可滚动，外层不滚动 */}
       <div
         className="flex-1 min-h-0 flex flex-col gap-2 overflow-y-auto px-0"
-        style={{ scrollbarGutter: "stable overlay" }}
+        style={{ scrollbarGutter: 'stable overlay' }}
       >
-        {list.map((friend) => (
+        {list.map(friend => (
           <Card
             key={friend.link}
             className="bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 transition-colors hover:bg-slate-200 hover:dark:bg-slate-700/70 cursor-pointer"
@@ -209,21 +217,23 @@ export default function FriendsContent() {
                     {friend.tag && (
                       <Badge
                         variant="outline"
-                        className={`${friend.tagClass ?? ""} text-xs text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-600`}
+                        className={`${friend.tagClass ?? ''} text-xs text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-600`}
                       >
                         {t(friend.tag)}
                       </Badge>
                     )}
                   </div>
                   <div className="text-slate-950 dark:text-slate-300 text-sm">
-                    {friend.description ? (
-                      <Marquee
-                        text={t(friend.description)}
-                        className="max-w-[18em]"
-                      />
-                    ) : (
-                      ""
-                    )}
+                    {friend.description
+                      ? (
+                          <Marquee
+                            text={t(friend.description)}
+                            className="max-w-[18em]"
+                          />
+                        )
+                      : (
+                          ''
+                        )}
                   </div>
                 </div>
               </div>
@@ -232,5 +242,5 @@ export default function FriendsContent() {
         ))}
       </div>
     </CardContent>
-  );
+  )
 }

@@ -1,55 +1,56 @@
-"use client";
+'use client'
 
-import { useWindowManager } from "@/contexts/WindowManagerContext";
-import { useEffect, useState } from "react";
+import { t } from 'i18next'
+import { useEffect, useState } from 'react'
+import config from '@/config'
+import { useWindowManager } from '@/contexts/WindowManagerContext'
 // component
 // import { MusicPlayerWidget } from "./widgets/MusicPlayerWidget"
-import { DatetimeWidget } from "./widgets/DatetimeWidget";
-import { MusicControlWidget } from "./widgets/MusicControlWidget";
-import { ThemeSwitch } from "./widgets/ThemeSwitch";
-import { VolumeWidget } from "./widgets/VolumeWidget";
-import { FullscreenSwitch } from "./widgets/FullscreenSwitch";
+import { DatetimeWidget } from './widgets/DatetimeWidget'
+import { FullscreenSwitch } from './widgets/FullscreenSwitch'
+import { MusicControlWidget } from './widgets/MusicControlWidget'
 
-import config from "@/config";
-import { t } from "i18next";
+import { ThemeSwitch } from './widgets/ThemeSwitch'
+import { VolumeWidget } from './widgets/VolumeWidget'
 
 // 顶栏高度常量，导出供全局使用
-export const TOPBAR_HEIGHT = 36; // 你可以根据设计调整为 40 或其它
+export const TOPBAR_HEIGHT = 36 // 你可以根据设计调整为 40 或其它
 
 interface TopBarProps {
-  className?: string;
-  title?: string;
+  className?: string
+  title?: string
 }
 
 export function TopBar({
-  className = "",
-  title = "Window Title",
+  className = '',
+  title = 'Window Title',
 }: TopBarProps) {
-  const [mounted, setMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const { windows } = useWindowManager();
+  const [mounted, setMounted] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const { windows } = useWindowManager()
   const focusedWindow = windows
-    .filter((w) => w.visible && !w.minimized)
+    .filter(w => w.visible && !w.minimized)
     .reduce(
       (top, w) => (top === null || w.zIndex > top.zIndex ? w : top),
       null as (typeof windows)[0] | null,
-    );
+    )
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // 等待组件挂载后再根据 isMobile 渲染数据
-  if (!mounted) return null;
+  if (!mounted)
+    return null
 
   return (
     <div
@@ -82,5 +83,5 @@ export function TopBar({
         </div>
       </div>
     </div>
-  );
+  )
 }

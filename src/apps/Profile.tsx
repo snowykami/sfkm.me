@@ -1,114 +1,115 @@
-"use client";
+'use client'
 
-import { MapPin } from "lucide-react";
-import { t } from "i18next";
-import { useEffect, useState, useRef } from "react";
-import { CardContent } from "@/components/ui/Card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
-import { Badge } from "@/components/ui/Badge";
-import config from "@/config";
-import { Divider } from "@/components/ui/Divider";
-import { SimplifyCourse } from "@/app/api/kebiao/route";
-import { fetchCurrentCourses } from "@/api/kebiao";
+import type { SimplifyCourse } from '@/app/api/kebiao/route'
+import { t } from 'i18next'
+import { MapPin } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { fetchCurrentCourses } from '@/api/kebiao'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar'
+import { Badge } from '@/components/ui/Badge'
+import { CardContent } from '@/components/ui/Card'
+import { Divider } from '@/components/ui/Divider'
+import config from '@/config'
 
 const gradientClasses = [
-  "bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400",
-  "bg-gradient-to-r from-pink-400 via-red-400 to-yellow-400",
-  "bg-gradient-to-r from-green-400 via-teal-400 to-blue-400",
-  "bg-gradient-to-r from-purple-400 via-fuchsia-400 to-pink-400",
-];
+  'bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400',
+  'bg-gradient-to-r from-pink-400 via-red-400 to-yellow-400',
+  'bg-gradient-to-r from-green-400 via-teal-400 to-blue-400',
+  'bg-gradient-to-r from-purple-400 via-fuchsia-400 to-pink-400',
+]
 
 function calculateAge(birthDate: string): number {
-  const birth = new Date(birthDate);
-  const today = new Date();
+  const birth = new Date(birthDate)
+  const today = new Date()
 
   // 计算年龄差
-  let age = today.getFullYear() - birth.getFullYear();
+  let age = today.getFullYear() - birth.getFullYear()
 
   // 创建今年的生日日期
-  const thisYearBirthday = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
+  const thisYearBirthday = new Date(today.getFullYear(), birth.getMonth(), birth.getDate())
 
   // 如果今年的生日还没到，年龄减1
   if (today < thisYearBirthday) {
-    age--;
+    age--
     // 使用去年的生日作为基准
-    const lastYearBirthday = new Date(today.getFullYear() - 1, birth.getMonth(), birth.getDate());
-    const daysSinceLastBirthday = Math.floor((today.getTime() - lastYearBirthday.getTime()) / (1000 * 60 * 60 * 24));
-    const daysInYear = isLeapYear(today.getFullYear() - 1) ? 366 : 365;
-    const fraction = daysSinceLastBirthday / daysInYear;
-    return Math.round((age + fraction) * 10) / 10;
-  } else {
+    const lastYearBirthday = new Date(today.getFullYear() - 1, birth.getMonth(), birth.getDate())
+    const daysSinceLastBirthday = Math.floor((today.getTime() - lastYearBirthday.getTime()) / (1000 * 60 * 60 * 24))
+    const daysInYear = isLeapYear(today.getFullYear() - 1) ? 366 : 365
+    const fraction = daysSinceLastBirthday / daysInYear
+    return Math.round((age + fraction) * 10) / 10
+  }
+  else {
     // 今年的生日已经过了
-    const daysSinceBirthday = Math.floor((today.getTime() - thisYearBirthday.getTime()) / (1000 * 60 * 60 * 24));
-    const daysInYear = isLeapYear(today.getFullYear()) ? 366 : 365;
-    const fraction = daysSinceBirthday / daysInYear;
-    return Math.round((age + fraction) * 10) / 10;
+    const daysSinceBirthday = Math.floor((today.getTime() - thisYearBirthday.getTime()) / (1000 * 60 * 60 * 24))
+    const daysInYear = isLeapYear(today.getFullYear()) ? 366 : 365
+    const fraction = daysSinceBirthday / daysInYear
+    return Math.round((age + fraction) * 10) / 10
   }
 }
 
 // 辅助函数：判断是否为闰年
 function isLeapYear(year: number): boolean {
-  return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+  return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)
 }
 
 export default function ProfileContent() {
-  const [descIndex, setDescIndex] = useState(0);
-  const [gradientIndex, setGradientIndex] = useState(0); // 昵称背景渐变索引
-  const [fade, setFade] = useState(true);
-  const [currentCourses, setCurrentCourses] = useState<SimplifyCourse[]>([]);
+  const [descIndex, setDescIndex] = useState(0)
+  const [gradientIndex, setGradientIndex] = useState(0) // 昵称背景渐变索引
+  const [fade, setFade] = useState(true)
+  const [currentCourses, setCurrentCourses] = useState<SimplifyCourse[]>([])
   // 添加引用以跟踪是否已装载（在挂载/卸载时维护状态）
-  const isMounted = useRef(false);
+  const isMounted = useRef(false)
   useEffect(() => {
-    isMounted.current = true;
+    isMounted.current = true
     return () => {
-      isMounted.current = false;
-    };
-  }, []);
+      isMounted.current = false
+    }
+  }, [])
 
-  const age = calculateAge(config.profile.birthDate || "2000-01-01"); // 默认出生日期为2000年1月1日
+  const age = calculateAge(config.profile.birthDate || '2000-01-01') // 默认出生日期为2000年1月1日
 
   // 昵称背景渐变变化
   useEffect(() => {
     const timer = setInterval(() => {
-      setGradientIndex((i) => (i + 1) % gradientClasses.length);
-    }, 2000);
+      setGradientIndex(i => (i + 1) % gradientClasses.length)
+    }, 2000)
     return () => {
-      clearInterval(timer);
-      isMounted.current = false;
-    };
-  }, []);
+      clearInterval(timer)
+      isMounted.current = false
+    }
+  }, [])
 
   // 描述文本变化
   useEffect(() => {
-    let fadeTimer: NodeJS.Timeout;
+    let fadeTimer: NodeJS.Timeout
     const timer = setInterval(() => {
-      setFade(false);
+      setFade(false)
       fadeTimer = setTimeout(() => {
-        setDescIndex((prev) => (prev + 1) % config.profile.descriptions.length);
-        setFade(true);
-      }, 400);
-    }, 3500);
+        setDescIndex(prev => (prev + 1) % config.profile.descriptions.length)
+        setFade(true)
+      }, 400)
+    }, 3500)
 
     return () => {
-      clearInterval(timer);
-      clearTimeout(fadeTimer);
-    };
-  }, []); // 保持空依赖数组
+      clearInterval(timer)
+      clearTimeout(fadeTimer)
+    }
+  }, []) // 保持空依赖数组
 
   // 获取当前的课（只在挂载时执行一次）
   useEffect(() => {
-    let mounted = true;
+    let mounted = true
     fetchCurrentCourses()
       .then((data: { currentCourses: SimplifyCourse[] }) => {
         if (mounted && isMounted.current) {
-          setCurrentCourses(data.currentCourses);
+          setCurrentCourses(data.currentCourses)
         }
       })
-      .catch(() => { });
+      .catch(() => { })
     return () => {
-      mounted = false;
-    };
-  }, []);
+      mounted = false
+    }
+  }, [])
 
   return (
     <CardContent className="p-8 transition-colors">
@@ -131,7 +132,7 @@ export default function ProfileContent() {
             <div className="back">
               <Avatar
                 className="w-full h-full"
-                style={{ transform: "scaleX(-1)" }}
+                style={{ transform: 'scaleX(-1)' }}
               >
                 <AvatarImage
                   src={config.profile.avatar}
@@ -147,11 +148,11 @@ export default function ProfileContent() {
         {/* 大昵称 */}
         <div
           className="w-full max-w-full overflow-x-auto"
-          style={{ WebkitOverflowScrolling: "touch" }}
+          style={{ WebkitOverflowScrolling: 'touch' }}
         >
           <h1
             className={`text-2xl font-bold mb-1 ${gradientClasses[gradientIndex]} bg-clip-text text-transparent leading-relaxed py-1 min-w-[12rem] px-4 transition-colors duration-700`}
-            style={{ fontFamily: "'Pacifico', cursive" }}
+            style={{ fontFamily: '\'Pacifico\', cursive' }}
           >
             {config.profile.nickname}
           </h1>
@@ -159,17 +160,24 @@ export default function ProfileContent() {
 
         <div className="flex items-center text-slate-500 dark:text-slate-400 text-sm mb-2">
           <MapPin className="w-4 h-4 mr-1" />
-          <span>{t("profile.location")}</span>
+          <span>{t('profile.location')}</span>
         </div>
         {/* 当前正在上的课 */}
-        {(currentCourses.length > 0) && <div className="flex items-center text-green-600 dark:text-green-400 text-sm">
-          <span>{t("profile.currentinclass")}: {currentCourses.length > 0 ? currentCourses.map(course => `${course.name}`).join("; ") : t("contacts.nocourse")}</span>
-        </div>}
+        {(currentCourses.length > 0) && (
+          <div className="flex items-center text-green-600 dark:text-green-400 text-sm">
+            <span>
+              {t('profile.currentinclass')}
+              :
+              {' '}
+              {currentCourses.length > 0 ? currentCourses.map(course => `${course.name}`).join('; ') : t('contacts.nocourse')}
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="mb-2 min-h-[40px]">
         <p
-          className={`text-slate-600 dark:text-slate-300 text-sm leading-relaxed text-center transition-opacity duration-400 ${fade ? "opacity-100" : "opacity-0"}`}
+          className={`text-slate-600 dark:text-slate-300 text-sm leading-relaxed text-center transition-opacity duration-400 ${fade ? 'opacity-100' : 'opacity-0'}`}
         >
           {t(config.profile.descriptions[descIndex])}
         </p>
@@ -177,10 +185,10 @@ export default function ProfileContent() {
       {/* 标签区域 */}
       <div className="mb-6">
         <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3 text-center">
-          {t("profile.tag")}
+          {t('profile.tag')}
         </h3>
         <div className="flex flex-wrap gap-2 justify-center">
-          {config.profile.skillBadges.map((badge) => (
+          {config.profile.skillBadges.map(badge => (
             <Badge key={badge.key} className={badge.className}>
               {badge.label}
             </Badge>
@@ -191,22 +199,24 @@ export default function ProfileContent() {
       {/* 简介 */}
       <div className="mt-4 mb-4">
         <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3 text-center">
-          {t("profile.introduction")}
+          {t('profile.introduction')}
         </h3>
-        <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed text-left"
+        <p
+          className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed text-left"
           dangerouslySetInnerHTML={{
-            __html: t('profile.introductionText', { age })
-          }}>
+            __html: t('profile.introductionText', { age }),
+          }}
+        >
         </p>
       </div>
       <Divider />
       {/* 应用区域 */}
       <div className="mt-2 flex flex-col items-center">
         <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3">
-          {t("profile.sites")}
+          {t('profile.sites')}
         </h3>
         <div className="grid grid-cols-3 md:grid-cols-4 gap-4 justify-items-center mx-auto">
-          {config.profile.sites.map((app) => (
+          {config.profile.sites.map(app => (
             <a
               key={app.label}
               href={app.url}
@@ -228,7 +238,8 @@ export default function ProfileContent() {
       </div>
       <Divider />
       {/* 头像动效 */}
-      <style jsx>{`
+      <style jsx>
+        {`
         .flip-container {
           perspective: 1000px;
         }
@@ -252,7 +263,8 @@ export default function ProfileContent() {
         .back {
           transform: rotateY(180deg);
         }
-      `}</style>
+      `}
+      </style>
     </CardContent>
-  );
+  )
 }

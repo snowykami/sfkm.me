@@ -1,39 +1,39 @@
-"use client";
-import React, { useState, useEffect, useRef } from "react";
-import { Rnd, RndDragCallback, RndResizeCallback } from "react-rnd";
-import type { Rnd as RndType } from "react-rnd";
-import { useWindowManager } from "@/contexts/WindowManagerContext";
-import { motion, AnimatePresence } from "framer-motion";
-import { t } from "i18next";
-import { useDevice } from "@/contexts/DeviceContext";
+'use client'
+import type { RndDragCallback, RndResizeCallback, Rnd as RndType } from 'react-rnd'
+import { AnimatePresence, motion } from 'framer-motion'
+import { t } from 'i18next'
+import React, { useEffect, useRef, useState } from 'react'
+import { Rnd } from 'react-rnd'
+import { useDevice } from '@/contexts/DeviceContext'
+import { useWindowManager } from '@/contexts/WindowManagerContext'
 
 export interface BaseWindowProps {
-  id?: string;
-  x?: number;
-  y?: number;
-  width?: number;
-  height?: number;
-  minWidth?: number;
-  minHeight?: number;
-  zIndex?: number;
-  draggable?: boolean;
-  resizable?: boolean;
-  maximized?: boolean;
-  visible?: boolean;
-  onDragStart?: RndDragCallback;
-  onDragStop?: RndDragCallback;
-  onResizeStop?: RndResizeCallback;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
-  dockHeight?: number; // 可选的停靠栏高度
-  windowMargin?: number; // 窗口边距
-  dragHandleClassName?: string;
-  children?: React.ReactNode;
+  id?: string
+  x?: number
+  y?: number
+  width?: number
+  height?: number
+  minWidth?: number
+  minHeight?: number
+  zIndex?: number
+  draggable?: boolean
+  resizable?: boolean
+  maximized?: boolean
+  visible?: boolean
+  onDragStart?: RndDragCallback
+  onDragStop?: RndDragCallback
+  onResizeStop?: RndResizeCallback
+  onClick?: React.MouseEventHandler<HTMLDivElement>
+  dockHeight?: number // 可选的停靠栏高度
+  windowMargin?: number // 窗口边距
+  dragHandleClassName?: string
+  children?: React.ReactNode
 }
 
 interface PreMaximizeState {
-  size: { width: number; height: number };
-  position: { x: number; y: number };
-  mouseOffset: { x: number; y: number };
+  size: { width: number, height: number }
+  position: { x: number, y: number }
+  mouseOffset: { x: number, y: number }
 }
 
 export const BaseWindow: React.FC<BaseWindowProps> = ({
@@ -58,46 +58,49 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
   windowMargin = 0, // 窗口边距
   children,
 }) => {
-  const windowManager = useWindowManager?.();
-  const win =
-    id && windowManager
-      ? windowManager.windows.find((w) => w.id === id)
-      : undefined;
+  const windowManager = useWindowManager?.()
+  const win
+    = id && windowManager
+      ? windowManager.windows.find(w => w.id === id)
+      : undefined
 
-  const { isMobile } = useDevice();
+  const { isMobile } = useDevice()
 
   // Avoid rendering window-dependent layout on server to prevent
   // hydration mismatch (window.innerWidth / innerHeight and other
   // dynamic values differ between server and client). Only render
   // the interactive Rnd after the component has mounted on client.
-  const [isMounted, setIsMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState(false)
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    setIsMounted(true)
+  }, [])
 
-  const [position, setPosition] = useState({ x, y });
-  const [size, setSize] = useState({ width, height });
+  const [position, setPosition] = useState({ x, y })
+  const [size, setSize] = useState({ width, height })
 
   useEffect(() => {
-    if (!win) setPosition({ x, y });
-  }, [x, y, win]);
+    if (!win)
+      setPosition({ x, y })
+  }, [x, y, win])
   useEffect(() => {
-    if (!win) setSize({ width, height });
-  }, [width, height, win]);
+    if (!win)
+      setSize({ width, height })
+  }, [width, height, win])
 
-  const [shouldRender, setShouldRender] = useState(visible);
+  const [shouldRender, setShouldRender] = useState(visible)
 
   useEffect(() => {
     if (visible) {
-      setShouldRender(true);
-    } else {
-      const timer = setTimeout(() => setShouldRender(false), 250);
-      return () => clearTimeout(timer);
+      setShouldRender(true)
     }
-  }, [visible]);
+    else {
+      const timer = setTimeout(() => setShouldRender(false), 250)
+      return () => clearTimeout(timer)
+    }
+  }, [visible])
 
-  const maximizedStyle =
-    (win?.maximized ?? maximized)
+  const maximizedStyle
+    = (win?.maximized ?? maximized)
       ? {
           x: windowMargin,
           y: windowMargin,
@@ -109,41 +112,44 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
           y: win?.position?.y ?? position.y,
           width: win?.size?.width ?? size.width,
           height: win?.size?.height ?? size.height,
-        };
+        }
 
-  const [showMaximizeHint, setShowMaximizeHint] = useState(false);
-  const [preMaximize, setPreMaximize] = useState<PreMaximizeState | null>(null);
-  const rndRef = useRef<RndType | null>(null);
+  const [showMaximizeHint, setShowMaximizeHint] = useState(false)
+  const [preMaximize, setPreMaximize] = useState<PreMaximizeState | null>(null)
+  const rndRef = useRef<RndType | null>(null)
   const handleDrag: RndDragCallback = (_e, d) => {
-    if (win?.maximized ?? maximized) return;
+    if (win?.maximized ?? maximized)
+      return
     if (d.y <= windowMargin) {
-      setShowMaximizeHint(true);
-    } else {
-      setShowMaximizeHint(false);
+      setShowMaximizeHint(true)
     }
-  };
+    else {
+      setShowMaximizeHint(false)
+    }
+  }
 
   const handleDragStop: RndDragCallback = (e, d) => {
     if (showMaximizeHint) {
-      setShowMaximizeHint(false);
+      setShowMaximizeHint(false)
       if (id && windowManager) {
-        windowManager.updateWindow(id, { maximized: true });
+        windowManager.updateWindow(id, { maximized: true })
       }
-      return;
+      return
     }
     if (id && windowManager) {
-      windowManager.updateWindow(id, { position: { x: d.x, y: d.y } });
-    } else {
-      setPosition({ x: d.x, y: d.y });
+      windowManager.updateWindow(id, { position: { x: d.x, y: d.y } })
     }
-    onDragStop?.(e, d);
-  };
+    else {
+      setPosition({ x: d.x, y: d.y })
+    }
+    onDragStop?.(e, d)
+  }
   const handleDragStart: RndDragCallback = (e, d) => {
     if (win?.maximized ?? maximized) {
-      const mouseX = (e as MouseEvent).clientX;
-      const mouseY = (e as MouseEvent).clientY;
-      const widthVal = win?.size?.width ?? size.width;
-      const heightVal = win?.size?.height ?? size.height;
+      const mouseX = (e as MouseEvent).clientX
+      const mouseY = (e as MouseEvent).clientY
+      const widthVal = win?.size?.width ?? size.width
+      const heightVal = win?.size?.height ?? size.height
       setPreMaximize({
         size: { width: widthVal, height: heightVal },
         position: { x: d.x, y: d.y },
@@ -151,31 +157,31 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
           x: mouseX - (maximizedStyle.x ?? 0),
           y: mouseY - (maximizedStyle.y ?? 0),
         },
-      });
+      })
       if (id && windowManager) {
-        windowManager.updateWindow(id, { maximized: false });
+        windowManager.updateWindow(id, { maximized: false })
       }
     }
-    onDragStart?.(e, d);
-  };
+    onDragStart?.(e, d)
+  }
 
   useEffect(() => {
     if (!win?.maximized && preMaximize && rndRef.current) {
-      const mouse = preMaximize.mouseOffset;
+      const mouse = preMaximize.mouseOffset
       const newX = Math.max(
         0,
         window.innerWidth / 2 - preMaximize.size.width / 2,
-      );
+      )
       const newY = Math.max(
         windowMargin,
         mouse.y - preMaximize.size.height / 2,
-      );
-      rndRef.current.updatePosition({ x: newX, y: newY });
+      )
+      rndRef.current.updatePosition({ x: newX, y: newY })
       rndRef.current.updateSize({
         width: preMaximize.size.width,
         height: preMaximize.size.height,
-      });
-      setPreMaximize(null);
+      })
+      setPreMaximize(null)
       if (id && windowManager) {
         windowManager.updateWindow(id, {
           position: { x: newX, y: newY },
@@ -183,13 +189,14 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
             width: preMaximize.size.width,
             height: preMaximize.size.height,
           },
-        });
-      } else {
-        setPosition({ x: newX, y: newY });
+        })
+      }
+      else {
+        setPosition({ x: newX, y: newY })
         setSize({
           width: preMaximize.size.width,
           height: preMaximize.size.height,
-        });
+        })
       }
     }
   }, [
@@ -200,16 +207,18 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
     size.width,
     size.height,
     windowMargin,
-  ]);
-  if (!isMounted) return null;
-  if (!shouldRender) return null;
+  ])
+  if (!isMounted)
+    return null
+  if (!shouldRender)
+    return null
   // 移动端下直接全屏
   const rndSize = isMobile
-    ? { width: "100vw", height: "100vh" }
-    : { width: maximizedStyle.width, height: maximizedStyle.height };
+    ? { width: '100vw', height: '100vh' }
+    : { width: maximizedStyle.width, height: maximizedStyle.height }
   const rndPosition = isMobile
     ? { x: 0, y: 0 }
-    : { x: maximizedStyle.x, y: maximizedStyle.y };
+    : { x: maximizedStyle.x, y: maximizedStyle.y }
 
   return (
     <AnimatePresence>
@@ -235,26 +244,27 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
           onDragStop={handleDragStop}
           onMouseDown={() => {
             if (id && windowManager) {
-              windowManager.bringToFront(id);
+              windowManager.bringToFront(id)
             }
           }}
           onResizeStop={(e, dir, ref, delta, pos) => {
             if (id && windowManager) {
               windowManager.updateWindow(id, {
                 size: {
-                  width: parseInt(ref.style.width, 10),
-                  height: parseInt(ref.style.height, 10),
+                  width: Number.parseInt(ref.style.width, 10),
+                  height: Number.parseInt(ref.style.height, 10),
                 },
                 position: { x: pos.x, y: pos.y },
-              });
-            } else {
-              setSize({
-                width: parseInt(ref.style.width, 10),
-                height: parseInt(ref.style.height, 10),
-              });
-              setPosition({ x: pos.x, y: pos.y });
+              })
             }
-            onResizeStop?.(e, dir, ref, delta, pos);
+            else {
+              setSize({
+                width: Number.parseInt(ref.style.width, 10),
+                height: Number.parseInt(ref.style.height, 10),
+              })
+              setPosition({ x: pos.x, y: pos.y })
+            }
+            onResizeStop?.(e, dir, ref, delta, pos)
           }}
           onClick={onClick}
         >
@@ -264,7 +274,7 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.7, y: -30 }}
-            transition={{ duration: 0.4, type: "spring" }}
+            transition={{ duration: 0.4, type: 'spring' }}
           >
             {showMaximizeHint && (
               <div
@@ -275,7 +285,7 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
                   text-sm pointer-events-none shadow-md select-none w-full h-full flex justify-center items-start
                 "
               >
-                {t("ui.releaseToMaximize")}
+                {t('ui.releaseToMaximize')}
               </div>
             )}
             {children}
@@ -283,7 +293,7 @@ export const BaseWindow: React.FC<BaseWindowProps> = ({
         </Rnd>
       )}
     </AnimatePresence>
-  );
-};
+  )
+}
 
-export default BaseWindow;
+export default BaseWindow

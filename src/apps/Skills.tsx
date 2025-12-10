@@ -1,9 +1,9 @@
-import { CardContent } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { Progress } from "@/components/ui/Progress";
-import { Award } from "lucide-react";
-import { t } from "i18next";
-import config from "@/config";
+import { t } from 'i18next'
+import { Award } from 'lucide-react'
+import { Badge } from '@/components/ui/Badge'
+import { CardContent } from '@/components/ui/Card'
+import { Progress } from '@/components/ui/Progress'
+import config from '@/config'
 
 export default function SkillsContent() {
   return (
@@ -12,7 +12,7 @@ export default function SkillsContent() {
         <div className="flex items-center mb-4">
           <Award className="w-5 h-5 text-slate-500 dark:text-slate-400 mr-2" />
           <h2 className="text-lg font-semibold text-slate-800 dark:text-white">
-            {t("skills.title")}
+            {t('skills.title')}
           </h2>
         </div>
         {config.skills.map((skill, index) => (
@@ -26,10 +26,11 @@ export default function SkillsContent() {
                   variant="outline"
                   className="text-xs text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-600"
                 >
-                  {t("skills." + skill.category)}
+                  {t(`skills.${skill.category}`)}
                 </Badge>
                 <span className="text-slate-500 dark:text-slate-400 text-sm">
-                  {skill.level}%
+                  {skill.level}
+                  %
                 </span>
               </div>
             </div>
@@ -41,7 +42,7 @@ export default function SkillsContent() {
         ))}
         <div className="mt-6 p-4 bg-slate-100 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700/50">
           <h3 className="text-slate-700 dark:text-slate-200 font-medium mb-2">
-            {t("skills.learning")}
+            {t('skills.learning')}
           </h3>
           <div className="flex flex-wrap gap-2">
             <Badge className="bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30">
@@ -57,5 +58,5 @@ export default function SkillsContent() {
         </div>
       </div>
     </CardContent>
-  );
+  )
 }

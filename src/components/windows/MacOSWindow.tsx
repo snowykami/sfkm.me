@@ -1,21 +1,21 @@
-"use client";
+'use client'
 
-import type React from "react";
-import { useState, useEffect } from "react";
-import { useWindowManager } from "@/contexts/WindowManagerContext";
-import type { BaseWindowProps } from "./BaseWindow";
-import { t } from "i18next";
-import BaseWindow from "./BaseWindow";
-import { Marquee } from "@/components/ui/Marquee";
-import { windowColorScheme } from "@/types/window";
+import type React from 'react'
+import type { BaseWindowProps } from './BaseWindow'
+import type { windowColorScheme } from '@/types/window'
+import { t } from 'i18next'
+import { useEffect, useState } from 'react'
+import { Marquee } from '@/components/ui/Marquee'
+import { useWindowManager } from '@/contexts/WindowManagerContext'
+import BaseWindow from './BaseWindow'
 
-interface MacOSWindowProps extends Omit<BaseWindowProps, "children" | "title"> {
-  id: string;
-  children?: React.ReactNode;
-  showClose?: boolean;
-  showMinimize?: boolean;
-  showMaximize?: boolean;
-  colorScheme?: windowColorScheme;
+interface MacOSWindowProps extends Omit<BaseWindowProps, 'children' | 'title'> {
+  id: string
+  children?: React.ReactNode
+  showClose?: boolean
+  showMinimize?: boolean
+  showMaximize?: boolean
+  colorScheme?: windowColorScheme
 }
 
 export const MacOSWindow: React.FC<MacOSWindowProps> = ({
@@ -27,111 +27,112 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
   colorScheme: propColorScheme = {},
   ...baseProps
 }) => {
-  const { windows, closeWindow, bringToFront, updateWindow } =
-    useWindowManager();
-  const win = windows.find((w) => w.id === id);
-  const [closing, setClosing] = useState(false);
-  const [minimizing, setMinimizing] = useState(false);
+  const { windows, closeWindow, bringToFront, updateWindow }
+    = useWindowManager()
+  const win = windows.find(w => w.id === id)
+  const [closing, setClosing] = useState(false)
+  const [minimizing, setMinimizing] = useState(false)
 
   // Only compute UI state that depends on browser globals or
   // potentially changing client-only context after mount to avoid
   // SSR/CSR mismatches (Math.max on an empty array, i18n differences, etc)
-  const [isMounted, setIsMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState(false)
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    setIsMounted(true)
+  }, [])
 
-  const maxZ = windows.length ? Math.max(...windows.map((w) => w.zIndex)) : 0;
-  const isTop = isMounted ? win?.zIndex === maxZ : false;
+  const maxZ = windows.length ? Math.max(...windows.map(w => w.zIndex)) : 0
+  const isTop = isMounted ? win?.zIndex === maxZ : false
 
-  if (!win) return null;
+  if (!win)
+    return null
 
   const defaultScheme: windowColorScheme = {
-    bg: "bg-slate-100/95",
-    bgDark: "dark:bg-slate-800/95",
-    border: "border-slate-300/60",
-    borderDark: "dark:border-slate-700/30",
-    title: "text-slate-700",
-    titleDark: "dark:text-slate-300",
-    titleBarBg: "bg-slate-300/80",
-    titleBarBgDark: "dark:bg-slate-800/80",
-    titleBarBorder: "border-slate-300/60",
-    titleBarBorderDark: "dark:border-slate-800/50",
-    titleBarClassName: "",
-    backgroundImage: "",
-    backgroundColor: "",
-    backgroundColorDark: "",
-    backgroundBlendMode: "normal",
-    backgroundOpacity: "1",
+    bg: 'bg-slate-100/95',
+    bgDark: 'dark:bg-slate-800/95',
+    border: 'border-slate-300/60',
+    borderDark: 'dark:border-slate-700/30',
+    title: 'text-slate-700',
+    titleDark: 'dark:text-slate-300',
+    titleBarBg: 'bg-slate-300/80',
+    titleBarBgDark: 'dark:bg-slate-800/80',
+    titleBarBorder: 'border-slate-300/60',
+    titleBarBorderDark: 'dark:border-slate-800/50',
+    titleBarClassName: '',
+    backgroundImage: '',
+    backgroundColor: '',
+    backgroundColorDark: '',
+    backgroundBlendMode: 'normal',
+    backgroundOpacity: '1',
     backdropBlur: true,
-    backdropBlurClass: "backdrop-blur-md",
-    shadow: "shadow-2xl",
+    backdropBlurClass: 'backdrop-blur-md',
+    shadow: 'shadow-2xl',
     showBorder: true, // 默认显示边框
     backgroundOverlay: false,
-    overlayColor: "bg-black/20",
-    overlayColorDark: "dark:bg-black/30",
-    overlayBlendMode: "normal",
-    overlayGradient: "",
-  };
+    overlayColor: 'bg-black/20',
+    overlayColorDark: 'dark:bg-black/30',
+    overlayBlendMode: 'normal',
+    overlayGradient: '',
+  }
 
   const scheme = {
     ...defaultScheme,
     ...win.colorScheme,
     ...propColorScheme,
-  };
+  }
 
   // 处理关闭窗口逻辑
   const handleClose = () => {
-    setClosing(true);
+    setClosing(true)
     setTimeout(() => {
-      closeWindow(id);
-      setClosing(false);
-    }, 220);
-  };
+      closeWindow(id)
+      setClosing(false)
+    }, 220)
+  }
 
   // 处理最大化/还原窗口逻辑
   const handleMaximize = () => {
-    updateWindow(id, { maximized: !win.maximized, minimized: false });
-  };
+    updateWindow(id, { maximized: !win.maximized, minimized: false })
+  }
 
   // 最小化逻辑
   const handleMinimize = () => {
-    setMinimizing(true);
+    setMinimizing(true)
     setTimeout(() => {
-      updateWindow(id, { minimized: true, maximized: false });
-      setMinimizing(false);
-    }, 220);
-  };
+      updateWindow(id, { minimized: true, maximized: false })
+      setMinimizing(false)
+    }, 220)
+  }
 
   // 生成背景样式
   const getBackgroundStyle = () => {
-    const style: React.CSSProperties = {};
+    const style: React.CSSProperties = {}
 
     // 设置背景图片 (如果有)
     if (scheme.backgroundImage) {
-      style.backgroundImage = `url(${scheme.backgroundImage})`;
-      style.backgroundSize = "cover";
-      style.backgroundPosition = "center";
-      style.backgroundRepeat = "no-repeat";
+      style.backgroundImage = `url(${scheme.backgroundImage})`
+      style.backgroundSize = 'cover'
+      style.backgroundPosition = 'center'
+      style.backgroundRepeat = 'no-repeat'
     }
 
     // 设置背景色 (如果有)
     if (scheme.backgroundColor) {
-      style.backgroundColor = scheme.backgroundColor;
+      style.backgroundColor = scheme.backgroundColor
     }
 
     // 设置混合模式
     if (scheme.backgroundBlendMode) {
-      style.backgroundBlendMode = scheme.backgroundBlendMode;
+      style.backgroundBlendMode = scheme.backgroundBlendMode
     }
 
     // 设置不透明度
-    if (scheme.backgroundOpacity && scheme.backgroundOpacity !== "1") {
-      style.opacity = parseFloat(scheme.backgroundOpacity);
+    if (scheme.backgroundOpacity && scheme.backgroundOpacity !== '1') {
+      style.opacity = Number.parseFloat(scheme.backgroundOpacity)
     }
 
-    return style;
-  };
+    return style
+  }
 
   return (
     <BaseWindow
@@ -148,12 +149,11 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
       onResizeStop={(_, __, ref, ___, pos) =>
         updateWindow(id, {
           size: {
-            width: parseInt(ref.style.width, 10),
-            height: parseInt(ref.style.height, 10),
+            width: Number.parseInt(ref.style.width, 10),
+            height: Number.parseInt(ref.style.height, 10),
           },
           position: pos,
-        })
-      }
+        })}
       onClick={() => bringToFront(id)}
       {...baseProps}
     >
@@ -164,25 +164,25 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
           shadow-3xl
           overflow-hidden
           w-full h-full
-          ${closing ? "animate-window-close" : minimizing ? "animate-window-minimize" : "animate-window-open"}
+          ${closing ? 'animate-window-close' : minimizing ? 'animate-window-minimize' : 'animate-window-open'}
         `}
         style={{
-          boxShadow: "0 4px 16px 0 rgba(0,0,0,0.32), 0 1px 4px 0 rgba(0,0,0,0.28)",
+          boxShadow: '0 4px 16px 0 rgba(0,0,0,0.32), 0 1px 4px 0 rgba(0,0,0,0.28)',
         }}
       >
         {/* 背景层 - 背景图片或自定义背景色 */}
-        {(scheme.backgroundImage ||
-          scheme.backgroundColor ||
-          scheme.backgroundColorDark) && (
-            <div
-              className={`
+        {(scheme.backgroundImage
+          || scheme.backgroundColor
+          || scheme.backgroundColorDark) && (
+          <div
+            className={`
               absolute inset-0 z-0
               ${scheme.backgroundClassName}
-              ${scheme.backgroundColorDark || ""}
+              ${scheme.backgroundColorDark || ''}
             `}
-              style={getBackgroundStyle()}
-            />
-          )}
+            style={getBackgroundStyle()}
+          />
+        )}
 
         {/* 新增：背景蒙版层 */}
         {scheme.backgroundOverlay && (
@@ -192,11 +192,11 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
             ${scheme.overlayColor || defaultScheme.overlayColor}
             ${scheme.overlayColorDark || defaultScheme.overlayColorDark}
             transition-colors duration-300
-            ${scheme.overlayGradient || ""}
+            ${scheme.overlayGradient || ''}
           `}
             style={{
-              mixBlendMode: (scheme.overlayBlendMode ||
-                "normal") as React.CSSProperties["mixBlendMode"],
+              mixBlendMode: (scheme.overlayBlendMode
+                || 'normal') as React.CSSProperties['mixBlendMode'],
             }}
           />
         )}
@@ -205,9 +205,9 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
         <div
           className={`
             ${scheme.bg} ${scheme.bgDark}
-            ${scheme.backdropBlur ? scheme.backdropBlurClass : ""}
+            ${scheme.backdropBlur ? scheme.backdropBlurClass : ''}
             shadow-2xl backdrop-blur-xl
-            ${scheme.showBorder !== false ? `border ${scheme.border} ${scheme.borderDark}` : ""}
+            ${scheme.showBorder !== false ? `border ${scheme.border} ${scheme.borderDark}` : ''}
             overflow-hidden
             flex flex-col
             rounded-3xl
@@ -229,7 +229,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
               ${scheme.titleBarBorderDark || defaultScheme.titleBarBorderDark}
               px-4 py-4 flex items-center select-none relative
               cursor-grab active:cursor-grabbing
-              ${scheme.titleBarClassName || ""}
+              ${scheme.titleBarClassName || ''}
               ${scheme.titleBarClassName}
             `}
           >
@@ -239,22 +239,22 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
                 <div
                   className={`
         w-3.5 h-3.5 rounded-full
-        ${isTop ? "bg-red-500" : "bg-gray-400"}
+        ${isTop ? 'bg-red-500' : 'bg-gray-400'}
         group-hover:bg-red-500
         hover:bg-red-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center relative
       `}
                   onClick={(e) => {
-                    e.stopPropagation();
-                    bringToFront(id);
-                    setTimeout(() => handleClose(), 0);
+                    e.stopPropagation()
+                    bringToFront(id)
+                    setTimeout(() => handleClose(), 0)
                   }}
                   onTouchEnd={(e) => {
-                    e.stopPropagation();
-                    bringToFront(id);
-                    setTimeout(() => handleClose(), 0);
+                    e.stopPropagation()
+                    bringToFront(id)
+                    setTimeout(() => handleClose(), 0)
                   }}
                   style={{
-                    pointerEvents: "auto",
+                    pointerEvents: 'auto',
                   }}
                 >
                   {/* 悬停时显示X图标 */}
@@ -269,22 +269,22 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
                 <div
                   className={`
         w-3.5 h-3.5 rounded-full
-        ${isTop ? "bg-yellow-500" : "bg-gray-400"}
+        ${isTop ? 'bg-yellow-500' : 'bg-gray-400'}
         group-hover:bg-yellow-500
         hover:bg-yellow-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center relative
       `}
                   onClick={(e) => {
-                    e.stopPropagation();
-                    bringToFront(id);
-                    setTimeout(() => handleMinimize(), 0);
+                    e.stopPropagation()
+                    bringToFront(id)
+                    setTimeout(() => handleMinimize(), 0)
                   }}
                   onTouchEnd={(e) => {
-                    e.stopPropagation();
-                    bringToFront(id);
-                    setTimeout(() => handleMinimize(), 0);
+                    e.stopPropagation()
+                    bringToFront(id)
+                    setTimeout(() => handleMinimize(), 0)
                   }}
                   style={{
-                    pointerEvents: "auto",
+                    pointerEvents: 'auto',
                   }}
                 >
                   {/* 悬停时显示横线图标 */}
@@ -298,22 +298,22 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
                 <div
                   className={`
         w-3.5 h-3.5 rounded-full
-        ${isTop ? "bg-green-500" : "bg-gray-400"}
+        ${isTop ? 'bg-green-500' : 'bg-gray-400'}
         group-hover:bg-green-500
         hover:bg-green-400 transition-all duration-200 cursor-pointer hover:scale-110 active:scale-95 flex items-center justify-center relative
       `}
                   onClick={(e) => {
-                    e.stopPropagation();
-                    bringToFront(id);
-                    setTimeout(() => handleMaximize(), 0);
+                    e.stopPropagation()
+                    bringToFront(id)
+                    setTimeout(() => handleMaximize(), 0)
                   }}
                   onTouchEnd={(e) => {
-                    e.stopPropagation();
-                    bringToFront(id);
-                    setTimeout(() => handleMaximize(), 0);
+                    e.stopPropagation()
+                    bringToFront(id)
+                    setTimeout(() => handleMaximize(), 0)
                   }}
                   style={{
-                    pointerEvents: "auto",
+                    pointerEvents: 'auto',
                   }}
                 >
                   {/* 悬停时显示加号图标 */}
@@ -342,7 +342,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
           <div
             className="overflow-y-auto custom-scrollbar flex-1 text-slate-800 dark:text-slate-200"
             style={{
-              transition: "height 0.3s ease",
+              transition: 'height 0.3s ease',
             }}
           >
             {children}
@@ -350,7 +350,7 @@ export const MacOSWindow: React.FC<MacOSWindowProps> = ({
         </div>
       </div>
     </BaseWindow>
-  );
-};
+  )
+}
 
-export default MacOSWindow;
+export default MacOSWindow

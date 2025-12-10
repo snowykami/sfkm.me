@@ -21,7 +21,7 @@ jobs:
       - name: Setup uv
         uses: astral-sh/setup-uv@v5
         with:
-          version: "latest"
+          version: latest
 
       - name: Install playwright and run Python script
         run: |
@@ -35,6 +35,6 @@ jobs:
           FRIEND_LINKS_FILE: data/friends.json
           I18N_FILE: data/i18n.json
 
-          AI_API_ENDPOINT: "https://models.github.ai/inference/chat/completions"
+          AI_API_ENDPOINT: 'https://models.github.ai/inference/chat/completions'
           AI_API_KEY: ${{ secrets.LITEYUKI_FLOW_TOKEN }}
-          AI_MODEL: "openai/gpt-4.1-nano"
+          AI_MODEL: openai/gpt-4.1-nano

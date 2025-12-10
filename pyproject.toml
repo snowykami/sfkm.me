@@ -5,9 +5,9 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = "==3.12.3"
 dependencies = [
-    "aiofiles>=24.1.0",
-    "beautifulsoup4>=4.13.4",
-    "httpx>=0.28.1",
-    "playwright>=1.52.0",
-    "pydantic>=2.11.5",
+  "aiofiles>=24.1.0",
+  "beautifulsoup4>=4.13.4",
+  "httpx>=0.28.1",
+  "playwright>=1.52.0",
+  "pydantic>=2.11.5",
 ]
