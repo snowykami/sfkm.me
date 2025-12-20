@@ -346,6 +346,7 @@ const config: Config = {
             unknown: '未知来源',
             undefined: '未定义来源',
           },
+          pure_music_without_lyric: '纯音乐，无歌词',
         },
         profile: {
           title: '个人资料',

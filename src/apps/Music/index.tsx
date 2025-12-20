@@ -12,8 +12,8 @@ import PlayerView from './PlayerView'
 
 export const WINDOW_ID = 'music'
 
-const OVERLAYCOLOR = 'bg-slate-200/40'
-const OVERLAYCOLORDARK = 'dark:bg-slate-800/75'
+const OVERLAYCOLOR = 'bg-slate-200/55'
+const OVERLAYCOLORDARK = 'dark:bg-slate-800/70'
 
 export function getNewWindowColorScheme(colorScheme: Partial<WindowState['colorScheme']> = {}): WindowState['colorScheme'] {
   return {

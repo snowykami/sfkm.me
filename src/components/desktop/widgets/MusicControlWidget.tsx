@@ -2,6 +2,7 @@
 
 import type { PlayMode } from '@/contexts/MusicContext'
 import type { MusicTrack } from '@/models/music'
+import { t } from 'i18next'
 import {
   CirclePause,
   CirclePlay,
@@ -76,7 +77,7 @@ function LyricBox({ onClick }: { onClick?: () => void }) {
             display: 'inline-block',
           }}
         >
-          {displayText}
+          {t(`music.${displayText}`, displayText)}
         </span>
       </div>
     </div>
