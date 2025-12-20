@@ -2,7 +2,6 @@
 
 import type { PlayMode } from '@/contexts/MusicContext'
 import type { MusicTrack } from '@/models/music'
-import { t } from 'i18next'
 import {
   CirclePause,
   CirclePlay,

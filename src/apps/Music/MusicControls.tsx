@@ -1,5 +1,4 @@
 'use client'
-import type { MusicTrack } from '@/models/music'
 import { t } from 'i18next'
 import {
   ListMusic,
@@ -100,8 +99,10 @@ export default function MusicControls() {
     }
   }, [getAlbumCoverColor, currentTrack?.albumPic])
 
-  // 第一次加载播放列表
+  // 第一次加载播放列表，若播放列表有东西说明加载过了就不加载了
   useEffect(() => {
+    if (playlist.length > 0)
+      return
     fetchPlaylist().then((tracks) => {
       replacePlaylist(tracks)
       lastSongsList.current = JSON.stringify(tracks)
@@ -490,7 +491,7 @@ export default function MusicControls() {
                   : (
                       <ul>
                         {filteredTracksList.map((song, index) => {
-                          // 需要修正 currentSongIndex 的判断
+                        // 需要修正 currentSongIndex 的判断
                           const isCurrentSong = song.audio === currentTrack?.audio
                           // 找到当前歌曲在原始播放列表中的索引
                           const origIdx = playlist?.findIndex(s => s.id === song.id) ?? -1
@@ -499,12 +500,12 @@ export default function MusicControls() {
                             <li
                               key={song.id || index}
                               ref={(el) => {
-                                // 只在原始 songsList 里有的才赋值
+                              // 只在原始 songsList 里有的才赋值
                                 if (origIdx >= 0)
                                   playlistItemRefs.current[origIdx] = el
                               }}
                               onClick={() => {
-                                // 点击播放列表项时播放该曲目
+                              // 点击播放列表项时播放该曲目
                                 if (origIdx >= 0) {
                                   playTrack(origIdx)
                                 }
