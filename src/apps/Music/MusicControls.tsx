@@ -308,7 +308,7 @@ export default function MusicControls() {
 
   // 音量滑块变更
   const handleVolumeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const v = Number(e.target.value)
+    const v = Number(e.target.value) / 100
     // 如果静音，调整音量时自动取消静音
     setVolume(v)
   }
@@ -437,13 +437,14 @@ export default function MusicControls() {
                 type="range"
                 min={0}
                 max={100}
-                value={volume}
+                value={volume * 100}
                 onChange={handleVolumeInputChange}
                 className="h-28 w-2 accent-blue-500 cursor-pointer"
                 style={{ writingMode: 'vertical-lr', direction: 'rtl' }}
               />
               <div className="text-xs mt-2 text-gray-700 dark:text-gray-200 select-none">
-                {volume}
+                {volume * 100 | 0}
+                %
               </div>
             </div>
           )}

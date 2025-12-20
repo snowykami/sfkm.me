@@ -22,7 +22,11 @@ export function VolumeWidget() {
   }
   // 修改 handleVolumeChange，调用 context 提供的 handleVolumeChange
   const handleVolumeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const v = Number(e.target.value)
+    const v = Number(e.target.value) / 100
+    // 如果静音，调整音量时自动取消静音
+    if (isMuted && v > 0) {
+      toggleMute(false)
+    }
     setVolume(v)
   }
 
@@ -39,7 +43,7 @@ export function VolumeWidget() {
         min={0}
         max={100}
         // 使用 context 的 volume 状态
-        value={volume}
+        value={volume * 100 | 0}
         // 调用修改后的 handleVolumeInputChange
         onChange={handleVolumeInputChange}
         className="w-16 h-1 accent-slate-500"
