@@ -11,13 +11,31 @@ const MIN_DIAMETER = 120
 const MAX_DIAMETER = 300
 // 移除 wid prop
 export function Album({ wid }: { wid: string }) {
-  const { currentTrack, rotateDeg, isPlaying } = useMusic()
+  const { currentTrack, rotateDeg, isPlaying, currentIndex, playlist } = useMusic()
   const containerRef = useRef<HTMLDivElement>(null)
   const [diameter, setDiameter] = useState(200)
   const { isMobile: isMobileDevice } = useDevice()
   const { isMobileLayout } = useWindowManager()
 
   const isMobile = isMobileDevice || isMobileLayout(wid)
+
+  // 提前加载下一首歌封面和音频，循环数组索引
+  useEffect(() => {
+    const nextIndex = ((currentIndex || 0) + 1) % playlist.length
+    const nextTrack = playlist[nextIndex]
+    if (nextTrack?.albumPic) {
+      const img = new window.Image()
+      img.src = nextTrack.albumPic
+    }
+    // 预加载音频
+    if (nextTrack?.audio) {
+      const audio = new Audio()
+      audio.src = nextTrack.audio
+      // 加载音频元数据
+      audio.preload = 'metadata'
+      audio.load()
+    }
+  }, [playlist, currentIndex])
 
   // 根据父容器宽度动态设置圆盘直径，但限制最大直径
   useEffect(() => {

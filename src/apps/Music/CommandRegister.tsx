@@ -40,9 +40,6 @@ export default function MusicCommandRegister() {
           if (!extraCtx)
             return t('terminal.commands.musiclrc.unsupported')
           // 只插入一行歌词
-          const idx = extraCtx.updateLine(
-            `<div class="text-green-400">${currentLyric || '暂无歌词'}</div>`,
-          )
           // TODO: 需要重新实现歌词变化监听功能
           // 因为 MusicContext 没有提供 onLrcLineChange API
           // 可以考虑使用 useEffect 监听 currentLyric 变化
