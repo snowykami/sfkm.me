@@ -133,7 +133,7 @@ export default function LyricScroller({ wid }: { wid: string }) {
                 select-none px-2 py-0.5 rounded
                 transition-all duration-600 ease-[cubic-bezier(.4,2,.6,1)]
                 w-full
-                font-bold cursor-pointer
+                font-bold cursor-pointer hover:opacity-100
                 ${style}
               `}
                   style={{
