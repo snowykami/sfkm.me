@@ -8,7 +8,7 @@ import { deriveLyricThemeColors, getAlbumCoverColor } from '@/utils/color'
 // 工具：hex/rgb转hsl
 
 export default function LyricScroller({ wid }: { wid: string }) {
-  const { lyricLines, currentLyricIndex, currentTrack } = useMusic()
+  const { lyricLines, currentLyricIndex, currentTrack, seek } = useMusic()
   const containerRef = useRef<HTMLDivElement>(null)
   const lineRefs = useRef<(HTMLDivElement | null)[]>([])
   const { isMobile: isMobileDevice, mode } = useDevice()
@@ -124,6 +124,7 @@ export default function LyricScroller({ wid }: { wid: string }) {
               return (
                 <div
                   key={line.time + line.text + idx}
+                  onClick={() => seek(line.time)}
                   ref={(el) => {
                     lineRefs.current[idx] = el
                   }}
@@ -132,7 +133,7 @@ export default function LyricScroller({ wid }: { wid: string }) {
                 select-none px-2 py-0.5 rounded
                 transition-all duration-600 ease-[cubic-bezier(.4,2,.6,1)]
                 w-full
-                font-bold
+                font-bold cursor-pointer
                 ${style}
               `}
                   style={{
