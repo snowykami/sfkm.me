@@ -1,414 +1,421 @@
 [
-  {
-    "name": "friends.cysnies.name",
-    "link": "https://tcea.top/",
-    "avatar": "https://github.com/cysnies.png",
-    "description": "friends.cysnies.description",
-    "tag": "CDN",
-    "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
-  },
-  {
-    "name": "friends.aicorein.name",
-    "link": "https://www.glowmem.com/",
-    "avatar": "https://github.com/aicorein.png",
-    "description": "friends.aicorein.description"
-  },
-  {
-    "name": "friends.edream.name",
-    "link": "https://blog.edmc.cn/",
-    "avatar": "https://github.com/EDream.png",
-    "description": "friends.edream.description"
-  },
-  {
-    "name": "friends.Executor-Cheng.name",
-    "link": "https://dream.day/",
-    "avatar": "https://github.com/Executor-Cheng.png",
-    "description": "friends.Executor-Cheng.description"
-  },
-  {
-    "name": "friends.viki.name",
-    "link": "https://viki.moe/",
-    "avatar": "https://github.com/vikiboss.png",
-    "description": "friends.viki.description"
-  },
-  {
-    "name": "friends.churanneko.name",
-    "link": "https://blog.churanneko.com/",
-    "avatar": "https://blog.churanneko.com/upload/logo.jpg",
-    "description": "friends.churanneko.description",
-    "tag": "CDN",
-    "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
-  },
-  {
-    "name": "friends.三瓶可乐不过岗.name",
-    "link": "https://www.threkork.com/",
-    "avatar": "https://www.threkork.com/img/512.jpg",
-    "description": "friends.三瓶可乐不过岗.description"
-  },
-  {
-    "name": "friends.艾拉酱小屋.name",
-    "link": "https://www.isla.ltd",
-    "avatar": "https://www.isla.ltd/images/aila.png",
-    "description": "friends.艾拉酱小屋.description"
-  },
-  {
-    "name": "friends.daoge的github主页.name",
-    "link": "https://github.com/smartcmd",
-    "avatar": "https://avatars.githubusercontent.com/u/60499296?v=4",
-    "description": "friends.daoge的github主页.description"
-  },
-  {
-    "name": "friends.Inkar Suki.name",
-    "link": "https://inkar-suki.codethink.cn/Inkar-Suki-Docs/",
-    "avatar": "https://inkar-suki.codethink.cn/Inkar-Suki-Docs/img/InkarSukiCopyright.png",
-    "description": "friends.Inkar Suki.description"
-  },
-  {
-    "name": "friends.一楼没太阳.name",
-    "link": "https://blog.ylmty.cc",
-    "avatar": "https://q1.qlogo.cn/g?b=qq&nk=24130801&s=100",
-    "description": "friends.一楼没太阳.description"
-  },
-  {
-    "name": "friends.eya46.name",
-    "link": "https://eya46.com",
-    "avatar": "https://github.com/eya46.png",
-    "description": "friends.eya46.description"
-  },
-  {
-    "name": "friends.笨蛋弥生的平行世界.name",
-    "link": "https://blog.kagurayayoi.top",
-    "avatar": "https://blog.kagurayayoi.top/favicon/cropped-icon.jpg",
-    "description": "friends.笨蛋弥生的平行世界.description"
-  },
-  {
-    "name": "friends.hch.name",
-    "link": "https://hch1212.github.io/",
-    "avatar": "https://tuchuang.hch1212.online/img/aila5.png",
-    "description": "friends.hch.description"
-  },
-  {
-    "name": "friends.轻雪社区.name",
-    "link": "https://lab.liteyuki.org/",
-    "avatar": "https://cdn.liteyuki.org/misskey/icon.svg",
-    "description": "friends.轻雪社区.description",
-    "tag": "CDN",
-    "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
-  },
-  {
-    "name": "friends.「氯离子实验室」门户网站.name",
-    "link": "https://nyacl.shimakaze.org",
-    "avatar": "https://nyacl.shimakaze.org/assets/images/avatar.webp",
-    "description": "friends.「氯离子实验室」门户网站.description",
-    "tag": "CDN",
-    "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
-  },
-  {
-    "issue_number": 5,
-    "name": "梦溯•镜影",
-    "link": "https://yumetsuki.moe/",
-    "description": "这是梦溯·镜影，会时不时发一些自己都没眼看的文章",
-    "avatar": "https://img.r2.yumetsuki.moe/avatar.webp"
-  },
-  {
-    "issue_number": 4,
-    "name": "轻雪工作室 LiteyukiStudio",
-    "link": "https://liteyuki.org/",
-    "description": "轻雪工作室 LiteyukiStudio 是一个以开源为主的工作室",
-    "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png"
-  },
-  {
-    "issue_number": 8,
-    "name": "orwells的博客",
-    "link": "https://vercel.696898.xyz/",
-    "description": "想起啥就写啥的博客",
-    "avatar": "https://avatars.githubusercontent.com/u/145517647?v=4"
-  },
-  {
-    "issue_number": 10,
-    "name": "洛柠的博客",
-    "link": "https://blog.naloveyuki.top/",
-    "description": "一个用来保存洛柠文章的地方",
-    "avatar": "https://cdn.liteyuki.org/logos/studio.png"
-  },
-  {
-    "issue_number": 9,
-    "name": "天翔TNXGの空间站",
-    "link": "https://tnxg.top/",
-    "description": "明日尚未到来，希望凝于心上",
-    "avatar": "https://api-space.tnxg.top/avatar?s=qq"
-  },
-  {
-    "issue_number": 12,
-    "name": "Liteyuki Gitea",
-    "link": "https://git.liteyuki.org/",
-    "description": "工作室自托管Gitea工作区",
-    "avatar": "https://git.liteyuki.org/favicon.ico"
-  },
-  {
-    "issue_number": 14,
-    "name": "轻雪通行证",
-    "link": "https://pass.liteyuki.org/login/liteyuki-user?orgChoiceMode=None",
-    "description": "轻雪账号统一认证服务",
-    "avatar": "https://cdn.liteyuki.org/logos/passport.svg"
-  },
-  {
-    "issue_number": 15,
-    "name": "大磊的猫窝",
-    "link": "http://zhyxulei.top/",
-    "description": "只有当不幸真的到来时，我们才会怀念和渴望那些逝去的美好时光",
-    "avatar": "https://q1.qlogo.cn/g?b=qq&nk=2742291286&s=100"
-  },
-  {
-    "issue_number": 16,
-    "name": "诺渊の个人站",
-    "link": "https://hikari.bond/",
-    "description": "诺渊の个人小站，记录技术博客和教程",
-    "avatar": "https://hikari.bond/upload/42B069E33081BA8D2FD07C1873F35A0E.png"
-  },
-  {
-    "issue_number": 17,
-    "name": "TwisHub",
-    "link": "https://twis.uk/",
-    "description": "一支喜欢到处贴贴的小猫娘～♡",
-    "avatar": "https://github.com/Twisuki.png"
-  },
-  {
-    "issue_number": 18,
-    "name": "ElysiumStack",
-    "link": "https://www.elysium-stack.cn/",
-    "description": "不会摄影的设计师不是优秀的旅行家",
-    "avatar": "https://www.elysium-stack.cn/upload/ee0757e6-ebb4-46d0-a388-660f648653ea.jpg"
-  },
-  {
-    "issue_number": 19,
-    "name": "低调佬的博客",
-    "link": "https://www.yyydl.top/",
-    "description": "低调佬，owner of nonebot",
-    "avatar": "https://q.qlogo.cn/g?b=qq&nk=3323077879&s=640"
-  },
-  {
-    "issue_number": 20,
-    "name": "咕咕的GitHub主页",
-    "link": "https://github.com/synodriver",
-    "description": "咕咕，synodriver，一位很厉害的CPython开发者，喜欢玩NAS",
-    "avatar": "https://q.qlogo.cn/g?b=qq&nk=624805065&s=640"
-  },
-  {
-    "issue_number": 21,
-    "name": "skywircl",
-    "link": "https://www.madfrey.top/",
-    "description": "红岩网校后端研发部的大佬之一，Student, and will graduate with a B.Eng in Computer Science in Summer 2025.  You can send email to skywircl @ gmail dot com to get a touch with me.",
-    "avatar": "https://avatars.githubusercontent.com/u/89887780?v=4"
-  },
-  {
-    "issue_number": 22,
-    "name": "joshua的个人主页",
-    "link": "https://joshua.su/",
-    "description": "红岩网校运维安全部的大佬，云原生糕手，请输入help来查看可用命令",
-    "avatar": "https://avatars.githubusercontent.com/u/54235339?v=4"
-  },
-  {
-    "issue_number": 23,
-    "name": "JasonZYT的个人主页",
-    "link": "https://jasonz.yt/",
-    "description": "JasonZYT的个人主页",
-    "avatar": "https://avatars.githubusercontent.com/u/66063199?v=4"
-  },
-  {
-    "issue_number": 24,
-    "name": "Sianao Site",
-    "link": "https://sianao.site/",
-    "description": "红岩网校后端研发部曾经的leader，非常厉害，游遍大厂",
-    "avatar": "https://avatars.githubusercontent.com/u/96694568?v=4"
-  },
-  {
-    "issue_number": 25,
-    "name": "Lomirus的个人博客",
-    "link": "https://lomirus.github.io/",
-    "description": "Lomirus的个人博客，红岩网校前端研发部的大佬，全栈糕手，前端基建狂魔",
-    "avatar": "https://lomirus.github.io/img/avatar_hu11994427718878188740.jpg"
-  },
-  {
-    "issue_number": 26,
-    "name": "ferdinand的GitHub",
-    "link": "https://github.com/Ferdinadaedth",
-    "description": "红岩网校的站长兼运维",
-    "avatar": "https://avatars.githubusercontent.com/u/115557428?v=4"
-  },
-  {
-    "issue_number": 27,
-    "name": "yyz的个人学习记录",
-    "link": "https://yyz9.cn/",
-    "description": "yyz的个人学习记录，红岩网校运维安全部的大佬",
-    "avatar": "https://yyz9.cn/img/avatar_hu1b37c766fff55303c7e18ee666723dd8_271849_300x0_resize_box_3.png"
-  },
-  {
-    "issue_number": 28,
-    "name": "轻雪开源镜像站",
-    "link": "https://mirrors.liteyuki.org/",
-    "description": "轻雪开源镜像站/反向代理站，为一些特定地区网络不好的开发者提供必要的资源代理访问",
-    "avatar": "https://mirrors.liteyuki.org/upload/logo9.png?t=1746096078397"
-  },
-  {
-    "issue_number": 29,
-    "name": "阿冰的小屋",
-    "link": "https://blog.coldbin.top/",
-    "description": "阿冰的小屋，红岩网校后端研发部的大佬",
-    "avatar": "https://blog.coldbin.top/images/avatar.jpg"
-  },
-  {
-    "issue_number": 30,
-    "name": "zhangxinhui02的个人主页",
-    "link": "https://www.mikumikumi.xyz/",
-    "description": "红岩网校运维安全部的大佬",
-    "avatar": "https://avatars.githubusercontent.com/u/25164524?v=4"
-  },
-  {
-    "issue_number": 32,
-    "name": "远野千束的个人主页",
-    "link": "https://sfkm.me/",
-    "description": "远野千束的个人主页",
-    "avatar": "https://cdn.liteyuki.org/snowykami/avatar.jpg"
-  },
-  {
-    "issue_number": 31,
-    "name": "红岩网校工作站 RedrockTeam",
-    "link": "https://m.redrock.team/",
-    "description": "一个从事互联网产品开发的学生组织，隶属于校团委",
-    "avatar": "https://sre-docs.redrock.team/logo.png"
-  },
-  {
-    "issue_number": 33,
-    "name": "Pinpe的云端",
-    "link": "https://pinpe.top/",
-    "description": "一个属于自己的云朵。",
-    "avatar": "https://pinpe.top/head.jpg"
-  },
-  {
-    "issue_number": 34,
-    "name": "萑澈的寒舍",
-    "link": "https://hxcn.cnies.org/",
-    "description": "就是为了这点醋才包的这顿饺子",
-    "avatar": "https://gastigado.cnies.org/d/elements/e69309ecdba41c53da4c9.png?sign=XYpTkPO62LztF34skZoYeA5SR-7KoNumVYnJggolhi4=:0"
-  },
-  {
-    "issue_number": 38,
-    "name": "Uptime",
-    "link": "https://uptime.liteyuki.org/",
-    "description": "服务监控",
-    "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png-%20[x]%20%20%E6%9B%B4%E6%96%B0"
-  },
-  {
-    "issue_number": 37,
-    "name": "清羽飞扬",
-    "link": "https://blog.liushen.fun/",
-    "description": "柳影曳曳，清酒孤灯，扬笔撒墨，心境如霜",
-    "avatar": "https://blog.liushen.fun/info/avatar.ico"
-  },
-  {
-    "issue_number": 35,
-    "name": "EastWind",
-    "link": "https://blog.1wind.cn/",
-    "description": "东风不与周郎便",
-    "avatar": "https://github.com/WindyDante.png"
-  },
-  {
-    "issue_number": 36,
-    "name": "葱苓小筑",
-    "link": "https://blog.ciraos.top/",
-    "description": "Don't worry, be happy.",
-    "avatar": "https://mx.ciraos.top/api/v2/objects/avatar/ufh295h43mly31gmw0.avif"
-  },
-  {
-    "issue_number": 39,
-    "name": "Leonxieの小窝",
-    "link": "https://www.leonxie.cn/",
-    "description": "保持热爱，奔赴山海！",
-    "avatar": "https://www.leonxie.cn/upload/avatar.jpg"
-  },
-  {
-    "issue_number": 40,
-    "name": "Hexzii",
-    "link": "https://nichijou.moe/",
-    "description": "Hexzii的个人主页",
-    "avatar": "https://avatars.githubusercontent.com/u/62250232?v=4"
-  },
-  {
-    "issue_number": 41,
-    "name": "Dogxi | 狗窝子",
-    "link": "https://blog.dogxi.me/",
-    "description": "oi, Dogxi 的笔记本",
-    "avatar": "https://avatar.dogxi.me/favicon.ico"
-  },
-  {
-    "issue_number": 42,
-    "name": "Teror的客栈",
-    "link": "https://blog.trfox.top/",
-    "description": "Teror的客栈，欢迎光临",
-    "avatar": "https://img.trfox.top/assets/avatar.jpg"
-  },
-  {
-    "issue_number": 43,
-    "name": "芸汐酱的刷新点",
-    "link": "https://awa.2085.fun/",
-    "description": "人类的伟大在于面对死亡之时的崇高姿态",
-    "avatar": "https://wsrv.nl/?url=avatars.githubusercontent.com/u/140612774?v=4"
-  },
-  {
-    "issue_number": 44,
-    "name": "神圣羽毛帝国",
-    "link": "https://sacredfeathers.online/",
-    "description": "在虚拟世界中崛起的神圣帝国，以智慧与荣耀为基石，用羽毛般轻盈的梦想承载着无限的可能",
-    "avatar": "https://sacredfeathers.online/icon"
-  },
-  {
-    "issue_number": 45,
-    "name": "Liteyuki Minecraft Server",
-    "link": "https://mc.liteyuki.org/",
-    "description": "由轻雪工作室团队运营的公益性质服务器",
-    "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png"
-  },
-  {
-    "issue_number": 46,
-    "name": "Chinyuan Tai",
-    "link": "https://blog.knlde.top/",
-    "description": "LOVE&PEACE",
-    "avatar": "https://cdn.jsdmirror.com/gh/Kindle-deep/picx-images-hosting@master/avatar.avif"
-  },
-  {
-    "issue_number": 47,
-    "name": "ErrOrO's Space",
-    "link": "https://blog.erroro.moe/",
-    "description": "OrO?OrO!",
-    "avatar": "https://blog.erroro.moe/assets/avatar.jpg"
-  },
-  {
-    "issue_number": 48,
-    "name": "Eternltyの小宇宙",
-    "link": "https://blog.eternlty.top/",
-    "description": "偶尔更新，经常摆烂，永远在记录的路上",
-    "avatar": "https://blog.eternlty.top/favicon2.webp"
-  },
-  {
-    "issue_number": 49,
-    "name": "圣堂",
-    "link": "http://118.31.39.238:3000/home",
-    "description": "一个成熟的铠甲勇士是不会被困难打倒的",
-    "avatar": "http://118.31.39.238:3000/static/media/avatar.42aa139fd9fb158ec89c.png"
-  },
-  {
-    "issue_number": 50,
-    "name": "纸鹿摸鱼处",
-    "link": "https://blog.zhilu.site/",
-    "description": "纸鹿至麓不知路，支炉制露不止漉",
-    "avatar": "https://weavatar.com/avatar/47c0f2e82b76d9b10eb3023df9e02e4e3fdbeaf5b74b842063f207971e7fbe7b?s=160"
-  },
-  {
-    "issue_number": 51,
-    "name": "Losita's Blog",
-    "link": "https://blog.lecspace.com/",
-    "description": "记录Losita的技术学习和日常生活。",
-    "avatar": "https://dl2.lecspace.com/LositaBlog/Losita%E7%9A%84QQ%E5%A4%B4%E5%83%8F.jpg"
-  }
+    {
+        "name": "friends.cysnies.name",
+        "link": "https://tcea.top/",
+        "avatar": "https://github.com/cysnies.png",
+        "description": "friends.cysnies.description",
+        "tag": "CDN",
+        "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
+    },
+    {
+        "name": "friends.aicorein.name",
+        "link": "https://www.glowmem.com/",
+        "avatar": "https://github.com/aicorein.png",
+        "description": "friends.aicorein.description"
+    },
+    {
+        "name": "friends.edream.name",
+        "link": "https://blog.edmc.cn/",
+        "avatar": "https://github.com/EDream.png",
+        "description": "friends.edream.description"
+    },
+    {
+        "name": "friends.Executor-Cheng.name",
+        "link": "https://dream.day/",
+        "avatar": "https://github.com/Executor-Cheng.png",
+        "description": "friends.Executor-Cheng.description"
+    },
+    {
+        "name": "friends.viki.name",
+        "link": "https://viki.moe/",
+        "avatar": "https://github.com/vikiboss.png",
+        "description": "friends.viki.description"
+    },
+    {
+        "name": "friends.churanneko.name",
+        "link": "https://blog.churanneko.com/",
+        "avatar": "https://blog.churanneko.com/upload/logo.jpg",
+        "description": "friends.churanneko.description",
+        "tag": "CDN",
+        "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
+    },
+    {
+        "name": "friends.三瓶可乐不过岗.name",
+        "link": "https://www.threkork.com/",
+        "avatar": "https://www.threkork.com/img/512.jpg",
+        "description": "friends.三瓶可乐不过岗.description"
+    },
+    {
+        "name": "friends.艾拉酱小屋.name",
+        "link": "https://www.isla.ltd",
+        "avatar": "https://www.isla.ltd/images/aila.png",
+        "description": "friends.艾拉酱小屋.description"
+    },
+    {
+        "name": "friends.daoge的github主页.name",
+        "link": "https://github.com/smartcmd",
+        "avatar": "https://avatars.githubusercontent.com/u/60499296?v=4",
+        "description": "friends.daoge的github主页.description"
+    },
+    {
+        "name": "friends.Inkar Suki.name",
+        "link": "https://inkar-suki.codethink.cn/Inkar-Suki-Docs/",
+        "avatar": "https://inkar-suki.codethink.cn/Inkar-Suki-Docs/img/InkarSukiCopyright.png",
+        "description": "friends.Inkar Suki.description"
+    },
+    {
+        "name": "friends.一楼没太阳.name",
+        "link": "https://blog.ylmty.cc",
+        "avatar": "https://q1.qlogo.cn/g?b=qq&nk=24130801&s=100",
+        "description": "friends.一楼没太阳.description"
+    },
+    {
+        "name": "friends.eya46.name",
+        "link": "https://eya46.com",
+        "avatar": "https://github.com/eya46.png",
+        "description": "friends.eya46.description"
+    },
+    {
+        "name": "friends.笨蛋弥生的平行世界.name",
+        "link": "https://blog.kagurayayoi.top",
+        "avatar": "https://blog.kagurayayoi.top/favicon/cropped-icon.jpg",
+        "description": "friends.笨蛋弥生的平行世界.description"
+    },
+    {
+        "name": "friends.hch.name",
+        "link": "https://hch1212.github.io/",
+        "avatar": "https://tuchuang.hch1212.online/img/aila5.png",
+        "description": "friends.hch.description"
+    },
+    {
+        "name": "friends.轻雪社区.name",
+        "link": "https://lab.liteyuki.org/",
+        "avatar": "https://cdn.liteyuki.org/misskey/icon.svg",
+        "description": "friends.轻雪社区.description",
+        "tag": "CDN",
+        "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
+    },
+    {
+        "name": "friends.「氯离子实验室」门户网站.name",
+        "link": "https://nyacl.shimakaze.org",
+        "avatar": "https://nyacl.shimakaze.org/assets/images/avatar.webp",
+        "description": "friends.「氯离子实验室」门户网站.description",
+        "tag": "CDN",
+        "tagClass": "bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-500/30 border-blue-200 dark:border-blue-500/30"
+    },
+    {
+        "issue_number": 5,
+        "name": "梦溯•镜影",
+        "link": "https://yumetsuki.moe/",
+        "description": "这是梦溯·镜影，会时不时发一些自己都没眼看的文章",
+        "avatar": "https://img.r2.yumetsuki.moe/avatar.webp"
+    },
+    {
+        "issue_number": 4,
+        "name": "轻雪工作室 LiteyukiStudio",
+        "link": "https://liteyuki.org/",
+        "description": "轻雪工作室 LiteyukiStudio 是一个以开源为主的工作室",
+        "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png"
+    },
+    {
+        "issue_number": 8,
+        "name": "orwells的博客",
+        "link": "https://vercel.696898.xyz/",
+        "description": "想起啥就写啥的博客",
+        "avatar": "https://avatars.githubusercontent.com/u/145517647?v=4"
+    },
+    {
+        "issue_number": 10,
+        "name": "洛柠的博客",
+        "link": "https://blog.naloveyuki.top/",
+        "description": "一个用来保存洛柠文章的地方",
+        "avatar": "https://cdn.liteyuki.org/logos/studio.png"
+    },
+    {
+        "issue_number": 9,
+        "name": "天翔TNXGの空间站",
+        "link": "https://tnxg.top/",
+        "description": "明日尚未到来，希望凝于心上",
+        "avatar": "https://api-space.tnxg.top/avatar?s=qq"
+    },
+    {
+        "issue_number": 12,
+        "name": "Liteyuki Gitea",
+        "link": "https://git.liteyuki.org/",
+        "description": "工作室自托管Gitea工作区",
+        "avatar": "https://git.liteyuki.org/favicon.ico"
+    },
+    {
+        "issue_number": 14,
+        "name": "轻雪通行证",
+        "link": "https://pass.liteyuki.org/login/liteyuki-user?orgChoiceMode=None",
+        "description": "轻雪账号统一认证服务",
+        "avatar": "https://cdn.liteyuki.org/logos/passport.svg"
+    },
+    {
+        "issue_number": 15,
+        "name": "大磊的猫窝",
+        "link": "http://zhyxulei.top/",
+        "description": "只有当不幸真的到来时，我们才会怀念和渴望那些逝去的美好时光",
+        "avatar": "https://q1.qlogo.cn/g?b=qq&nk=2742291286&s=100"
+    },
+    {
+        "issue_number": 16,
+        "name": "诺渊の个人站",
+        "link": "https://hikari.bond/",
+        "description": "诺渊の个人小站，记录技术博客和教程",
+        "avatar": "https://hikari.bond/upload/42B069E33081BA8D2FD07C1873F35A0E.png"
+    },
+    {
+        "issue_number": 17,
+        "name": "TwisHub",
+        "link": "https://twis.uk/",
+        "description": "一支喜欢到处贴贴的小猫娘～♡",
+        "avatar": "https://github.com/Twisuki.png"
+    },
+    {
+        "issue_number": 18,
+        "name": "ElysiumStack",
+        "link": "https://www.elysium-stack.cn/",
+        "description": "不会摄影的设计师不是优秀的旅行家",
+        "avatar": "https://www.elysium-stack.cn/upload/ee0757e6-ebb4-46d0-a388-660f648653ea.jpg"
+    },
+    {
+        "issue_number": 19,
+        "name": "低调佬的博客",
+        "link": "https://www.yyydl.top/",
+        "description": "低调佬，owner of nonebot",
+        "avatar": "https://q.qlogo.cn/g?b=qq&nk=3323077879&s=640"
+    },
+    {
+        "issue_number": 20,
+        "name": "咕咕的GitHub主页",
+        "link": "https://github.com/synodriver",
+        "description": "咕咕，synodriver，一位很厉害的CPython开发者，喜欢玩NAS",
+        "avatar": "https://q.qlogo.cn/g?b=qq&nk=624805065&s=640"
+    },
+    {
+        "issue_number": 21,
+        "name": "skywircl",
+        "link": "https://www.madfrey.top/",
+        "description": "红岩网校后端研发部的大佬之一，Student, and will graduate with a B.Eng in Computer Science in Summer 2025.  You can send email to skywircl @ gmail dot com to get a touch with me.",
+        "avatar": "https://avatars.githubusercontent.com/u/89887780?v=4"
+    },
+    {
+        "issue_number": 22,
+        "name": "joshua的个人主页",
+        "link": "https://joshua.su/",
+        "description": "红岩网校运维安全部的大佬，云原生糕手，请输入help来查看可用命令",
+        "avatar": "https://avatars.githubusercontent.com/u/54235339?v=4"
+    },
+    {
+        "issue_number": 23,
+        "name": "JasonZYT的个人主页",
+        "link": "https://jasonz.yt/",
+        "description": "JasonZYT的个人主页",
+        "avatar": "https://avatars.githubusercontent.com/u/66063199?v=4"
+    },
+    {
+        "issue_number": 24,
+        "name": "Sianao Site",
+        "link": "https://sianao.site/",
+        "description": "红岩网校后端研发部曾经的leader，非常厉害，游遍大厂",
+        "avatar": "https://avatars.githubusercontent.com/u/96694568?v=4"
+    },
+    {
+        "issue_number": 25,
+        "name": "Lomirus的个人博客",
+        "link": "https://lomirus.github.io/",
+        "description": "Lomirus的个人博客，红岩网校前端研发部的大佬，全栈糕手，前端基建狂魔",
+        "avatar": "https://lomirus.github.io/img/avatar_hu11994427718878188740.jpg"
+    },
+    {
+        "issue_number": 26,
+        "name": "ferdinand的GitHub",
+        "link": "https://github.com/Ferdinadaedth",
+        "description": "红岩网校的站长兼运维",
+        "avatar": "https://avatars.githubusercontent.com/u/115557428?v=4"
+    },
+    {
+        "issue_number": 27,
+        "name": "yyz的个人学习记录",
+        "link": "https://yyz9.cn/",
+        "description": "yyz的个人学习记录，红岩网校运维安全部的大佬",
+        "avatar": "https://yyz9.cn/img/avatar_hu1b37c766fff55303c7e18ee666723dd8_271849_300x0_resize_box_3.png"
+    },
+    {
+        "issue_number": 28,
+        "name": "轻雪开源镜像站",
+        "link": "https://mirrors.liteyuki.org/",
+        "description": "轻雪开源镜像站/反向代理站，为一些特定地区网络不好的开发者提供必要的资源代理访问",
+        "avatar": "https://mirrors.liteyuki.org/upload/logo9.png?t=1746096078397"
+    },
+    {
+        "issue_number": 29,
+        "name": "阿冰的小屋",
+        "link": "https://blog.coldbin.top/",
+        "description": "阿冰的小屋，红岩网校后端研发部的大佬",
+        "avatar": "https://blog.coldbin.top/images/avatar.jpg"
+    },
+    {
+        "issue_number": 30,
+        "name": "zhangxinhui02的个人主页",
+        "link": "https://www.mikumikumi.xyz/",
+        "description": "红岩网校运维安全部的大佬",
+        "avatar": "https://avatars.githubusercontent.com/u/25164524?v=4"
+    },
+    {
+        "issue_number": 32,
+        "name": "远野千束的个人主页",
+        "link": "https://sfkm.me/",
+        "description": "远野千束的个人主页",
+        "avatar": "https://cdn.liteyuki.org/snowykami/avatar.jpg"
+    },
+    {
+        "issue_number": 31,
+        "name": "红岩网校工作站 RedrockTeam",
+        "link": "https://m.redrock.team/",
+        "description": "一个从事互联网产品开发的学生组织，隶属于校团委",
+        "avatar": "https://sre-docs.redrock.team/logo.png"
+    },
+    {
+        "issue_number": 33,
+        "name": "Pinpe的云端",
+        "link": "https://pinpe.top/",
+        "description": "一个属于自己的云朵。",
+        "avatar": "https://pinpe.top/head.jpg"
+    },
+    {
+        "issue_number": 34,
+        "name": "萑澈的寒舍",
+        "link": "https://hxcn.cnies.org/",
+        "description": "就是为了这点醋才包的这顿饺子",
+        "avatar": "https://gastigado.cnies.org/d/elements/e69309ecdba41c53da4c9.png?sign=XYpTkPO62LztF34skZoYeA5SR-7KoNumVYnJggolhi4=:0"
+    },
+    {
+        "issue_number": 38,
+        "name": "Uptime",
+        "link": "https://uptime.liteyuki.org/",
+        "description": "服务监控",
+        "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png-%20[x]%20%20%E6%9B%B4%E6%96%B0"
+    },
+    {
+        "issue_number": 37,
+        "name": "清羽飞扬",
+        "link": "https://blog.liushen.fun/",
+        "description": "柳影曳曳，清酒孤灯，扬笔撒墨，心境如霜",
+        "avatar": "https://blog.liushen.fun/info/avatar.ico"
+    },
+    {
+        "issue_number": 35,
+        "name": "EastWind",
+        "link": "https://blog.1wind.cn/",
+        "description": "东风不与周郎便",
+        "avatar": "https://github.com/WindyDante.png"
+    },
+    {
+        "issue_number": 36,
+        "name": "葱苓小筑",
+        "link": "https://blog.ciraos.top/",
+        "description": "Don't worry, be happy.",
+        "avatar": "https://mx.ciraos.top/api/v2/objects/avatar/ufh295h43mly31gmw0.avif"
+    },
+    {
+        "issue_number": 39,
+        "name": "Leonxieの小窝",
+        "link": "https://www.leonxie.cn/",
+        "description": "保持热爱，奔赴山海！",
+        "avatar": "https://www.leonxie.cn/upload/avatar.jpg"
+    },
+    {
+        "issue_number": 40,
+        "name": "Hexzii",
+        "link": "https://nichijou.moe/",
+        "description": "Hexzii的个人主页",
+        "avatar": "https://avatars.githubusercontent.com/u/62250232?v=4"
+    },
+    {
+        "issue_number": 41,
+        "name": "Dogxi | 狗窝子",
+        "link": "https://blog.dogxi.me/",
+        "description": "oi, Dogxi 的笔记本",
+        "avatar": "https://avatar.dogxi.me/favicon.ico"
+    },
+    {
+        "issue_number": 42,
+        "name": "Teror的客栈",
+        "link": "https://blog.trfox.top/",
+        "description": "Teror的客栈，欢迎光临",
+        "avatar": "https://img.trfox.top/assets/avatar.jpg"
+    },
+    {
+        "issue_number": 43,
+        "name": "芸汐酱的刷新点",
+        "link": "https://awa.2085.fun/",
+        "description": "人类的伟大在于面对死亡之时的崇高姿态",
+        "avatar": "https://wsrv.nl/?url=avatars.githubusercontent.com/u/140612774?v=4"
+    },
+    {
+        "issue_number": 44,
+        "name": "神圣羽毛帝国",
+        "link": "https://sacredfeathers.online/",
+        "description": "在虚拟世界中崛起的神圣帝国，以智慧与荣耀为基石，用羽毛般轻盈的梦想承载着无限的可能",
+        "avatar": "https://sacredfeathers.online/icon"
+    },
+    {
+        "issue_number": 45,
+        "name": "Liteyuki Minecraft Server",
+        "link": "https://mc.liteyuki.org/",
+        "description": "由轻雪工作室团队运营的公益性质服务器",
+        "avatar": "https://cdn.liteyuki.org/logos/group_avatar.png"
+    },
+    {
+        "issue_number": 46,
+        "name": "Chinyuan Tai",
+        "link": "https://blog.knlde.top/",
+        "description": "LOVE&PEACE",
+        "avatar": "https://cdn.jsdmirror.com/gh/Kindle-deep/picx-images-hosting@master/avatar.avif"
+    },
+    {
+        "issue_number": 47,
+        "name": "ErrOrO's Space",
+        "link": "https://blog.erroro.moe/",
+        "description": "OrO?OrO!",
+        "avatar": "https://blog.erroro.moe/assets/avatar.jpg"
+    },
+    {
+        "issue_number": 48,
+        "name": "Eternltyの小宇宙",
+        "link": "https://blog.eternlty.top/",
+        "description": "偶尔更新，经常摆烂，永远在记录的路上",
+        "avatar": "https://blog.eternlty.top/favicon2.webp"
+    },
+    {
+        "issue_number": 49,
+        "name": "圣堂",
+        "link": "http://118.31.39.238:3000/home",
+        "description": "一个成熟的铠甲勇士是不会被困难打倒的",
+        "avatar": "http://118.31.39.238:3000/static/media/avatar.42aa139fd9fb158ec89c.png"
+    },
+    {
+        "issue_number": 50,
+        "name": "纸鹿摸鱼处",
+        "link": "https://blog.zhilu.site/",
+        "description": "纸鹿至麓不知路，支炉制露不止漉",
+        "avatar": "https://weavatar.com/avatar/47c0f2e82b76d9b10eb3023df9e02e4e3fdbeaf5b74b842063f207971e7fbe7b?s=160"
+    },
+    {
+        "issue_number": 51,
+        "name": "Losita's Blog",
+        "link": "https://blog.lecspace.com/",
+        "description": "记录Losita的技术学习和日常生活。",
+        "avatar": "https://dl2.lecspace.com/LositaBlog/Losita%E7%9A%84QQ%E5%A4%B4%E5%83%8F.jpg"
+    },
+    {
+        "issue_number": 52,
+        "name": "Caitria‘website",
+        "link": "https://www.smob.cc/",
+        "description": "小周的个人站",
+        "avatar": "https://avatars.githubusercontent.com/u/182211573?s=400&u=dca6805b0d82cfdeeb9acf042e0dfdebb5c4f869&v=4"
+    }
 ]
