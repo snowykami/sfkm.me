@@ -18,8 +18,8 @@ importers:
         specifier: ^1.2.3
         version: 1.2.4(@types/react@19.2.7)(react@19.2.3)
       '@snowykami/use-async-task':
-        specifier: ^0.0.1
-        version: 0.0.1(@types/react@19.2.7)(react@19.2.3)(vite@7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
+        specifier: ^0.0.3
+        version: 0.0.3(@types/react@19.2.7)(react@19.2.3)(vite@7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -893,8 +893,8 @@ packages:
     resolution: {integrity: sha512-TeheYy0ILzBEI/CO55CP6zJCSdSWeRtGnHy8U8dWSUH4I68iqTsy7HkMktR4xakThc9jotkPQUXT4ITdbV7cHA==}
     engines: {node: '>=18'}
 
-  '@snowykami/use-async-task@0.0.1':
-    resolution: {integrity: sha512-WkypLhjGlXA7xyfCjIqvQNQjcrvZMFW3BdQMVkbsVf9e86vMpmlBC3e9GUdBNYGghntSfBJ/U3VAxj/3sAsDDA==}
+  '@snowykami/use-async-task@0.0.3':
+    resolution: {integrity: sha512-9niFScd8C9rnBzZIcbOkZ76KYmOB0lgdUohP2mvFQQ8Wmy9+thPej1PHj4W05Sj3dWg6uSeFtawH5nz3BUvieQ==}
     peerDependencies:
       react: '>=16.8.0'
 
@@ -1602,6 +1602,10 @@ packages:
 
   enhanced-resolve@5.18.3:
     resolution: {integrity: sha512-d4lC8xfavMeBjzGr2vECC3fsGXziXZQyJxD868h2M/mBI3PwAuODxAkLkq5HYuvrPYcUtiLzsTo8U3PgX3Ocww==}
+    engines: {node: '>=10.13.0'}
+
+  enhanced-resolve@5.18.4:
+    resolution: {integrity: sha512-LgQMM4WXU3QI+SYgEc2liRgznaD5ojbmY3sb8LxyguVkIg5FxdpTkvk72te2R38/TGKxH634oLxXRGY6d7AP+Q==}
     engines: {node: '>=10.13.0'}
 
   entities@4.5.0:
@@ -3901,7 +3905,7 @@ snapshots:
 
   '@sindresorhus/base62@1.0.0': {}
 
-  '@snowykami/use-async-task@0.0.1(@types/react@19.2.7)(react@19.2.3)(vite@7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))':
+  '@snowykami/use-async-task@0.0.3(@types/react@19.2.7)(react@19.2.3)(vite@7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))':
     dependencies:
       '@radix-ui/react-slot': 1.2.4(@types/react@19.2.7)(react@19.2.3)
       '@tailwindcss/vite': 4.1.18(vite@7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2))
@@ -3944,7 +3948,7 @@ snapshots:
   '@tailwindcss/node@4.1.18':
     dependencies:
       '@jridgewell/remapping': 2.3.5
-      enhanced-resolve: 5.18.3
+      enhanced-resolve: 5.18.4
       jiti: 2.6.1
       lightningcss: 1.30.2
       magic-string: 0.30.21
@@ -4594,6 +4598,11 @@ snapshots:
   empathic@2.0.0: {}
 
   enhanced-resolve@5.18.3:
+    dependencies:
+      graceful-fs: 4.2.11
+      tapable: 2.3.0
+
+  enhanced-resolve@5.18.4:
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.3.0

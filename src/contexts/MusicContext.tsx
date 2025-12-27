@@ -1,5 +1,6 @@
 'use client'
 import type { MusicTrack } from '@/models/music'
+import { useAsyncTask } from '@snowykami/use-async-task'
 import Lyric from 'lrc-file-parser'
 import React, {
   createContext,
@@ -72,6 +73,17 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [bufferedPercent, setBufferedPercent] = useState<number>(0)
   const [rotateDeg, setRotateDeg] = useState(0)
   const [lyrics, setLyrics] = useState<string | null>(null) // 原始歌词文本
+
+  const lyricTask = useAsyncTask(
+    async (songId: number) => {
+      return fetchNcmLyric(songId)
+    },
+    {
+      cacheTime: 1000 * 60 * 10,
+      taskKey: (songId: number) => `music/lyric/${songId}`,
+    },
+    'music/lyric',
+  )
   const lyricRef = useRef<Lyric | null>(null) // 解析后的歌词对象
   const [currentLyric, setCurrentLyric] = useState<string | null>(null) // 当前歌词行文本
   const [currentLyricIndex, setCurrentLyricIndex] = useState<number>(0) // 当前歌词行索引
@@ -112,24 +124,42 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const audio = audioRef.current
     if (!audio)
       return
-    if (currentTrack) {
+
+    let alive = true
+    const run = async () => {
+      if (!currentTrack) {
+        audio.src = ''
+        prevTrackIdRef.current = null
+        lyricTask.cancel()
+        return
+      }
+
       // 清空旧歌词，避免切换歌曲时显示上一首的歌词
       if (prevTrackIdRef.current !== currentTrack.id) {
         setLyrics(null)
         setCurrentLyric(null)
         setCurrentLyricIndex(0)
       }
-      fetchNcmLyric(currentTrack.id).then((lyrics) => {
-        setLyrics(lyrics)
-      }).catch(() => {
+
+      try {
+        const res = await lyricTask.execute(currentTrack.id)
+        if (!alive)
+          return
+        setLyrics(typeof res === 'string' ? res : null)
+      }
+      catch {
+        if (!alive)
+          return
         setLyrics(null)
-      })
+      }
+
       if (prevTrackIdRef.current !== currentTrack.id) {
         audio.src = currentTrack.audio || ''
         // 不强制重置 currentTime 为 0，只有在确实为新曲目时才重置
         audio.currentTime = 0
         prevTrackIdRef.current = currentTrack.id
       }
+
       if (pendingPlayRef.current) {
         void audio.play().catch(() => {
           /* play 可能被浏览器阻止，事件监听会同步状态 */
@@ -137,9 +167,11 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         pendingPlayRef.current = false
       }
     }
-    else {
-      audio.src = ''
-      prevTrackIdRef.current = null
+
+    void run()
+
+    return () => {
+      alive = false
     }
   }, [currentTrack, currentIndex])
 
