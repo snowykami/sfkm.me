@@ -164,7 +164,7 @@ export default function LyricScroller({ wid }: { wid: string }) {
                 >
                   {isHovered && (
                     <div
-                      className="absolute left-2 bottom-full -mb-1 text-xs opacity-70"
+                      className="absolute left-2 bottom-full -mb-2 text-xs opacity-70"
                       style={{
                         color: mode === 'dark'
                           ? lyricTheme.nightOtherText
