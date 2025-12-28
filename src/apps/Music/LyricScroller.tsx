@@ -14,6 +14,14 @@ export default function LyricScroller({ wid }: { wid: string }) {
   const { isMobile: isMobileDevice, mode } = useDevice()
   const { isMobileLayout } = useWindowManager()
   const isMobile = isMobileDevice || isMobileLayout(wid)
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+
+  // 格式化时间为 mm:ss.ms
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60)
+    const secs = Math.floor(seconds % 60)
+    return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+  }
 
   // 主题色衍生
   const [lyricTheme, setLyricTheme] = useState({
@@ -121,10 +129,13 @@ export default function LyricScroller({ wid }: { wid: string }) {
                   } z-0`
               }
               const isCurrent = idx === currentLyricIndex
+              const isHovered = hoveredIndex === idx
               return (
                 <div
                   key={line.time + line.text + idx}
                   onClick={() => seek(line.time)}
+                  onMouseEnter={() => setHoveredIndex(idx)}
+                  onMouseLeave={() => setHoveredIndex(null)}
                   ref={(el) => {
                     lineRefs.current[idx] = el
                   }}
@@ -132,7 +143,7 @@ export default function LyricScroller({ wid }: { wid: string }) {
                 ${isMobile ? 'text-center' : 'text-left'}
                 select-none px-2 py-0.5 rounded
                 transition-all duration-600 ease-[cubic-bezier(.4,2,.6,1)]
-                w-full
+                w-full relative
                 font-bold cursor-pointer hover:opacity-100
                 ${style}
               `}
@@ -151,6 +162,18 @@ export default function LyricScroller({ wid }: { wid: string }) {
                     fontSize: isCurrent ? '1.4rem' : '1.3rem',
                   }}
                 >
+                  {isHovered && (
+                    <div
+                      className="absolute left-2 bottom-full -mb-1 text-xs opacity-70"
+                      style={{
+                        color: mode === 'dark'
+                          ? lyricTheme.nightOtherText
+                          : lyricTheme.dayOtherText,
+                      }}
+                    >
+                      {formatTime(line.time)}
+                    </div>
+                  )}
                   {t(`music.${line.text}`, line.text)}
                 </div>
               )
