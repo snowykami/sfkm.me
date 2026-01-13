@@ -23,6 +23,7 @@ export function getNewWindowColorScheme(colorScheme: Partial<WindowState['colorS
     titleBarBgDark: 'dark:bg-transparent',
     titleBarBorder: 'border-transparent',
     titleBarBorderDark: 'dark:border-transparent',
+    titleBarClassName: 'h-1',
     showBorder: true,
     backdropBlur: true,
     backgroundOpacity: '0.8',
@@ -42,10 +43,6 @@ export const musicWindowState: Partial<WindowState> = {
 }
 
 export default function Music({ windowId = WINDOW_ID }: AppProps) {
-  const { isMobile: isMobileDevice } = useDevice()
-  const { isMobileLayout } = useWindowManager()
-  const isMobile = isMobileDevice || isMobileLayout(windowId)
-
   const { currentTrack } = useMusic()
   const { updateWindow } = useWindowManager()
   const lastSongTitleRef = useRef<string | null>(null)
@@ -77,25 +74,12 @@ export default function Music({ windowId = WINDOW_ID }: AppProps) {
 
   return (
     <div className="flex flex-col h-full relative overflow-hidden">
-      {isMobile && (
-        <div
-          className={`absolute inset-0 z-5 ${OVERLAYCOLOR} ${OVERLAYCOLORDARK} transition-colors duration-600`}
-        />
-      )}
-      {/* 背景层 */}
-      {isMobile && (
-        <div
-          className="absolute inset-0 z-0 bg-cover bg-center transition-all duration-600 blur-3xl"
-          style={{
-            backgroundImage: `url(${currentCoverUrl})`,
-          }}
-        />
-      )}
-      {/* 内容层 */}
-      <div className="flex flex-col h-full z-10 relative">
-        <PlayerView wid={windowId} />
-        <MusicControls />
-      </div>
+      <iframe
+        key={currentCoverUrl || 'nocover'}
+        src="https://skos-player.sfkm.me"
+        className="h-full"
+      >
+      </iframe>
     </div>
   )
 }
