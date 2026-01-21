@@ -417,5 +417,12 @@
         "link": "https://www.smob.cc/",
         "description": "小周的个人站",
         "avatar": "https://avatars.githubusercontent.com/u/182211573?s=400&u=dca6805b0d82cfdeeb9acf042e0dfdebb5c4f869&v=4"
+    },
+    {
+        "issue_number": 53,
+        "name": "Viki 写东西的地方",
+        "link": "https://blog.viki.moe/",
+        "description": "生活需要记录。",
+        "avatar": "https://blog.viki.moe/avatar.png"
     }
 ]
