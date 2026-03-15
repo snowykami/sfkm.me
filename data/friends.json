@@ -424,5 +424,12 @@
         "link": "https://blog.viki.moe/",
         "description": "生活需要记录。",
         "avatar": "https://blog.viki.moe/avatar.png"
+    },
+    {
+        "issue_number": 54,
+        "name": "小涵の个人网站",
+        "link": "https://naiwenel.com/",
+        "description": "以一灯燃百灯，直至万灯皆明。",
+        "avatar": "https://github.com/yuhan2680/yuhan2680/blob/main/%E5%A4%B4%E5%83%8F.jpg"
     }
 ]
