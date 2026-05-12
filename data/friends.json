@@ -452,5 +452,12 @@
         "link": "https://www.yesheng.wiki/",
         "description": "记录一些兴趣和想法",
         "avatar": "http://www.yesheng.wiki/wp-content/uploads/2024/11/1731405884-%E2%9C%96%EF%B8%8F.png"
+    },
+    {
+        "issue_number": 58,
+        "name": "ModernBlog",
+        "link": "https://blog.andyjin.website/",
+        "description": "分享技术，记录生活",
+        "avatar": "https://filestorage0.oss-cn-hongkong.aliyuncs.com/avatar.png"
     }
 ]
