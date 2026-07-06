@@ -459,5 +459,12 @@
         "link": "https://blog.andyjin.website/",
         "description": "分享技术，记录生活",
         "avatar": "https://filestorage0.oss-cn-hongkong.aliyuncs.com/avatar.png"
+    },
+    {
+        "issue_number": 59,
+        "name": "洪畅的博客",
+        "link": "https://blog.hcbu.cn/",
+        "description": "想，全是问题；做，才有答案。",
+        "avatar": "https://gitee.com/hcbug/picture1/raw/master/20260607223324364.webp"
     }
 ]
