@@ -473,5 +473,12 @@
         "link": "https://blog.andyjin.website/",
         "description": "分享技术，记录生活",
         "avatar": "https://filestorage0.oss-cn-hongkong.aliyuncs.com/avatar.png"
+    },
+    {
+        "issue_number": 61,
+        "name": "SengokuCola'sBlog",
+        "link": "https://home.nibutupaopao.top/",
+        "description": "随着风的轨迹 在那耀眼的午后",
+        "avatar": "https://lsky.nibutupaopao.top/i/2026/07/09/6a4fc40211f69.png"
     }
 ]
