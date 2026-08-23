@@ -362,8 +362,7 @@ const config: Config = {
           <b>游戏偏好</b>： Minecraft / Factorio ...(沙盒/自动化/模拟经营/开放世界)。<br>
           <b>音乐偏好</b>：二次元 / 术力口 / 鹿乃 / YOASOBI | 纯音乐 / J-Pop...。<br>
           <b>地点</b>：重庆<br>
-          <b>团队</b>：轻雪工作室 / 红岩网校工作站<br>
-          <b>Love❤️</b>：<a href="https://www.smob.cc/" target="_blank" rel="noreferrer">Caitria</a>`,
+          <b>团队</b>：轻雪工作室 / 红岩网校工作站<br>`,
           location: '中国 重庆',
           sites: '网站索引',
           subname: '远野千束',
